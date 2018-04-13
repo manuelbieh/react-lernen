@@ -8,6 +8,8 @@ Das Prinzip von Komponenten ist einfach erklärt: eine Komponente erlaubt es kom
 
 Komponenten können grob in zwei verschiedenen Varianten auftreten: rein funktionale Komponenten \(engl. **Functional Component**\), auch **Stateless Functional Component** \(_SFC_\) genannt, sowie **Class Components**, die eine gewöhnliche standard ES2015-Klasse repräsentieren.
 
+### Functional Components / Stateless Functional Components
+
 Die deutlich einfachste Art um in React eine Komponente zu definieren ist sicherlich die funktionale Komponente, die, wie der Name es bereits andeutet, tatsächlich lediglich eine einfache JavaScript-Funktion ist:
 
 ```jsx
@@ -18,7 +20,9 @@ function Hello(props) {
 
 Diese Funktion erfüllt alle Kriterien einer gültigen React-Komponente: sie hat als `return`-Wert ein explizites `null` \(`undefined` ist dagegen **nicht** gültig!\) oder ein gültiges `React.Element` \(hier in Form von JSX\) und sie empfängt ein `props`-Objekt als erstes und einziges Funktionsargument, wobei sogar dieses optional ist und ebenfalls `null` sein kann.
 
-Die zweite Möglichkeit wie eine React-Komponente erstellt werden kann habe ich im Eingangsbeispiel schon kurz gezeigt. sie besteht aus einer ES2015-Klasse, die von der `React.Component`-Klasse ableitet und hat mindestens eine Methode mit dem Namen `render()`:
+### Class Components
+
+Die zweite Möglichkeit wie eine React-Komponente erstellt werden kann habe ich im Eingangsbeispiel schon kurz gezeigt: Class Components. Diese bestehen aus einer ES2015-Klasse, die von der `React.Component` oder `React.PureComponent`\(dazu später mehr\) Klasse ableitet und hat mindestens eine Methode mit dem Namen `render()`:
 
 ```jsx
 class Hello extends React.Component {
@@ -406,48 +410,66 @@ Und zwar egal wie oft die Komponente inzwischen tatsächlich gerendert wurde. Gl
 
 Innerhalb unserer Komponente sind und bleiben wir weiterhin „pure“. Wir modifizieren den Eingabewert nicht und wir haben in der Komponente auch keinerlei direkten Abhängigkeiten nach außen, die unser Render-Ergebnis beeinflussen könnten. Der Wert wird lediglich außerhalb unserer Komponente geändert und neu in die Komponente **hereingegeben**, was uns aber an dieser Stelle auch gar nicht weiter interessieren braucht, da es für uns lediglich wichtig ist, dass unsere Komponente mit gleichen Props auch weiterhin das gleiche Ergebnis liefert. Und das ist hier zweifellos gegeben. Wer die Props außerhalb unserer Komponente modifiziert, wie oft und in welcher Form ist uns ganz gleich, solange wir das nicht selber innerhalb unserer Komponente tun. Okay, Prinzip verstanden?
 
-#### Props sind ein Funktionsargument
+#### Props sind ein abstrahiertes Funktionsargument
 
-Da Props, reduziert man sie auf das Wesentliche, nichts anderes als ein Funktionsargument sind, können sie auch in dessen diversen Formen auftreten. Alles, was auch Functions oder Constructors in JavaScript als Argument akzeptieren, kann auch als Wert für eine Prop verwendet werden. Vom simplen String, über Objekte, Funktionen oder gar andere React-Elemente \(die ja, wie wir bereits wissen, hinter den Kulissen auch nichts anderes als ein Funktionsaufruf sind\) kann das nahezu alles sein, solange es eben ein valider Ausdruck ist.  
+Da Props, reduziert man sie auf das Wesentliche, nichts anderes als ein Funktionsargument sind, können sie auch in dessen diversen Formen auftreten. Alles, was auch Functions oder Constructors in JavaScript als Argument akzeptieren, kann auch als Wert für eine Prop verwendet werden. Vom simplen String, über Objekte, Funktionen oder gar andere React-Elemente \(die ja, wie wir bereits wissen, hinter den Kulissen auch nichts anderes als ein Funktionsaufruf sind\) kann das nahezu alles sein, solange es eben ein valider Ausdruck ist.
 
-
-&lt;MyComponent
-
-  count={3}
-
+```jsx
+<MyComponent
+  counter={3}
   text="example"
-
   showStatus={true}
-
   config={{ uppercase: true }}
-
-  biggerNumber={Math.max\(27, 35\)}
-
-  arbitraryNumbers={\[1, 4, 28, 347, 1538\]}
-
+  biggerNumber={Math.max(27, 35)}
+  arbitraryNumbers={[1, 4, 28, 347, 1538]}
   dateObject={Date}
-
+  dateInstance={new Date()}
   icon={
-
-    &lt;svg x="0px" y="0px" width="32px" height="32px"&gt;
-
-      &lt;circle fill="\#FF0000" cx="16" cy="16" r="16" /&gt;
-
-    &lt;/svg&gt;
-
+    <svg x="0px" y="0px" width="32px" height="32px">
+      <circle fill="#CC3300" cx="16" cy="16" r="16" />
+    </svg>
   }
-
-  callMe={\(\) =&gt; {
-
-    console.log\('Somebody called me'\);
-
+  callMe={() => {
+    console.log('Somebody called me');
   }}
+/>
+```
 
-/&gt;  
+Auch wenn die meisten Props hier inhaltlich wenig Sinn ergeben und nur zur Veranschaulichung dienen, so sind sie dennoch syntaktisch korrektes JSX, demonstrieren wie mächtig sie sind und in welchen verschiedenen Formen sie auftreten können.
 
+### Props sind nicht auf eine Verschachtelungsebene beschränkt
 
-Auch wenn die meisten Props hier inhaltlich wenig Sinn ergeben, so sind sie dennoch syntaktisch korrektes JSX, demonstrieren wie mächtig sie sind und in welchen verschiedenen Formen sie auftreten können.  
+Eine Komponente die Props empfängt kann diese problemlos auch an Kind-Komponenten weiterreichen. Dies kann einerseits hilfreich sein wenn man große Komponenten in mehrere kleinere Komponenten unterteilt und gewisse Props an Kind-Komponenten weitergegeben werden müssen, kann aber bei komplexen Anwendungen teilweise dazu führen dass es schwer erkenntlich wird wo der genaue Ursprung einer Prop ist und wo ich anfangen muss zu suchen, wenn ich den Wert einer Prop ändern möchte.
 
+```jsx
+function User(props) {
+  return (
+    <div>
+      <h1>{props.name}</h1>
+      <UserImage image={props.image} />
+      <ListOfPosts items={props.posts} />
+    </div>
+  )
+}
+
+ReactDOM.render(
+  <User name={user.name} image={user.image} posts={user.posts} />,
+  document.getElementById('app')
+);
+```
+
+### Wichtige Erkenntnisse
+
+{% hint style="success" %}
+Komponenten müssen sich hinsichtlich ihrer Props als „Pure Functions“ verhalten und bei gleichen Props stets die gleiche Ausgabe erzeugen.
+
+* Props sind innerhalb einer Komponente grundsätzlich als **readonly** zu betrachten
+* Komponenten können eine **beliebige Menge an Props** übergeben bekommen.
+* In JSX übergibt man Props in ähnlicher Form wie in HTML Attribute
+* Anders als in HTML, sind in JSX diverse Arten von Werten erlaubt. Werte die nicht vom Typ String sind, werden dabei in **geschweifte Klammern** gefasst
+* Props können **sämtliche JavaScript-Ausdrücke** \(„Expressions“\) als Wert entgegennehmen
+* Empfangene Props können beliebig viele Ebenen tief im Komponenten-Baum an Kind-Elemente weitergegeben werden
+{% endhint %}
 
 
 
