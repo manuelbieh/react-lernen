@@ -26,5 +26,89 @@ Doch Vorsicht: anders als bei anderen Sprachen bedeutet `const` nicht, dass der 
 
 ### Beispiele
 
+#### Der Unterschied zwischen `let`/`const` und `var`
 
+Erst einmal zur Demonstration ein kurzes Beispiel wie sich die Variablendeklaration von `let` und `const` von denen mit `var` unterscheiden und was es bedeutet, dass erstere nur in dem Scope sichtbar sind, in dem sie definiert wurden:
+
+```javascript
+for (var i = 0; i < 10; i++) { }
+console.log(i);
+```
+
+**Ausgabe:**
+
+{% hint style="info" %}
+10
+{% endhint %}
+
+Nun einmal dasselbe Beispiel mit `let`
+
+```javascript
+for (let j = 0; j < 10; j++) { }
+console.log(j);
+```
+
+**Ausgabe:**
+
+{% hint style="danger" %}
+Uncaught ReferenceError: `j` is not defined
+{% endhint %}
+
+Während auf die Variable `var i`, einmal definiert, auch außerhalb der `for`-Schleife zugegriffen werden kann, ist die Variable `let j` nur innerhalb des Scopes in dem sie definiert wurde. Und das ist in diesem Fall innerhalb der `for`-Schleife, die einen neuen Scope erzeugt.
+
+Dies ist ein kleiner Baustein der uns später dabei helfen wird unsere Komponenten gekapselt und ohne ungewünschte Seiteneffekte zu erstellen.
+
+#### Unterschiede zwischen `let` und `const`
+
+Folgender Code ist valide und funktioniert, solange die Variable mittels `let` deklariert wurde
+
+```javascript
+let myNumber = 1234;
+myNumber = 47;
+console.log(myNumber);
+```
+
+**Ausgabe:**
+
+{% hint style="info" %}
+47
+{% endhint %}
+
+Der gleiche Code nochmal, nun allerdings mit `const`:
+
+```javascript
+const myNumber = 1234;
+myNumber = 47;
+console.log(myNumber);
+```
+
+**Ausgabe:**
+
+{% hint style="danger" %}
+Uncaught TypeError: Assignment to constant variable.
+{% endhint %}
+
+Wir versuchen hier also eine mit `const` deklarierte Variable direkt zu überschreiben und werden dabei vom JavaScript-Interpreter zurecht in die Schranken gewiesen. Doch was, wenn wir nur eine Eigenschaft _innerhalb_ eines mittels `const` deklarierten Objekts verändern wollen?
+
+```javascript
+const myObject = {
+  a: 1
+};
+myObject.b = 2;
+console.log(myObject);
+```
+
+**Ausgabe:**
+
+{% hint style="info" %}
+`{a: 1, b: 2}`
+{% endhint %}
+
+In diesem Fall gibt es keinerlei Probleme, da wir nicht die Referenz verändern, auf die die `myObject` Variable verweisen soll, sondern das Objekt, auf das verwiesen wird. Dies funktioniert ebenso mit Arrays, die verändert werden können, solange nicht der Wert der Variable selbst geändert wird!
+
+```javascript
+const myArray = [];
+myArray.push(1);
+myArray.push(2);
+```
 
