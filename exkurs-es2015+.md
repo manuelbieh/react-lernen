@@ -58,6 +58,8 @@ Während auf die Variable `var i`, einmal definiert, auch außerhalb der `for`-S
 
 Dies ist ein kleiner Baustein der uns später dabei helfen wird unsere Komponenten gekapselt und ohne ungewünschte Seiteneffekte zu erstellen.
 
+
+
 #### Unterschiede zwischen `let` und `const`
 
 Folgender Code ist valide und funktioniert, solange die Variable mittels `let` deklariert wurde
@@ -106,9 +108,31 @@ console.log(myObject);
 
 In diesem Fall gibt es keinerlei Probleme, da wir nicht die Referenz verändern, auf die die `myObject` Variable verweisen soll, sondern das Objekt, auf das verwiesen wird. Dies funktioniert ebenso mit Arrays, die verändert werden können, solange nicht der Wert der Variable selbst geändert wird!
 
+**Erlaubt:**
+
 ```javascript
 const myArray = [];
 myArray.push(1);
 myArray.push(2);
+console.log(myArray);
 ```
+
+**Ausgabe:**
+
+{% hint style="info" %}
+`[1, 2]`
+{% endhint %}
+
+**Nicht erlaubt, da wir die Variable direkt überschreiben würden:**
+
+```text
+const myArray = [];
+myArray = Array.concat(1, 2);
+```
+
+{% hint style="danger" %}
+Uncaught TypeError: Assignment to constant variable.
+{% endhint %}
+
+
 
