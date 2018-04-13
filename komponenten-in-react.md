@@ -202,3 +202,283 @@ Mit anderen Worten: egal welche Variablen außerhalb der Funktion ihren Wert än
 
 Warum ist das wichtig? Nun, React verfolgt bei seinen Komponenten das Prinzip von Pure Functions. Erhält eine Komponente die gleichen Props von außen hineingereicht, ist der initiale Output auch immer identisch.
 
+### Pure Functions im Detail
+
+Da das Prinzip von Pure Functions ein grundlegendes ist bei der Arbeit mit React möchte ich diese Anhand einiger Beispiele etwas näher beleuchten. Hier geht es überwiegend um Theorie, die sich sicherlich komplizierter anhört als das später bei der Arbeit mit React der Fall sein wird. Dennoch möchte ich diese zum besseren Verständnis nicht unerwähnt lassen.
+
+#### Beispiel für eine simple Pure Function
+
+```javascript
+function pureDouble(number) {
+  return number * 2; 
+}
+```
+
+Unsere erste simple Funktion bekommt eine Nummer übergeben, verdoppelt diese und gibt das Ergebnis zurück. Egal ob ich die Funktion 1, 10 oder 250 mal aufrufe: übergebe ich der Funktion bspw. eine `5` als Wert, erhalte ich eine `10` zurück. Immer und ausnahmslos. Same input, same output.
+
+#### Beispiel für eine Impure Function
+
+```javascript
+function impureCalculation(number) {
+  return number + window.outerWidth;
+}
+```
+
+Die zweite Funktion ist nicht mehr pure, weil sie nicht zuverlässig immer den gleichen Output liefert, selbst wenn ihr Input identisch ist. Momentan ist mein Browser-Fenster 1920 Pixel breit. Rufe ich die Funktion mit `10` als Argument auf, erhalte ich `1930` zurück \(`10 + 1920`\). Verkleinere ich nun das Fenster auf 1280 Pixel und rufe die Funktion erneut, mit exakt der gleichen `10` als Argument auf bekomme ich dennoch ein anderes Ergebnis \(`1290`\) als beim ersten Mal. Es handelt sich also nicht um eine Pure Function.
+
+Eine Möglichkeit diese Funktion „pure“ zu machen wäre, ihr meine Fensterbreite als weiteres Funktionsargument zu übergeben:
+
+```javascript
+function pureCalculation(number, outerWidth) {
+  return number + outerWidth;
+}
+```
+
+So liefert die Funktion beim Aufruf von pureCalculation\(10, window.outerWidth\) zwar immer noch ein Ergebnis was von meiner Fensterbreite abhängt, die Funktion ist dennoch „pure“ da sie beim gleichen Input weiterhin den gleichen Output liefert. Einfacher kann man das nachvollziehen wenn man die Funktion mal auf ihre wesentlichen Eigenschaften reduziert:
+
+```javascript
+function pureSum(number1, number2) {
+  return number1 + number2;
+};
+```
+
+**Gleicher Input, Gleicher Output.**
+
+#### Weiteres Beispiel für eine Impure Function
+
+Stellen wir uns einmal vor wir möchten eine Funktion implementieren die als Input ein Objekt empfängt mit Parametern zu einem Auto.
+
+```javascript
+var car = {speed: 0, seats: 5};
+function accelerate(car) {
+  car.speed += 1;
+  return car;
+}
+```
+
+Das obige Beispiel ist ebenfalls eine Funktion die nicht „pure“ ist, da sie ihren Eingabewert modifiziert und somit beim zweiten Aufruf bereits ein anderes Ergebnis als Ausgabewert hat als noch beim ersten Aufruf:  
+&gt; accelerate\(car\)  
+{speed: 1}  
+&gt; accelerate\(car\)  
+{speed: 2}  
+
+
+Wie sorgen wir also nun dafür, dass auch unser letztes Beispiel „pure“ wird? Indem wir aufhören den Eingabewert zu modifizieren und stattdessen ein neues Objekt erzeugen, basierend auf dem Eingabewert:  
+
+
+var car = {speed: 0};
+
+function accelerate\(car\) {
+
+  return {
+
+    speed: car.speed +1,
+
+  }
+
+}  
+
+
+Neues Ergebnis:  
+
+
+accelerate\(car\)
+
+&gt; {speed: 1}
+
+accelerate\(car\)
+
+&gt; {speed: 1}  
+
+
+Gleicher Input, Gleicher Output. Wir sind „pure“!  
+
+
+Ihr wundert euch jetzt vielleicht warum ich euch das erzähle und hier mit langweiliger Theorie nerve, wo ihr doch eigentlich nur React lernen wollt \(jedenfalls würde ich mir das an dieser Stelle denken, wenn ich mir vorstelle dieses Buch auch aus diesem Grund zu lesen\).  
+
+
+React ist eine sehr liberale Library die dem Entwickler sehr viele Freiheiten lässt. Aber eine Sache ist oberstes Gebot und da kennt React auch wirklich keinen Spaß: Komponenten müssen sich im Hinblick auf ihre Props wie „Pure Functions“ verhalten und bei gleichen Props stets die gleiche Ausgabe erzeugen!  
+
+
+Haltet ihr euch da nicht dran, kann es bei der Arbeit mit React zu sehr eigenartigen Effekten kommen, zu unerwünschten und nicht nachvollziehbaren Ergebnissen führen und euch das Leben beim Bugfixing zur Hölle machen. Und genau aus diesem Grund lernt ihr ja React: weil ihr ein einfaches aber dennoch zugleich unglaublich mächtiges Tool haben wollt, mit denen ihr nach etwas Einarbeitung in unglaublich schneller Zeit wirklich professionelle User Interfaces entwickeln könnt, ohne euch dabei selbst in den Wahnsinn zu treiben. All das bietet euch React, solange ihr euch an diese Regel haltet.  
+
+
+Das hat für uns aber gleichzeitig den sehr angenehmen Nebeneffekt, dass sich Komponenten in der Regel auch sehr einfach testen lassen.  
+
+
+So und was bedeutet jetzt genau das „innerhalb einer Komponente“? Das ist mit unserem neuen Wissen was eine „Pure Function“ ist recht schnell erklärt: egal wie ich in der Komponente auf die Props zugreife, ob direkt über das props-Argument einer SFC \(„Stateless Functional Component“\), über den constuctor\(\) in einer Class-Component oder an beliebiger anderer Stelle innerhalb einer Class-Component mittels this.props: ich kann und darf \(und will!\) den Wert der hereingereichten Props nicht ändern.  
+
+
+Anders sieht das natürlich außerhalb aus. Hier kann ich den Wert problemlos ändern \(vorausgesetzt natürlich, wir befinden uns nicht in einer Komponente welche die Prop die wir modifizieren wollen selbst nur hereingereicht bekommen hat\).
+
+Was nicht möglich ist
+
+function Example\(props\) {
+
+  props.number = props.number + 1;
+
+  props.fullName = \[props.firstName, props.lastName\].join\(' '\);
+
+  return \(
+
+    &lt;div&gt;\({props.number}\) {props.fullName} &lt;/div&gt;
+
+  \);
+
+}
+
+  
+&lt;Example number={5} firstName="Manuel" lastName="Bieh" /&gt;  
+
+
+Ausgabe:
+
+TypeError: Cannot add property number, object is not extensible  
+
+
+Hier versuche ich direkt die number und fullName props innerhalb meiner Example-Komponente zu ändern, was natürlich nicht funktionieren wird, da wir ja gelernt haben dass props grundsätzlich read-only sind.
+
+Was allerdings möglich ist
+
+Manchmal möchte ich aber eben doch einen neuen Wert von einer hereingereichten Prop ableiten. Das ist auch gar kein Problem, React 17 bietet dafür sogar noch eine umfassende Funktion getDerivedStateFromProps, auf die ich im entsprechenden Kapital nochmal gesondert und sehr detailliert eingehen werde.  
+
+
+Möchte ich aber eben nur mal eben einen Wert anzeigen der sich von der Prop ableitet, die ich als Komponente hereingereicht bekomme, geht das indem nur die Ausgabe auf Basis der Prop anpasse ohne zu probieren den Wert zurück zu schreiben.  
+
+
+function Example\(props\) {
+
+  return \(
+
+    &lt;div&gt;\({props.number + 1}\) {\[props.firstName, props.lastName\].join\(' '\)}&lt;/div&gt;
+
+  \);
+
+}
+
+  
+&lt;Example number={5} firstName="Manuel" lastName="Bieh" /&gt;  
+
+
+Ausgabe:
+
+&lt;div&gt;\(6\) Manuel Bieh&lt;/div&gt;  
+
+
+In diesem Fall modifiziere ich also lediglich die Ausgabe, nicht jedoch das props-Objekt selbst. Das ist überhaupt kein Problem und in einigen Fällen sogar absolut gewünscht oder notwendig.
+
+Was ebenfalls möglich ist
+
+Jetzt bleibt noch abschließend zu klären wie Props denn nun außerhalb einer Komponente geändert werden können, denn bisher war immer nur die Rede davon, dass Props nur innerhalb einer Komponente nicht verändert werden dürfen.  
+
+
+Auch das lässt sich am Besten anhand eines konkreten, aber sehr abstrakten Beispiels erklären:  
+
+
+var React = require\('react'\);
+
+var ReactDOM = require\('react-dom'\);  
+
+
+var renderCounter = 0;
+
+setInterval\(function \(\) {
+
+  renderCounter++;
+
+  renderApp\(\);
+
+}, 2000\);  
+
+
+const App = \(props\) =&gt; {
+
+  return &lt;div&gt;{props.renderCounter}&lt;/div&gt;
+
+};  
+
+
+function renderApp\(\) {
+
+  ReactDOM.render\(
+
+    &lt;App renderCounter={renderCounter} /&gt;,
+
+    document.getElementById\('app'\)
+
+  \);
+
+}  
+
+
+renderApp\(\);  
+
+
+Was passiert hier? Zuerst einmal setzen wir eine Variable renderCounter auf den Anfangswert 0. Diese Variable zählt für uns gleich mit wie oft wir unsere App-Komponente rendern oder genauer gesagt, wie oft wir im Endeffekt die ReactDOM.render\(\) Funktion ausführen, die dann entsprechend dafür sorgt, dass die App-Komponente erneut gerendert wird.  
+
+
+Anschließend starten wir einen Intervall, der die besagte Funktion regelmäßig alle 2000 Millisekunden ausführt. Dabei führt der Intervall nicht nur im 2 Sekunden-Takt die Funktion aus, sondern zählt auch gleichzeitig unseren renderCounter um 1 hoch. Was hier jetzt passiert ist ganz spannend: wir modifizieren die renderCounter Prop unserer App „von außen“.  
+
+
+Die Komponente selbst bleibt dabei komplett „pure“. Wird sie aufgerufen mit:  
+
+
+&lt;App renderCounter={5} /&gt;  
+
+
+gibt sie uns als Ergebnis zurück:  
+
+
+&lt;div&gt;5&lt;/div&gt;  
+
+
+Und zwar egal wie oft die Komponente inzwischen tatsächlich gerendert wurde. Gleicher Input, gleicher Output. Es ist wirklich so simpel.  
+
+
+Innerhalb unserer Komponente sind und bleiben wir weiterhin „pure“. Wir modifizieren den Eingabewert nicht und wir haben in der Komponente auch keinerlei Abhängigkeiten nach außen, die unser Render-Ergebnis beeinflussen könnten. Der Wert wird lediglich außerhalb unserer Komponente geändert und neu in die Komponente hereingegeben, was uns aber an dieser Stelle auch gar nicht weiter interessieren braucht, da es für uns lediglich wichtig ist, dass unsere Komponente mit gleichen props auch weiterhin das gleiche Ergebnis liefert. Und das ist hier zweifellos gegeben. Wer die Props außerhalb unserer Komponente modifiziert, wie oft und in welcher Form ist uns ganz gleich, solange wir das nicht selber innerhalb unserer Komponente tun. Okay, Prinzip verstanden?
+
+#### Props sind ein Funktionsargument
+
+Da Props, reduziert man sie auf das Wesentliche, nichts anderes als ein Funktionsargument sind, können sie auch in dessen diversen Formen auftreten. Alles, was auch Functions oder Constructors in JavaScript als Argument akzeptieren, kann auch als Wert für eine Prop verwendet werden. Vom simplen String, über Objekte, Funktionen oder gar andere React-Elemente \(die ja, wie wir bereits wissen, hinter den Kulissen auch nichts anderes als ein Funktionsaufruf sind\) kann das nahezu alles sein, solange es eben ein valider Ausdruck ist.  
+
+
+&lt;MyComponent
+
+  count={3}
+
+  text="example"
+
+  showStatus={true}
+
+  config={{ uppercase: true }}
+
+  biggerNumber={Math.max\(27, 35\)}
+
+  arbitraryNumbers={\[1, 4, 28, 347, 1538\]}
+
+  dateObject={Date}
+
+  icon={
+
+    &lt;svg x="0px" y="0px" width="32px" height="32px"&gt;
+
+      &lt;circle fill="\#FF0000" cx="16" cy="16" r="16" /&gt;
+
+    &lt;/svg&gt;
+
+  }
+
+  callMe={\(\) =&gt; {
+
+    console.log\('Somebody called me'\);
+
+  }}
+
+/&gt;  
+
+
+Auch wenn die meisten Props hier inhaltlich wenig Sinn ergeben, so sind sie dennoch syntaktisch korrektes JSX, demonstrieren wie mächtig sie sind und in welchen verschiedenen Formen sie auftreten können.  
+
+
+
+
