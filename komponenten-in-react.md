@@ -186,7 +186,7 @@ Wir haben nun außerdem „sprechende“ Komponenten, von denen jede eine klar d
 
 Und nicht zuletzt haben wir ganz nebenbei noch Wiederverwendbarkeit geschaffen. Möchte ich wie erwähnt das Logo nicht nur im Header sondern auch im Footer verwenden hält mich natürlich nichts davon ab, dieselbe Komponente auch in meiner Footer-Komponente zu verwenden. Habe ich verschiedene Seitenbereiche mit unterschiedlichen Layouts, die jedoch alle denselben Header darstellen, kann ich dazu meine schlanke und übersichtliche Header-Komponente überall dort verwenden, wo ich ich ihn benötige.  Der Konsument einer Komponente muss dazu nicht einmal wissen aus welchen einzelnen Komponenten sie besteht. Es reicht, lediglich die gewünschte Komponente zu importieren da diese sich selbst um ihre Abhängigkeiten kümmert.
 
-## Props – die „Datenträger“ einer Komponente
+## Props – die „Datenempfänger“ einer Komponente
 
 Nun habe ich bereits soviel über **Props** geschrieben. Höchste Zeit also einmal das Geheimnis zu lüften und genauer darauf einzugehen. Was sind also „Props“?
 
@@ -194,10 +194,11 @@ Durch die Props nehmen Komponenten beliebige Arten von Daten entgegen und könne
 
 ### Props sind readonly innerhalb einer Komponente
 
-Unabhängig davon wie die Props in welcher Art von Komponente auch immer landen, eines ist ihnen gemeinsam: sie sind innerhalb der Komponente immer readonly, dürfen also nur gelesen, nicht aber modifiziert werden!
+Unabhängig davon wie die Props in welcher Art von Komponente auch immer landen, eines ist ihnen gemeinsam: sie sind innerhalb der Komponente **immer readonly**, dürfen \(und können\) also nur gelesen, nicht aber modifiziert werden! Dafür kommt später der React **State** ins Spiel. Aber eins nach dem anderen.
 
-Hat eine Funktion dann auch keine Abhängigkeit nach außen, so spricht man in der funktionalen Programmierung von einer puren Funktion \(engl: **pure function**\) und die Idee dahinter ist recht simpel: so soll sichergestellt werden, dass eine Komponente in sich geschlossen ist, daher davon unbeeindruckt bleibt wenn sich außerhalb der Komponente etwas ändert, die Komponente bekommt alle benötigten Parameter hereingereicht, ist frei von Seiteneffekten \(eng: **side effects**\) und erzielt somit im Render-Prozess mit den gleichen Props auch immer die exakt identische Ausgabe. **Gleicher Input, gleicher Output!**
+Modifiziert eine Funktion ihren Input nicht und hat auch keine Abhängigkeit nach außen, so spricht man in der funktionalen Programmierung von einer puren Funktion \(engl.: **Pure Function**\) und die Idee dahinter ist recht simpel: so soll sichergestellt werden, dass eine Funktion in sich geschlossen ist, daher davon unbeeindruckt bleibt wenn sich außerhalb der Funktion etwas ändert, die Funktion bekommt alle benötigten Parameter hereingereicht, ist frei von Seiteneffekten \(engl.: **Side Effects**\) und erzielt somit bei gleichen Eingabewerten auch immer die exakt identische Ausgabe. **Gleicher Input, gleicher Output!**
 
-Mit anderen Worten: egal welche Variablen ihren Wert ändern, egal wie oft andere Funktionen aufgerufen werden oder ein Benutzer in der App herum klickt: bekommt meine „Pure Function“ die gleichen Parameter wie zuvor, gibt sie mir auch das gleiche Ergebnis wie vorher zurück. Immer und ausnahmslos.  
+Mit anderen Worten: egal welche Variablen außerhalb der Funktion ihren Wert ändern, egal wie oft andere Funktionen anderswo aufgerufen werden: bekommt eine Pure Function die gleichen Parameter wie zuvor, gibt sie mir auch das gleiche Ergebnis wie zuvor zurück. Immer und ausnahmslos.
 
+Warum ist das wichtig? Nun, React verfolgt bei seinen Komponenten das Prinzip von Pure Functions. Erhält eine Komponente die gleichen Props von außen hineingereicht, ist der initiale Output auch immer identisch.
 
