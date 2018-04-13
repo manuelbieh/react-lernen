@@ -256,186 +256,155 @@ function accelerate(car) {
 }
 ```
 
-Das obige Beispiel ist ebenfalls eine Funktion die nicht „pure“ ist, da sie ihren Eingabewert modifiziert und somit beim zweiten Aufruf bereits ein anderes Ergebnis als Ausgabewert hat als noch beim ersten Aufruf:  
-&gt; accelerate\(car\)  
-{speed: 1}  
-&gt; accelerate\(car\)  
-{speed: 2}  
+Das obige Beispiel ist ebenfalls eine Funktion die nicht „pure“ ist, da sie ihren Eingabewert modifiziert und somit beim zweiten Aufruf bereits ein anderes Ergebnis als Ausgabewert hat als noch beim ersten Aufruf:
 
+```javascript
+console.log(accelerate(car)) 
+> {speed: 1}
 
-Wie sorgen wir also nun dafür, dass auch unser letztes Beispiel „pure“ wird? Indem wir aufhören den Eingabewert zu modifizieren und stattdessen ein neues Objekt erzeugen, basierend auf dem Eingabewert:  
+console.log(accelerate(car)) 
+> {speed: 2}
+```
 
+Wie sorgen wir also nun dafür, dass auch unser letztes Beispiel „pure“ wird? Indem wir den Eingabewert nicht mehr modifizieren und stattdessen jedes Mal ein neues Objekt erzeugen, basierend auf dem Eingabewert, und dieses neue Objekt aus der Funktion zurückgebend,
 
+```javascript
 var car = {speed: 0};
-
-function accelerate\(car\) {
-
+function accelerate(car) {
   return {
-
-    speed: car.speed +1,
-
+    speed: car.speed + 1,
   }
+}
+```
 
-}  
+Neues Ergebnis:
 
+```text
+console.log(accelerate(car)) 
+> {speed: 1}
 
-Neues Ergebnis:  
+console.log(accelerate(car)) 
+> {speed: 1}
+```
 
+**Gleicher Input: gleicher Output:** wir sind „pure“!
 
-accelerate\(car\)
+Ihr wundert euch jetzt vielleicht warum ich euch das erzähle und hier mit langweiliger Theorie nerve, wo ihr doch eigentlich nur React lernen wollt \(jedenfalls würde ich mir das an dieser Stelle denken, wenn ich mir vorstelle dieses Buch auch aus diesem Grund zu lesen\).
 
-&gt; {speed: 1}
+React ist eine sehr liberale Library, die dem Entwickler sehr viele Freiheiten lässt. Aber eine Sache ist oberstes Gebot und da kennt React auch wirklich keinen Spaß: **Komponenten müssen sich im Hinblick auf ihre Props wie „Pure Functions“ verhalten und bei gleichen Props stets die gleiche Ausgabe erzeugen!**
 
-accelerate\(car\)
+Haltet ihr euch da nicht dran, kann es bei der Arbeit mit React zu sehr eigenartigen Effekten kommen, zu unerwünschten und nicht nachvollziehbaren Ergebnissen führen und euch das Leben beim Bugfixing zur Hölle machen. Und genau aus diesem Grund lernt ihr ja React: weil ihr ein einfaches aber dennoch zugleich unglaublich mächtiges Tool haben wollt, mit denen ihr nach etwas Einarbeitung in unglaublich schneller Zeit wirklich professionelle User Interfaces entwickeln könnt, ohne euch dabei selbst in den Wahnsinn zu treiben. All das bietet euch React, solange ihr euch an diese Regel haltet.
 
-&gt; {speed: 1}  
+Das hat für uns aber gleichzeitig den sehr angenehmen Nebeneffekt, dass sich Komponenten in der Regel auch sehr einfach testen lassen.
 
+So und was bedeutet jetzt genau das _„readonly innerhalb einer Komponente“_? Das ist mit unserem neuen Wissen über „Pure Functions“ recht schnell erklärt: egal wie ich in der Komponente auf die Props zugreife, ob direkt über das `props`-Argument einer SFC \(_„Stateless Functional Component“_\), über den `constructor()` in einer Class-Component oder an beliebiger anderer Stelle innerhalb einer Class-Component mittels `this.props`: ich kann und darf \(und will!\) den Wert der hereingereichten Props nicht ändern.
 
-Gleicher Input, Gleicher Output. Wir sind „pure“!  
+Anders sieht das natürlich **außerhalb** aus. Hier kann ich den Wert problemlos ändern \(vorausgesetzt natürlich, wir befinden uns nicht wiederum in einer Komponente, welche die Prop die wir modifizieren wollen selbst nur hereingereicht bekommen hat\).
 
+#### Was nicht möglich ist
 
-Ihr wundert euch jetzt vielleicht warum ich euch das erzähle und hier mit langweiliger Theorie nerve, wo ihr doch eigentlich nur React lernen wollt \(jedenfalls würde ich mir das an dieser Stelle denken, wenn ich mir vorstelle dieses Buch auch aus diesem Grund zu lesen\).  
-
-
-React ist eine sehr liberale Library die dem Entwickler sehr viele Freiheiten lässt. Aber eine Sache ist oberstes Gebot und da kennt React auch wirklich keinen Spaß: Komponenten müssen sich im Hinblick auf ihre Props wie „Pure Functions“ verhalten und bei gleichen Props stets die gleiche Ausgabe erzeugen!  
-
-
-Haltet ihr euch da nicht dran, kann es bei der Arbeit mit React zu sehr eigenartigen Effekten kommen, zu unerwünschten und nicht nachvollziehbaren Ergebnissen führen und euch das Leben beim Bugfixing zur Hölle machen. Und genau aus diesem Grund lernt ihr ja React: weil ihr ein einfaches aber dennoch zugleich unglaublich mächtiges Tool haben wollt, mit denen ihr nach etwas Einarbeitung in unglaublich schneller Zeit wirklich professionelle User Interfaces entwickeln könnt, ohne euch dabei selbst in den Wahnsinn zu treiben. All das bietet euch React, solange ihr euch an diese Regel haltet.  
-
-
-Das hat für uns aber gleichzeitig den sehr angenehmen Nebeneffekt, dass sich Komponenten in der Regel auch sehr einfach testen lassen.  
-
-
-So und was bedeutet jetzt genau das „innerhalb einer Komponente“? Das ist mit unserem neuen Wissen was eine „Pure Function“ ist recht schnell erklärt: egal wie ich in der Komponente auf die Props zugreife, ob direkt über das props-Argument einer SFC \(„Stateless Functional Component“\), über den constuctor\(\) in einer Class-Component oder an beliebiger anderer Stelle innerhalb einer Class-Component mittels this.props: ich kann und darf \(und will!\) den Wert der hereingereichten Props nicht ändern.  
-
-
-Anders sieht das natürlich außerhalb aus. Hier kann ich den Wert problemlos ändern \(vorausgesetzt natürlich, wir befinden uns nicht in einer Komponente welche die Prop die wir modifizieren wollen selbst nur hereingereicht bekommen hat\).
-
-Was nicht möglich ist
-
-function Example\(props\) {
-
+```jsx
+function Example(props) {
   props.number = props.number + 1;
-
-  props.fullName = \[props.firstName, props.lastName\].join\(' '\);
-
-  return \(
-
-    &lt;div&gt;\({props.number}\) {props.fullName} &lt;/div&gt;
-
-  \);
-
+  props.fullName = [props.firstName, props.lastName].join(' ');
+  return (
+    <div>({props.number}) {props.fullName} </div>
+  );
 }
 
-  
-&lt;Example number={5} firstName="Manuel" lastName="Bieh" /&gt;  
+ReactDOM.render(
+  <Example number={5} firstName="Manuel" lastName="Bieh" />,
+  document.getElementById('app')
+);
+```
 
+**Ausgabe:**
 
-Ausgabe:
+{% hint style="danger" %}
+ TypeError: Cannot add property number, object is not extensible
+{% endhint %}
 
-TypeError: Cannot add property number, object is not extensible  
+Hier versuche ich direkt die `number` und `fullName` Props innerhalb meiner Example-Komponente zu ändern, was natürlich nicht funktionieren kann, da wir ja gelernt haben, dass Props grundsätzlich readonly sind.
 
+#### Was allerdings möglich ist
 
-Hier versuche ich direkt die number und fullName props innerhalb meiner Example-Komponente zu ändern, was natürlich nicht funktionieren wird, da wir ja gelernt haben dass props grundsätzlich read-only sind.
+Manchmal möchte ich aber eben doch einen neuen Wert von einer hereingereichten Prop ableiten. Das ist auch gar kein Problem, React 17 bietet dafür sogar noch eine umfassende Funktion `getDerivedStateFromProps()`, auf die ich im entsprechenden Kapital nochmal gesondert und sehr detailliert eingehen werde.
 
-Was allerdings möglich ist
+Möchte ich aber eben nur mal eben einen Wert anzeigen der sich von der Prop ableitet, die ich als Komponente hereingereicht bekomme, geht das indem nur die Ausgabe auf Basis der Prop anpasse ohne zu probieren den Wert zurück zu schreiben.
 
-Manchmal möchte ich aber eben doch einen neuen Wert von einer hereingereichten Prop ableiten. Das ist auch gar kein Problem, React 17 bietet dafür sogar noch eine umfassende Funktion getDerivedStateFromProps, auf die ich im entsprechenden Kapital nochmal gesondert und sehr detailliert eingehen werde.  
+```jsx
+var React = require('react');
+var ReactDOM = require('react-dom');
 
-
-Möchte ich aber eben nur mal eben einen Wert anzeigen der sich von der Prop ableitet, die ich als Komponente hereingereicht bekomme, geht das indem nur die Ausgabe auf Basis der Prop anpasse ohne zu probieren den Wert zurück zu schreiben.  
-
-
-function Example\(props\) {
-
-  return \(
-
-    &lt;div&gt;\({props.number + 1}\) {\[props.firstName, props.lastName\].join\(' '\)}&lt;/div&gt;
-
-  \);
-
+function Example(props) {
+  return (
+    <div>({props.number + 1}) {[props.firstName, props.lastName].join(' ')}</div>
+  );
 }
 
-  
-&lt;Example number={5} firstName="Manuel" lastName="Bieh" /&gt;  
+ReactDOM.render(
+  <Example number={5} firstName="Manuel" lastName="Bieh" />,
+  document.getElementById('app')
+);
+```
 
+**Ausgabe:**
 
-Ausgabe:
+```jsx
+<div>(6) Manuel Bieh</div>
+```
 
-&lt;div&gt;\(6\) Manuel Bieh&lt;/div&gt;  
+In diesem Fall modifiziere ich also lediglich die Ausgabe basierend auf den `props`, nicht jedoch das `props`-Objekt selbst. Das ist überhaupt kein Problem.
 
+#### Was ebenfalls möglich ist
 
-In diesem Fall modifiziere ich also lediglich die Ausgabe, nicht jedoch das props-Objekt selbst. Das ist überhaupt kein Problem und in einigen Fällen sogar absolut gewünscht oder notwendig.
+Jetzt bleibt noch abschließend zu klären wie Props denn nun außerhalb einer Komponente geändert werden können, denn bisher war immer nur die Rede davon, dass Props nur innerhalb einer Komponente nicht verändert werden dürfen.
 
-Was ebenfalls möglich ist
+Auch das lässt sich am Besten anhand eines konkreten, allerdings noch recht abstrakten Beispiels erklären:
 
-Jetzt bleibt noch abschließend zu klären wie Props denn nun außerhalb einer Komponente geändert werden können, denn bisher war immer nur die Rede davon, dass Props nur innerhalb einer Komponente nicht verändert werden dürfen.  
-
-
-Auch das lässt sich am Besten anhand eines konkreten, aber sehr abstrakten Beispiels erklären:  
-
-
-var React = require\('react'\);
-
-var ReactDOM = require\('react-dom'\);  
-
+```jsx
+var React = require('react');
+var ReactDOM = require('react-dom');
 
 var renderCounter = 0;
-
-setInterval\(function \(\) {
-
+setInterval(function () {
   renderCounter++;
+  renderApp();
+}, 2000);
 
-  renderApp\(\);
+const App = (props) => {
+  return <div>{props.renderCounter}</div>
+};
 
-}, 2000\);  
+function renderApp() {
+  ReactDOM.render(
+    <App renderCounter={renderCounter} />,
+    document.getElementById('app')
+  );
+}
 
+renderApp();
+```
 
-const App = \(props\) =&gt; {
+Was passiert hier? Zunächst einmal setzen wir eine Variable `renderCounter` auf den Anfangswert `0`. Diese Variable zählt für uns gleich mit wie oft wir unsere `App`-Komponente rendern oder genauer gesagt, wie oft wir im Endeffekt die `ReactDOM.render()` Funktion aufrufen, die dann entsprechend bei jedem Aufruf dafür sorgt, dass die `App`-Komponente erneut gerendert wird.
 
-  return &lt;div&gt;{props.renderCounter}&lt;/div&gt;
+Anschließend starten wir einen Intervall, der die besagte Funktion regelmäßig alle 2000 Millisekunden ausführt. Dabei führt der Intervall nicht nur im 2 Sekunden-Takt die Funktion aus, sondern zählt auch gleichzeitig unsere `renderCounter` Variable um 1 hoch. Was hier jetzt passiert ist ganz spannend: wir modifizieren die `renderCounter` Prop unserer App **„von außen“**.
 
-};  
+Die Komponente selbst bleibt dabei komplett „pure“. Wird sie aufgerufen mit:
 
+```jsx
+<App renderCounter={5} />
+```
 
-function renderApp\(\) {
+gibt sie uns als Ergebnis zurück:
 
-  ReactDOM.render\(
+```markup
+<div>5</div>
+```
 
-    &lt;App renderCounter={renderCounter} /&gt;,
+Und zwar egal wie oft die Komponente inzwischen tatsächlich gerendert wurde. Gleicher Input, gleicher Output.
 
-    document.getElementById\('app'\)
-
-  \);
-
-}  
-
-
-renderApp\(\);  
-
-
-Was passiert hier? Zuerst einmal setzen wir eine Variable renderCounter auf den Anfangswert 0. Diese Variable zählt für uns gleich mit wie oft wir unsere App-Komponente rendern oder genauer gesagt, wie oft wir im Endeffekt die ReactDOM.render\(\) Funktion ausführen, die dann entsprechend dafür sorgt, dass die App-Komponente erneut gerendert wird.  
-
-
-Anschließend starten wir einen Intervall, der die besagte Funktion regelmäßig alle 2000 Millisekunden ausführt. Dabei führt der Intervall nicht nur im 2 Sekunden-Takt die Funktion aus, sondern zählt auch gleichzeitig unseren renderCounter um 1 hoch. Was hier jetzt passiert ist ganz spannend: wir modifizieren die renderCounter Prop unserer App „von außen“.  
-
-
-Die Komponente selbst bleibt dabei komplett „pure“. Wird sie aufgerufen mit:  
-
-
-&lt;App renderCounter={5} /&gt;  
-
-
-gibt sie uns als Ergebnis zurück:  
-
-
-&lt;div&gt;5&lt;/div&gt;  
-
-
-Und zwar egal wie oft die Komponente inzwischen tatsächlich gerendert wurde. Gleicher Input, gleicher Output. Es ist wirklich so simpel.  
-
-
-Innerhalb unserer Komponente sind und bleiben wir weiterhin „pure“. Wir modifizieren den Eingabewert nicht und wir haben in der Komponente auch keinerlei Abhängigkeiten nach außen, die unser Render-Ergebnis beeinflussen könnten. Der Wert wird lediglich außerhalb unserer Komponente geändert und neu in die Komponente hereingegeben, was uns aber an dieser Stelle auch gar nicht weiter interessieren braucht, da es für uns lediglich wichtig ist, dass unsere Komponente mit gleichen props auch weiterhin das gleiche Ergebnis liefert. Und das ist hier zweifellos gegeben. Wer die Props außerhalb unserer Komponente modifiziert, wie oft und in welcher Form ist uns ganz gleich, solange wir das nicht selber innerhalb unserer Komponente tun. Okay, Prinzip verstanden?
+Innerhalb unserer Komponente sind und bleiben wir weiterhin „pure“. Wir modifizieren den Eingabewert nicht und wir haben in der Komponente auch keinerlei direkten Abhängigkeiten nach außen, die unser Render-Ergebnis beeinflussen könnten. Der Wert wird lediglich außerhalb unserer Komponente geändert und neu in die Komponente **hereingegeben**, was uns aber an dieser Stelle auch gar nicht weiter interessieren braucht, da es für uns lediglich wichtig ist, dass unsere Komponente mit gleichen Props auch weiterhin das gleiche Ergebnis liefert. Und das ist hier zweifellos gegeben. Wer die Props außerhalb unserer Komponente modifiziert, wie oft und in welcher Form ist uns ganz gleich, solange wir das nicht selber innerhalb unserer Komponente tun. Okay, Prinzip verstanden?
 
 #### Props sind ein Funktionsargument
 
