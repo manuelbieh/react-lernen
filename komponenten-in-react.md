@@ -458,7 +458,7 @@ ReactDOM.render(
 );
 ```
 
-### Wichtige Erkenntnisse
+### Die wichtigsten Punkte im Überblick
 
 {% hint style="success" %}
 Komponenten müssen sich hinsichtlich ihrer Props als „Pure Functions“ verhalten und bei gleichen Props stets die gleiche Ausgabe erzeugen.
