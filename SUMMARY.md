@@ -8,4 +8,5 @@
 * [Tools und Setup](tools-und-setup.md)
 * [JSX – eine Einführung](jsx-eine-einfuehrung.md)
 * [Komponenten in React](komponenten-in-react.md)
+* [Exkurs ES2015+](exkurs-es2015+.md)
 
