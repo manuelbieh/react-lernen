@@ -54,33 +54,31 @@ console.log(j);
 Uncaught ReferenceError: `j` is not defined
 {% endhint %}
 
-Während auf die Variable `var i`, einmal definiert, auch außerhalb der `for`-Schleife zugegriffen werden kann, ist die Variable `let j` nur innerhalb des Scopes in dem sie definiert wurde. Und das ist in diesem Fall innerhalb der `for`-Schleife, die einen neuen Scope erzeugt.
+Während auf die Variable `var i`, einmal definiert, auch außerhalb der `for`-Schleife zugegriffen werden kann, existiert die Variable `let j` nur innerhalb des Scopes in dem sie definiert wurde. Und das ist in diesem Fall innerhalb die `for`-Schleife, die einen neuen Scope erzeugt.
 
 Dies ist ein kleiner Baustein der uns später dabei helfen wird unsere Komponenten gekapselt und ohne ungewünschte Seiteneffekte zu erstellen.
 
-
-
 #### Unterschiede zwischen `let` und `const`
 
-Folgender Code ist valide und funktioniert, solange die Variable mittels `let` deklariert wurde
+Folgender Code ist valide und funktioniert, solange die Variable mittels `let` \(oder `var`\) deklariert wurde:
 
 ```javascript
 let myNumber = 1234;
-myNumber = 47;
+myNumber = 5678;
 console.log(myNumber);
 ```
 
 **Ausgabe:**
 
 {% hint style="info" %}
-47
+5678
 {% endhint %}
 
 Der gleiche Code nochmal, nun allerdings mit `const`:
 
 ```javascript
 const myNumber = 1234;
-myNumber = 47;
+myNumber = 5678;
 console.log(myNumber);
 ```
 
@@ -90,7 +88,7 @@ console.log(myNumber);
 Uncaught TypeError: Assignment to constant variable.
 {% endhint %}
 
-Wir versuchen hier also eine mit `const` deklarierte Variable direkt zu überschreiben und werden dabei vom JavaScript-Interpreter zurecht in die Schranken gewiesen. Doch was, wenn wir nur eine Eigenschaft _innerhalb_ eines mittels `const` deklarierten Objekts verändern wollen?
+Wir versuchen hier also eine durch `const` deklarierte Variable direkt zu überschreiben und werden dabei vom JavaScript-Interpreter zurecht in die Schranken gewiesen. Doch was, wenn wir stattdessen nur eine Eigenschaft _innerhalb_ eines mittels `const` deklarierten Objekts verändern wollen?
 
 ```javascript
 const myObject = {
@@ -133,6 +131,155 @@ myArray = Array.concat(1, 2);
 {% hint style="danger" %}
 Uncaught TypeError: Assignment to constant variable.
 {% endhint %}
+
+Möchten wir `myArray` also überschreibbar halten, müssen wir stattdessen `let` verwenden oder uns damit begnügen dass zwar der Inhalt des mittels `const` deklarierten Arrays veränderbar ist, nicht jedoch die Variable selbst.
+
+## Arrow Functions
+
+**Arrow Functions** sind eine weitere **deutliche** Vereinfachung die uns ES2015 gebracht hat. Bisher funktionierte eine Funktionsdeklaration so: man schrieb das Keyword `function`, optional gefolgt von einem Funktionsnamen, Klammern, in der die Funktionsargumente beschrieben wurden, sowie dem **Function Body**, also dem eigentlichen Inhalt der Funktion:
+
+```javascript
+function(arg1, arg2) {}
+```
+
+**Arrow Functions** vereinfachen uns das ungemein, indem sie erst einmal das `function` Keyword überflüssig machen:
+
+```javascript
+(arg1, arg2) => {}
+```
+
+Haben wir zudem nur einen Parameter, sind sogar die Klammern bei den Argumenten optional. Aus unserer Funktion
+
+```javascript
+function(arg) {}
+```
+
+Würde also die folgende **Arrow Function** werden:
+
+```javascript
+arg => {}
+```
+
+Jap, das ist eine gültige Funktion in ES2015!
+
+Und es wird noch wilder. Soll unsere Funktion lediglich einen Ausdruck zurückzugeben als `return`-Wert, sind auch noch die Klammern optional. Vergleichen wir einmal eine Funktion die eine Zahl als einziges Argument entgegennimmt, diese verdoppelt und als `return`-Wert wieder aus der Funktion zurück gibt. Einmal in ES5:
+
+```javascript
+function double(number) {
+  return number * 2;
+}
+```
+
+… und als ES2015 **Arrow Function**:
+
+```javascript
+const double = number => number * 2;
+```
+
+In beiden Fällen liefert uns die eben deklarierte Funktion beim Aufruf von bspw. `double(5)` als Ergebnis `10` zurück!
+
+Aber es gibt noch einen weiteren gewichtigen Vorteil, der bei der Arbeit mit React sehr nützlich sein wird: Arrow Functions haben keinen eigenen Constructor, können also nicht als Instanz in der Form `new MyArrowFunction()` erstellt werden, und binden auch kein eigenes `this` sondern erben `this` aus ihrem **Parent Scope**. Insbesondere Letzteres wird noch sehr hilfreich werden.
+
+Auch das klingt fürchterlich kompliziert, lässt sich aber anhand eines einfachen Beispiels auch recht schnell erklären. Nehmen wir an wir definieren einen Button der die aktuelle Zeit in ein `div` schreiben soll, sobald ich ihn anklicke. Eine typische Funktion in ES5 könnte wie folgt aussehen:
+
+```javascript
+function TimeButton() {
+  var button = document.getElementById('btn');
+  var self = this;
+  this.showTime = function() {
+    document.getElementById('time').innerHTML = new Date();
+  }
+  button.addEventListener('click', function() {
+    self.showTime();
+  });
+}
+```
+
+Da die als **Event Listener** angegebene Funktion keinen Zugriff auf ihren **Parent Scope**, also den **TimeButton** hat, speichern wir hier hilfsweise `this` in der Variable `self`. Kein unübliches Muster in ES5. Alternativ könnte man auch den Scope der Funktion explizit an `this` binden und dem **Event Listener** beibringen in welchem Scope sein Code ausgeführt werden soll:
+
+```javascript
+function TimeButton() {
+  var button = document.getElementById('btn');
+  this.showTime = function() {
+    document.getElementById('time').innerHTML = new Date();
+  }
+  button.addEventListener('click', function() {
+    this.showTime();
+  }.bind(this));
+}
+```
+
+Hier spart man sich zumindest die zusätzliche Variable `self`. Auch das ist möglich, aber nicht besonders elegant. 
+
+An dieser Stelle kommt nun die **Arrow Function** ins Spiel, die, wie eben erwähnt, `this` aus ihrem **Parent Scope** erhält, also in diesem Fall aus unserer `TimeButton`-Instanz:
+
+```javascript
+function TimeButton() {
+  var button = document.getElementById('btn');
+  this.showTime = function() {
+    document.getElementById('time').innerHTML = new Date();
+  }
+  button.addEventListener('click', () {
+    this.showTime();
+  });
+}
+```
+
+Und schon haben wir im **Event Listener** Zugriff auf `this` des überliegenden Scopes! 
+
+Keine `var self = this` Akrobatik mehr und auch kein `.bind(this)`. Wir können innerhalb des Event Listeners so arbeiten als befänden wir uns noch immer im `TimeButton` Scope! Das ist später insbesondere bei der Arbeit mit umfangreichen React-Komponenten mit vielen eigenen Class Properties und Methods hilfreich, da es Verwirrungen vorbeugt und nicht immer wieder einen neuen Scope erzeugt.
+
+## ES2015 Classes
+
+Mit ES2015 fanden auch Klassen Einzug in JavaScript. Klassen kennt man eher aus objektorientierten Sprachen wie Java, in JavaScript gab es sie so explizit bisher allerdings noch nicht. Zwar war es auch schon vorher möglich durch die Verwendung von Funktionsinstanzen objektorientiert zu arbeiten und durch die `prototype`-Eigenschaft einer Funktion eigene Methoden und Eigenschaften zu definieren, dies war verglichen mit echten objektorientierten Sprachen jedoch sehr mühsam.
+
+Dies ändert sich mit ES2015, wo es nun erstmals auch Klassen gibt, die mittels `class` Keyword definiert werden. Das ist für uns insofern interessant, da React, obwohl es viele Prinzipien der funktionalen Programmierung \(**Functional Programming**\) verfolgt, gleichzeitig auch zum wesentlichen Teil auf ES2015 Klassen setzt bei der Erstellung von Komponenten, in diesem Fall speziell von **Class Components**.
+
+Eine Klasse besteht dabei aus einem Namen, kann \(optional\) einen **Constructor** haben der bei der Erstellung einer Klassen-Instanz aufgerufen wird und beliebig viele Klassen-Methoden besitzen.
+
+```javascript
+class Customer {
+  constructor(firstName, lastName) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+  }
+  
+  getFullName() {
+    return this.firstName + ' ' + this.lastName;
+  }
+}
+
+const firstCustomer = new Customer('Max', 'Mustermann');
+console.log(firstCustomer.getFullName());
+```
+
+{% hint style="info" %}
+Max Mustermann
+{% endhint %}
+
+Auch das Erweitern bestehender Klassen mittels `extends` ist dabei möglich:
+
+```javascript
+class Customer extends Person {}
+```
+
+Oder eben:
+
+```javascript
+class MyComponent extends React.Component {}
+```
+
+Auch eine `super()`-Funktion kennt die ES2015 Klasse, um damit den Constructor ihrer Parent Class aufzurufen. Im Falle von React ist dies immer notwendig wenn ich in meiner eigenen Klasse eine constructor-Methode definiere. Diese muss dann dann `super()` aufrufen und ihre `props` an den Constructor der `React.Component` Klasse weiterzugeben:
+
+```javascript
+class MyComponent extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+}
+```
+
+Würdet ihr das nicht tun, wäre `this.props` innerhalb eurer Komponente `undefined` und ihr könntet nicht auf die Props eurer Komponente zugreifen. Grundsätzlich sollte die Verwendung aber in den allermeisten Fällen nicht nötig sein, denn React stellt eigene Methoden bereit, die der Verwendung des Constructors vorzuziehen sind.
 
 
 
