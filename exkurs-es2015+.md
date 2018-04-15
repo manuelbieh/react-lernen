@@ -350,9 +350,86 @@ Bei Objekten verhält sich der Spread Operator sehr ähnlich. Hier werden statt 
 
 Hier eignet sich der Spread Operator hervorragend um neue Objekte zu erstellen:
 
-```text
-const teamSettings = { language: 'en-US', 
+```javascript
+const globalSettings = { language: 'en-US', timezone: 'Berlin/Germany' };
+const userSettings = { mutedUsers: ['Manuel'] };
+const allSettings = {...globalSettings, ...userSettings};
+console.log(allSettings);
 ```
 
+**Ausgabe:**
 
+```javascript
+{
+  language: 'en-US',
+  timezone: 'Berlin/Germany',
+  mutedUsers: ['Manuel'],
+}
+```
+
+Die Eigenschaften beider Objekte finden sich dabei im neu erstellten, kombinierten `allSettings` Objekt wieder. Dabei ist der **Spread Operator** hier nicht auf zwei Objekte beschränkt sondern kann beliebige weitere Objekte zu einem einzelnen neuen Objekt kombinieren. Auch die Kombination mit einzelnen Eigenschaften ist möglich:
+
+```javascript
+const settings = {
+  ...userSettings,
+  showWarnings: true,
+}
+```
+
+Befinden sich in beiden Objekten Eigenschaften mit dem gleichen Namen, hat das letztgenannte Objekt Vorrang:
+
+```javascript
+const globalSettings = { language: 'en-US', timezone: 'Berlin/Germany' };
+const userSettings = { language: 'de-DE' };
+const allSettings = {...globalSettings, ...userSettings};
+console.log(allSettings);
+```
+
+**Ausgabe:**
+
+```text
+{
+  language: 'de-DE',
+  timezone: 'Berlin/Germany',
+}
+```
+
+Das zuletzt genannte `userSettings` Objekt überschreibt hier die gleichnamige Eigenschaft `language`, die sich auch im `globalSettings` Objekt befindet. Der Spread Operator funktioniert hier ganz ähnlich wie die in ES2015 neu eingeführte Objekt-Methode `Object.assign()`. Auch diese wird in ES2015+ basierten Anwendungen gelegentlich genutzt. 
+
+Allerdings gibt es hier den nennenswerten Unterschied, dass sie ein bestehendes Objekt mutiert und nicht per se ein neues Objekt generiert, wie das die Object Spread Variante tut. Und Mutation ist bezogen auf React-Komponenten und ihre Props eben das, was wir ja nicht wollen. Dennoch der Vollständigkeit halber ein kurzes Beispiel.
+
+#### Objekte kombinieren mittels Object.assign\(\)
+
+`Object.assign()` nimmt beliebig viele Objekte entgegen und kombiniert diese zu einem einzigen Objekt:
+
+```javascript
+const a = { a: 1 };
+const b = { b: 2 };
+const c = { c: 3 };
+console.log(Object.assign(a, b, c));
+```
+
+**Ausgabe:**
+
+```javascript
+{a: 1, b: 2, c: 3}
+```
+
+Die Funktion gibt uns also ein neues Objekt zurück, in dem alle 3 übergebenen Objekte zu einem einzigen kombiniert wurden. Aber ist das wirklich ein neues Objekt? **Nein!** Lassen wir uns doch anschließend mal `a`, `b` und `c` in der Console ausgeben:
+
+```text
+console.log(a);
+console.log(b);
+console.log(c);
+```
+
+**Ausgabe:**
+
+```text
+{a: 1, b: 2, c: 3}
+{b: 2}
+{c: 3}
+```
+
+Wir stellen also fest: Object.assign\(\) hat uns nicht ein neues Objekt aus den 3 übergebenen Objekten erstellt sondern lediglich die Eigenschaften des zweiten und dritten Objekts zum ersten übergebenen Objekt hinzugefügt. Und das ist, im Bezug auf **Pure Functions** und **immutable Objects**, schlecht.
 
