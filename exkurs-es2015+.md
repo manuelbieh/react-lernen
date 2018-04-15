@@ -283,7 +283,7 @@ class MyComponent extends React.Component {
 
 Tätet ihr das nicht, wäre `this.props` innerhalb eurer Komponente `undefined` und ihr könntet nicht auf die Props eurer Komponente zugreifen. Grundsätzlich sollte die Verwendung eines Constructors aber in den allermeisten Fällen nicht nötig sein, denn React stellt eigene sog. **Lifecycle-Methoden** bereit, die der Verwendung des Constructors vorzuziehen sind.
 
-## Rest und Spread Operators
+## Rest und Spread Operators und Destrukturierung
 
 Eine weitere deutliche Vereinfachung ist die Einführung der der sog. Rest und Spread Operators für Objekte und Arrays. Streng genommen handelt es sich dabei bei der Verwendung in Kombination mit Objekten noch gar nicht um ES2015 Features, da diese sich noch in der Diskussion befinden und noch gar nicht endgültig in die ECMAScript Spezifikation aufgenommen wurden. Dies ändert sich erst mit ES2018. Eingeführt wurden Rest und Spread in ES2015 erstmals für Arrays. Durch die Verwendung von Babel ist die Nutzung auch mit Objekten aber heute bereits möglich und für gewöhnlich wird davon in React basierten Projekten auch rege Gebrauch gemacht.
 
@@ -417,7 +417,7 @@ console.log(Object.assign(a, b, c));
 
 Die Funktion gibt uns also ein neues Objekt zurück, in dem alle 3 übergebenen Objekte zu einem einzigen kombiniert wurden. Aber ist das wirklich ein neues Objekt? **Nein!** Lassen wir uns doch anschließend mal `a`, `b` und `c` in der Console ausgeben:
 
-```text
+```javascript
 console.log(a);
 console.log(b);
 console.log(c);
@@ -425,11 +425,188 @@ console.log(c);
 
 **Ausgabe:**
 
-```text
+```javascript
 {a: 1, b: 2, c: 3}
 {b: 2}
 {c: 3}
 ```
 
-Wir stellen also fest: Object.assign\(\) hat uns nicht ein neues Objekt aus den 3 übergebenen Objekten erstellt sondern lediglich die Eigenschaften des zweiten und dritten Objekts zum ersten übergebenen Objekt hinzugefügt. Und das ist, im Bezug auf **Pure Functions** und **immutable Objects**, schlecht.
+Wir stellen also fest: `Object.assign()` hat uns nicht wirklich ein komplett neues Objekt aus den 3 übergebenen Objekten erstellt sondern lediglich die Eigenschaften des zweiten und dritten Objekts zum ersten übergebenen Objekt hinzugefügt. Und das ist, im Bezug auf **Pure Functions** und **Immutable Objects**, äußerst schlecht und in jedem Fall zu vermeiden!
+
+Hier gibt es aber einen einfachen Trick um Objekte mittels `Object.assign()` zu kombinieren und dabei gleichzeitig ein neues Objekt zu erstellen. Dazu übergebt ihr der Funktion als erstes Argument ein leeres Object-Literal `{}`:
+
+```text
+Object.assign({}, a, b, c);
+```
+
+… und schon werden dem neu erstellten `{}` Objekt die Eigenschaften unserer Objekte `a`, `b` und `c` übertragen, die bestehenden Objekte `a`, `b` und `c` bleiben dabei unangetastet!
+
+### Destructuring / Destrukturierung
+
+Bevor ich zum Rest Operator komme, der logisch sehr eng mit dem Spread Operator in Verbindung steht, möchte ich auf das **Destructuring** \(korrekt: **Destructuring Assignment**\) oder eben die **Destrukturierung** \(bzw. **destrukturierende Zuweisung**\) wie der schöne Begriff auf Deutsch heißt, eingehen. Ich werde hier wie so oft beim englischen Begriff bleiben, da ich den deutschen Begriff selbst in deutschsprachigen Texten selten gelesen habe bisher.
+
+Mittels **Destructuring** ist es möglich einzelne Elemente aus Objekten oder Arrays zu extrahieren und Variablen zuzuweisen. Eine weitere **deutliche** Syntax-Erweiterung die uns ES2015 hier beschert hat. 
+
+#### Destructuring von Arrays
+
+Stellen wir uns vor wir möchten aus einem geordneten Array mit den Olympia-Teilnehmern im 100m Lauf jeweils den Gewinner der Gold-, Silber- und Bronzemedaille in eine eigene Variable schreiben. Auf herkömmlichen \(also ES5\) Weg funktionierte das bisher folgendermaßen:
+
+```javascript
+const athletes = [
+  'Usain Bolt',
+  'Andre De Grasse ',
+  'Christophe Lemaitre ',
+  'Adam Gemili',
+  'Churandy Martina',
+  'LaShawn Merritt',
+  'Alonso Edward',
+  'Ramil Guliyev',
+];
+
+const gold = athletes[0];
+const silver = athletes[1];
+const bronze = athletes[2];
+```
+
+Dank **Destructuring** können wir dies auf ein einzelnes Statement verkürzen:
+
+```javascript
+const [gold, silver, bronze] = athletes;
+```
+
+Die Werte der Array-Elemente `0`, `1` und `2` befinden sich dann der Reihe nach in den Variablen `gold`, `silver` und `bronze`, wie auch im ersten Beispiel, jedoch mit deutlich weniger Schreibarbeit!
+
+Dies funktioniert überall wo wir mit einem Array auf der rechten Seite \(also hinter dem `=` Zeichen\) einer Zuweisung arbeiten, also auch wenn wir diesen als `return`-Wert aus einer Funktion erhalten:
+
+```javascript
+const getAllAthletes = () => {
+  return [
+    'Usain Bolt',
+    'Andre De Grasse ',
+    'Christophe Lemaitre ',
+    'Adam Gemili',
+    'Churandy Martina',
+    'LaShawn Merritt',
+    'Alonso Edward',
+    'Ramil Guliyev',
+  ] 
+}
+
+const [gold, silver, bronze] = getAllAthletes();
+```
+
+Die Arrow Function hier gibt uns ein Array mit allen Athleten zurück, dementsprechend können wir hier direkt beim Aufruf bereits das Destructuring nutzen und müssen den `return`-Wert bspw. nicht erst eigens in einer temporären Variable speichern.
+
+Möchten wir auf diese Weise einzelne Elemente des Arrays auslassen, ist das buchstäblich durch Auslassen des entsprechenden Wertes möglich:
+
+```javascript
+const [, silber, bronze] = athletes;
+```
+
+Hier würden wir auf das Deklarieren einer `gold` Variable verzichten und nur die Gewinner der Silber- und Bronze-Medaille in entsprechenden Variablen speichern. 
+
+Doch nicht nur bei der offensichtlichen Variablenzuweisung mittels `let` oder `const` kann **Array Destructuring** verwendet werden. Auch bei weniger offensichtlichen Zuweisungen, wie bei der Übergabe von Funktionsargumenten in Form eines Arrays.
+
+```javascript
+const logWinners = (athletes) => {
+  const gold = athletes[0];
+  const silver = athletes[1];
+  const bronze = athletes[2];
+  console.log(
+    'Winners of Gold, Silver and Bronze are', 
+    gold, 
+    silver, 
+    bronze
+  );
+}
+```
+
+Das geht einfacher:
+
+```javascript
+const logWinners = ([gold, silver, bronze]) => {
+  console.log(
+    'Winners of Gold, Silver and Bronze are', 
+    gold, 
+    silver, 
+    bronze
+  );
+}
+```
+
+Hier reichen wir das Array in unsere `logWinners()` Funktion herein und statt für jeden Medaillengewinner eine Variable pro Zeile zu deklarieren, nutzen wir auch in diesem Fall ganz einfach wieder die Destructuring Methode von oben.
+
+#### Destructuring von Objekten
+
+Das Prinzip des **Destructurings** ist nicht allein auf Arrays beschränkt. Auch Objekte können auf diese Art Variablen zugeordnet werden, die standardmäßig mit dem Namen einer Eigenschaft übereinstimmen.
+
+Die Schreibweise ist dabei ähnlich zu der bei Arrays, mit dem Unterschied das wir die Werte nicht anhand ihrer Position im Objekt zuweisen sondern anhand ihres Eigenschafts-Namens. Außerdem setzen wir die Zuweisung in die für Objekte typischen geschweiften Klammern, statt in eckige Klammern.
+
+```javascript
+const user = {
+  firstName: 'Manuel',
+  lastName: 'Bieh',
+  job: 'JavaScript Developer',
+  image: 'manuel.jpg',
+};
+const { firstName } = user;
+```
+
+Die Variable `firstName` enthält nun den Wert aus `user.firstName`!
+
+Das Object Destructuring ist eins der wohl meist verwendeten Features, das man in den meisten React-Komponenten findet. Es erlaubt uns einzelne Props in Variablen zu schreiben und an entsprechenden Stellen im JSX auf unkomplizierte Weise zu verwenden.
+
+Nehmen wir an dieser Stelle einmal die folgende Stateless Functional Component als Beispiel:
+
+```javascript
+const UserPersona = (props) => {
+  return (
+    <div>
+      <img src={props.image} alt="User Image" />
+      {props.firstName} {props.lastName}<br />
+      <strong>{props.job}
+    </div>
+  );
+};
+```
+
+Die ständige Wiederholung von `props` vor jeder Eigenschaft erschwert die Lesbarkeit der Komponente unnötig. Hier können wir uns Object Destructuring zu Nutze machen um einmalig eine Variable für jede Eigenschaft unserer `props` zu deklarieren.
+
+```javascript
+const UserPersona = (props) => {
+  const { firstName, lastName, image, job } = props;
+  return (
+    <div>
+      <img src={image} alt="User Image" />
+      {firstName} {lastName}<br />
+      <strong>{job}
+    </div>
+  );
+};
+```
+
+Damit wirkt unsere Komponente schon deutlich aufgeräumter uns lesbarer. Doch es geht noch einfacher. Wie auch bei Arrays ist es auch möglich Objekte direkt bei der Übergabe als Funktionsargument zu destrukturieren. Statt des `props` Arguments nutzen wir dafür das **Destructuring Assignment** direkt:
+
+```javascript
+const UserPersona = ({ firstName, lastName, image, job }) => (
+  <div>
+    <img src={image} alt="User Image" />
+    {firstName} {lastName}<br />
+    <strong>{job}
+  </div>
+);
+```
+
+Als Bonus nutzen wir hier sogar die direkte Rückgabe aus der Funktion ohne geschweifte Klammern und explizites `return` Statement aus dem Kapitel über Arrow Functions, da wir ja nun mit unserem auf 5 Zeilen reduzierten **JSX** einen Ausdruck haben, den wir direkt aus der **Arrow Function** zurückgeben können.
+
+Während der Arbeit mit React trifft man ständig auf derartige Syntax in **SFCs**, auch bei **Class Components** findet man sehr häufig zu Beginn der `render()`-Methode einer Komponente ein ähnliches Destructuring Assignment in der Form:
+
+```javascript
+render() {
+  const { firstName, lastName, image, job } = this.props;
+  // weiterer Code
+}
+```
+
+Auch wenn das euch natürlich hinterher freigestellt ist ob ihr das so macht oder innerhalb der Funktion einfach weiterhin direkt auf `this.props.firstName` zugreift. Dieses Muster hat sich aber mittlerweile zu einer Art Best Practice entwickelt und wurde in den meisten Projekten so gehandhabt, da es den Code am Ende in den meisten Fällen lesbarer werden lässt und auch leichter verständlich ist.
 
