@@ -610,3 +610,18 @@ render() {
 
 Auch wenn das euch natürlich hinterher freigestellt ist ob ihr das so macht oder innerhalb der Funktion einfach weiterhin direkt auf `this.props.firstName` zugreift. Dieses Muster hat sich aber mittlerweile zu einer Art Best Practice entwickelt und wurde in den meisten Projekten so gehandhabt, da es den Code am Ende in den meisten Fällen lesbarer werden lässt und auch leichter verständlich ist.
 
+**Umbenennung von Eigenschaften beim Destructuring**
+
+Manchmal ist es notwendig Eigenschaften umzubenennen, entweder weil es bereits Variablen mit dem selben Namen gibt oder die Eigenschaften kein gültiger Variablenname wäre. All das ist denkbar und möglich. Und ES2015 bietet uns auch eine Lösung dafür.
+
+Um den Namen einer Variable umzubenennen muss der Eigenschaft lediglich der neue Namen getrennt durch einen Doppelpunkt `:` übergeben werden:
+
+```javascript
+const passenger = {
+  name: 'Manuel Bieh',
+  class: 'economy',
+}
+```
+
+Das obige passenger Objekt enthält die Eigenschaft class, die als Name für eine Eigenschaft gültig ist, als Name für eine Variable jedoch nicht. Ein direktes Destructuring wäre hier also nicht möglich und würde zu einem Fehler führen.
+
