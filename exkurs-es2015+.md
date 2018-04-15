@@ -12,7 +12,7 @@ Wenn du bereits Erfahrung mit ES2015 und den nachfolgenden Versionen hast kannst
 
 Wer mit React arbeitet nutzt in vermutlich 99% der Fälle auch Babel als Transpiler um sein JSX entsprechend in `createElement()`-Aufrufe zu transpilieren. Doch Babel transpiliert nicht nur JSX in ausführbares JavaScript, sondern hieß ursprünglich mal **6to5** und hat genau das gemacht: mit ES6-Syntax geschriebenes JavaScript in ES5 transpiliert, so dass neuere, zukünftige Features und Syntax-Erweiterungen auch in älteren Browsern ohne Unterstützung für „das neue“ JavaScript genutzt werden konnten.
 
-## Neue Variablen-Deklarationen mit let und const
+## Variablen-Deklarationen mit let und const
 
 Gab es bisher nur `var` um eine Variable zu deklarieren in JavaScript, kommen in ES2015 zwei neue Schlüsselwörter dazu mit denen Variablen deklariert werden können: `let` und `const`. Eine Variablendeklaration mit `var` wird dadurch in fast allen Fällen überflüssig, meist sind `let` oder `const` die sauberere Wahl. Doch wo ist der Unterschied? 
 
@@ -229,7 +229,7 @@ Und schon haben wir im **Event Listener** Zugriff auf `this` des überliegenden 
 
 Keine `var self = this` Akrobatik mehr und auch kein `.bind(this)`. Wir können innerhalb des Event Listeners so arbeiten als befänden wir uns noch immer im `TimeButton` Scope! Das ist später insbesondere bei der Arbeit mit umfangreichen React-Komponenten mit vielen eigenen Class Properties und Methods hilfreich, da es Verwirrungen vorbeugt und nicht immer wieder einen neuen Scope erzeugt.
 
-## ES2015 Classes
+## Classes
 
 Mit ES2015 fanden auch Klassen Einzug in JavaScript. Klassen kennt man eher aus objektorientierten Sprachen wie Java, in JavaScript gab es sie so explizit bisher allerdings noch nicht. Zwar war es auch schon vorher möglich durch die Verwendung von Funktionsinstanzen objektorientiert zu arbeiten und durch die `prototype`-Eigenschaft einer Funktion eigene Methoden und Eigenschaften zu definieren, dies war verglichen mit echten objektorientierten Sprachen jedoch sehr mühsam.
 
@@ -253,6 +253,8 @@ const firstCustomer = new Customer('Max', 'Mustermann');
 console.log(firstCustomer.getFullName());
 ```
 
+ **Ausgabe:**
+
 {% hint style="info" %}
 Max Mustermann
 {% endhint %}
@@ -269,7 +271,7 @@ Oder eben:
 class MyComponent extends React.Component {}
 ```
 
-Auch eine `super()`-Funktion kennt die ES2015 Klasse, um damit den Constructor ihrer Parent Class aufzurufen. Im Falle von React ist dies immer notwendig wenn ich in meiner eigenen Klasse eine constructor-Methode definiere. Diese muss dann dann `super()` aufrufen und ihre `props` an den Constructor der `React.Component` Klasse weiterzugeben:
+Auch eine `super()`-Funktion kennt die ES2015 Klasse, um damit den **Constructor** ihrer **Parent Class** aufzurufen. Im Falle von React ist dies immer notwendig wenn ich in meiner eigenen Klasse eine `constructor`-Methode definiere. Diese muss dann dann `super()` aufrufen und ihre `props` an den Constructor der `React.Component` Klasse weiterzugeben:
 
 ```javascript
 class MyComponent extends React.Component {
@@ -279,7 +281,78 @@ class MyComponent extends React.Component {
 }
 ```
 
-Würdet ihr das nicht tun, wäre `this.props` innerhalb eurer Komponente `undefined` und ihr könntet nicht auf die Props eurer Komponente zugreifen. Grundsätzlich sollte die Verwendung aber in den allermeisten Fällen nicht nötig sein, denn React stellt eigene Methoden bereit, die der Verwendung des Constructors vorzuziehen sind.
+Tätet ihr das nicht, wäre `this.props` innerhalb eurer Komponente `undefined` und ihr könntet nicht auf die Props eurer Komponente zugreifen. Grundsätzlich sollte die Verwendung eines Constructors aber in den allermeisten Fällen nicht nötig sein, denn React stellt eigene sog. **Lifecycle-Methoden** bereit, die der Verwendung des Constructors vorzuziehen sind.
+
+## Rest und Spread Operators
+
+Eine weitere deutliche Vereinfachung ist die Einführung der der sog. Rest und Spread Operators für Objekte und Arrays. Streng genommen handelt es sich dabei bei der Verwendung in Kombination mit Objekten noch gar nicht um ES2015 Features, da diese sich noch in der Diskussion befinden und noch gar nicht endgültig in die ECMAScript Spezifikation aufgenommen wurden. Dies ändert sich erst mit ES2018. Eingeführt wurden Rest und Spread in ES2015 erstmals für Arrays. Durch die Verwendung von Babel ist die Nutzung auch mit Objekten aber heute bereits möglich und für gewöhnlich wird davon in React basierten Projekten auch rege Gebrauch gemacht.
+
+Aber was ist das jetzt überhaupt? Fangen wir mit dem Spread Operator an.
+
+### Spread Operator
+
+Der Spread Operator sorgt dafür Werte sozusagen „auszupacken“. Wollte man in ES5 mehrere Argumente aus einem Array an eine Funktion übergeben, geschah das bisher meist über `Function.prototype.apply()`:
+
+```javascript
+function sumAll(number1, number2, number3) {
+  return number1, number2, number3
+}
+var myArray = [1, 2, 3];
+sumAll.apply(null, myArray);
+```
+
+**Ausgabe:**
+
+{% hint style="info" %}
+6
+{% endhint %}
+
+Mit dem Spread Operator, der aus drei Punkten \(...\) besteht, kann ich diese Argumente nun auspacken oder eben „spreaden“:
+
+```javascript
+function sumAll(number1, number2, number3) {
+  return number1, number2, number3
+}
+var myArray = [1, 2, 3];
+sumAll(...myArray);
+```
+
+**Ausgabe:**
+
+{% hint style="info" %}
+6
+{% endhint %}
+
+Ich muss also nicht mehr den Umweg über `apply()` gehen. Aber nicht nur bei Funktionsargumenten ist das hilfreich. Ich kann ihn auch nutzen um bspw. auf einfache Art und Weise zwei Arrays zu einem einzigen zu kombinieren:
+
+```javascript
+const greenFruits = ['kiwi', 'apple', 'pear'];
+const redFruits = ['strawberry', 'cherry', 'raspberry'];
+const allFruits = [...greenFruits, ...redFruits];
+```
+
+**Ergebnis:**
+
+{% hint style="info" %}
+`['kiwi', 'apple', 'pear', 'strawberry', 'cherry', 'raspberry']`
+{% endhint %}
+
+Dabei wird ein neues Array erstellt, welches alle Werte sowohl aus dem `greenFruits` als auch aus dem `redFruits` Array enthält. Doch nicht nur das: dabei wird auch ein gänzlich neues Array erstellt und nicht bloß eine Referenz der beiden alten. Dies wird im weiteren Verlauf wenn wir an die **readonly**-Anforderung unserer Props noch sehr nützlich sein. Und so kann man den Spread Operator auch verwenden um eine einfache Kopie eines Arrays zu erstellen:
+
+```javascript
+const users = ['Manuel', 'Chris', 'Ben'];
+const selectedUsers = [...users];
+```
+
+`selectedUsers` ist in diesem Fall eine Kopie unseres `users` Arrays mit all seinen Werten. Verändern wir nun das Users Array, hat dies auf unser `selectedUsers` Array keinerlei Auswirkungen.
+
+Bei Objekten verhält sich der Spread Operator sehr ähnlich. Hier werden statt der einzelnen Werte alle Eigenschaften eines Objekts die „enumerable“ \(aufzählbar\) sind, also ganz grob gesagt bei der Verwendung in einer `for(… in …)` Schleife angezeigt werden würden.
+
+Hier eignet sich der Spread Operator hervorragend um neue Objekte zu erstellen:
+
+```text
+const teamSettings = { language: 'en-US', 
+```
 
 
 
