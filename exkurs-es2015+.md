@@ -614,8 +614,6 @@ Auch wenn das euch natürlich hinterher freigestellt ist ob ihr das so macht ode
 
 Manchmal ist es notwendig Eigenschaften umzubenennen, entweder weil es bereits Variablen mit dem selben Namen gibt oder die Eigenschaften kein gültiger Variablenname wäre. All das ist denkbar und möglich. Und ES2015 bietet uns auch eine Lösung dafür.
 
-Um den Namen einer Variable umzubenennen muss der Eigenschaft lediglich der neue Namen getrennt durch einen Doppelpunkt `:` übergeben werden:
-
 ```javascript
 const passenger = {
   name: 'Manuel Bieh',
@@ -623,5 +621,42 @@ const passenger = {
 }
 ```
 
-Das obige passenger Objekt enthält die Eigenschaft class, die als Name für eine Eigenschaft gültig ist, als Name für eine Variable jedoch nicht. Ein direktes Destructuring wäre hier also nicht möglich und würde zu einem Fehler führen.
+Das obige `passenger` Objekt enthält die Eigenschaft class, die als Name für eine Eigenschaft gültig ist, als Name für eine Variable jedoch nicht. Ein direktes Destructuring wäre hier also nicht möglich und würde zu einem Fehler führen:
+
+```javascript
+const { name, class } = passenger;
+```
+
+{% hint style="danger" %}
+ Uncaught SyntaxError: Unexpected token }
+{% endhint %}
+
+Um hier den Namen der Variable umzubenennen muss der Eigenschaft der neue Namen getrennt durch einen Doppelpunkt `:` übergeben werden. Ein korrektes **Destructuring Assignment** wäre also in diesem Fall in etwa folgendes:
+
+```javascript
+const { name, class: ticketClass } = passenger;
+```
+
+Hier schreiben wir den Wert der `class` Eigenschaft in eine Variable `ticketClass`, was anders als `class` ein gültiger Name für eine Variable ist. Der Name des Passagiers landet dabei ganz gewöhnlich in einer Variable mit dem Namen `name`.
+
+**Standardwerte beim Destructuring vergeben**
+
+Auch die Vergabe von Standardwerten beim **Destructuring** ist möglich. Ist im Objekt welches destrukturiert wird eine Eigenschaft nicht definiert, würde stattdessen der Default verwendet werden. Ähnlich wie bei der Umbenennung wird dabei die jeweilige Eigenschaft wie gehabt vorangestellt, dahinter jedoch gefolgt von einem Gleich-Zeichen und dem entsprechenden Standardwert.
+
+```javascript
+const { name = 'Unknown passenger' } = passenger;
+```
+
+Der Wert von name wäre nun `Unknown passenger` wenn im `passenger` Objekt keine Eigenschaft `name` existiert oder deren Wert `undefined` ist. Existiert diese hingegen, ist aber leer \(also bspw. ein leerer String oder `null`\) wird der Standardwert hingegen nicht an dessen Stelle verwendet!
+
+**Kombination von Umbenennung und Standardwerten**
+
+Jetzt wird es verrückt, denn auch das ist möglich. Die Umbenennung von Eigenschaften in Variablennamen bei gleichzeitiger Verwendung von Standardwerten. Die Syntax dafür ist allerdings etwas, wo man bei der ersten Begegnung sicherlich einen Moment länger hinschauen muss. Wir bleiben wieder bei unserem `passenger` Objekt aus den Beispielen zuvor. Anforderung ist nun die Zuweisung der `name` Eigenschaft zu einer Variable mit dem Namen `passengerName`, die den Wert `Unknown Passenger` tragen soll, wenn kein Name vorhanden ist. Außerdem möchten wir weiterhin `class` in `ticketClass` umbenennen und den Passagier gleichzeitig in `Economy` einordnen, sollte es im entsprechenden Objekt keine `class` Eigenschaft geben.
+
+```text
+const {
+  name: passengerName = 'Unknown passenger',
+  class: ticketClass = 'economy',
+} = passenger;
+```
 
