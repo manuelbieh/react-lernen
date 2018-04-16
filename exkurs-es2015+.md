@@ -684,11 +684,19 @@ const {
 
 Mit dem angehängten `|| {}` sagen wir: ist das `passenger` Objekt **falsy**, nutze stattdessen ein leeres Objekt. Die vermutlich „sauberere“ Variante wäre es vorab zu prüfen ob `passenger` auch wirklich ein Objekt ist und das Destructuring nur dann auszuführen. Die Variante mit dem **Logical OR** Fallback ist allerdings schön kurz und dürfte in vielen Fällen ausreichen.
 
-###  Rest Operator
+Destructuring kann übrigens auch problemlos mit dem Spread Operator zusammen verwendet werden:
 
-Der Rest Operator ist dafür da, um sich um die verbliebenen Elemente aus einem **Destructuring** oder in Funktionsargumenten zu kümmern. Daher der Name: der Operator kümmert sich um den „Rest“.
+```javascript
+const globalSettings = { language: 'en-US' };
+const userSettings = { timezone: 'Berlin/Germany' };
+const { language, timezone } = { ...globalSettings, ...userSettings };
+```
 
-Wie schon der **Spread Operator** wird auch der **Rest Operator** mit drei Punkten … eingeleitet, jedoch nicht auf der **rechten** Seite einer Zuweisung, sondern auf der **linken**.
+Hier wird zuerst der **Spread Operator** aufgelöst, also ein Objekt mit allen Eigenschaften aus den beiden Objekten `globalSettings` und `userSettings` erzeugt und anschließend per **Destructuring Assignment** entsprechenden Variablen zugewiesen.
+
+### Rest Operator
+
+Der Rest Operator dient dazu, um sich um die verbliebenen Elemente aus einem **Destructuring** und in **Funktionsargumenten** zu kümmern. Daher der Name: der Operator kümmert sich um den verbliebenen **„Rest“**. Wie auch schon der **Spread Operator** wird auch der **Rest Operator** mit drei Punkten `…` eingeleitet, jedoch nicht auf der **rechten** Seite einer Zuweisung, sondern auf der **linken**. Anders als beim Spread Operator kann es pro Ausdruck jedoch nur jeweils **einen** Rest Operator geben!
 
 Schauen wir uns zuerst einmal den Rest Operator bei Funktionsargumenten an. Sagen wir, wir möchten nun eine Funktion schreiben, die beliebig viele Argumente empfängt. Hier möchten wir natürlich auch auf all diese Argumente zugreifen können, egal ob das 2, 5 oder 25 sind. In ES5 gab es das Keyword `arguments`mittels dessen auf ein Array aller übergebenen Funktionsargumente zugegriffen werden konnte innerhalb der Funktion:
 
@@ -817,4 +825,45 @@ console.log(other);
 {% endhint %}
 
 All die Werte, die dabei nicht explizit in eine Variable geschrieben wurden während eines **Destructuring Assignments** können dann in der als **Rest** deklarierten Variable abgerufen werden.
+
+## Template Strings
+
+**Template Strings** in ES2015 sind eine „dritte Schreibweise“ für Strings in JavaScript. Bisher konnten Strings entweder in einfache Anführungszeichen \(`'Beispiel'`\) oder in doppelte Anführungszeichen \(`"Beispiel"`\) gesetzt werden. Nun kommt auch die Möglichkeit hinzu, diese in Backticks \(```Beispiel```\) zu setzen.
+
+**Template Strings** können in zwei Varianten auftreten. Als gewöhnliche **Template Strings** die auch JavaScript Ausdrücke enthalten können wie auch als sog. **Tagged Template Strings**. Letztere sind für die Arbeit mit React normalerweise wenig bis gar nicht relevant, weshalb ich es hier an dieser Stelle bei einer bloßen Erwähnung belasse. Gewöhnliche **Template Strings** hingegen sind bei der Arbeit mit React mitunter sehr hilfreich und nützlich, weshalb ich auf diese hier eingehen möchte.
+
+Wollte man sie mit JavaScript-Ausdrücken oder Werten mischen, griff man in ES5 für gewöhnlich zu **String Concatenation:**
+
+```javascript
+var age = 7;
+var text = 'Meine Tochter ist ' + age + ' Jahre alt';
+```
+
+```javascript
+var firstName = 'Manuel';
+var lastName = 'Bieh';
+var fullName = firstName + ' ' + lastName;
+```
+
+Mit **Template Strings** wurde nun eine Variante von String eingeführt, die selbst wiederum **JavaScript-Ausdrücke** enthalten kann. Diese werden dazu innerhalb eines **Template Strings** in eine Zeichenkette in der Form `${ }` gesetzt. Um bei den obigen Beispielen zu bleiben:
+
+```javascript
+const age = 7;
+const text = `Meine Tochter ist ${age} Jahre alt`;
+```
+
+```javascript
+const firstName = 'Manuel';
+const lastName = 'Bieh';
+const fullName = `${firstName} ${lastName}`;
+```
+
+Dabei können innerhalb der geschweiften Klammern sämtliche JavaScript Ausdrücke verwendet werden. Also auch Funktionsaufrufe:
+
+```javascript
+console.log(`Das heutige Datum ist ${new Date().toISOString()}`);
+console.log(`${firstName.toUpperCase()} ${lastName.toUpperCase()}`);
+```
+
+
 
