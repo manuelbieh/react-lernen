@@ -647,7 +647,7 @@ Auch die Vergabe von Standardwerten beim **Destructuring** ist möglich. Ist im 
 const { name = 'Unknown passenger' } = passenger;
 ```
 
-Der Wert von name wäre nun `Unknown passenger` wenn im `passenger` Objekt keine Eigenschaft `name` existiert oder deren Wert `undefined` ist. Existiert diese hingegen, ist aber leer \(also bspw. ein leerer String oder `null`\) wird der Standardwert hingegen nicht an dessen Stelle verwendet!
+Der Wert von `name` wäre nun `Unknown passenger` wenn im `passenger` Objekt keine Eigenschaft `name` existiert oder deren Wert `undefined` ist. Existiert diese hingegen, ist aber leer \(also bspw. ein leerer String oder `null`\) wird der Standardwert **nicht** an dessen Stelle verwendet!
 
 **Kombination von Umbenennung und Standardwerten**
 
