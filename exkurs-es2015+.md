@@ -441,9 +441,9 @@ Object.assign({}, a, b, c);
 
 … und schon werden dem neu erstellten `{}` Objekt die Eigenschaften unserer Objekte `a`, `b` und `c` übertragen, die bestehenden Objekte `a`, `b` und `c` bleiben dabei unangetastet!
 
-### Destructuring / Destrukturierung
+### Destructuring Assignment / destrukturierende Zuweisung
 
-Bevor ich zum Rest Operator komme, der logisch sehr eng mit dem Spread Operator in Verbindung steht, möchte ich auf das **Destructuring** \(korrekt: **Destructuring Assignment**\) oder eben die **Destrukturierung** \(bzw. **destrukturierende Zuweisung**\) wie der schöne Begriff auf Deutsch heißt, eingehen. Ich werde hier wie so oft beim englischen Begriff bleiben, da ich den deutschen Begriff selbst in deutschsprachigen Texten selten gelesen habe bisher.
+Bevor ich zum **Rest Operator** komme, der logisch sehr eng mit dem **Spread Operator** in Verbindung steht und meist mit diesem in einem Atemzug genannt wird, möchte ich auf das **Destructuring Assignment** \(kurz: **Destructuring**\) oder eben die **destrukturierende Zuweisung** \(kurz: **Destrukturierung**\), wie der schöne Begriff auf Deutsch heißt, eingehen. Ich werde hier wie so oft beim englischen Begriff bleiben, da ich den deutschen Begriff selbst in deutschsprachigen Texten selten bisher gelesen habe.
 
 Mittels **Destructuring** ist es möglich einzelne Elemente aus Objekten oder Arrays zu extrahieren und Variablen zuzuweisen. Eine weitere **deutliche** Syntax-Erweiterung die uns ES2015 hier beschert hat. 
 
@@ -682,5 +682,9 @@ const {
 } = passenger || {};
 ```
 
-Mit dem angehängten `|| {}` sagen wir: ist das passenger Objekt **falsy**, nutze stattdessen ein leeres Objekt. Die „saubere“ Variante wäre es vorab zu prüfen ob `passenger` auch wirklich ein Objekt ist und das Destructuring nur dann auszuführen. Die Variante mit dem **Logical OR** Fallback ist allerdings schön kurz und dürfte in vielen Fällen ausreichen.
+Mit dem angehängten `|| {}` sagen wir: ist das `passenger` Objekt **falsy**, nutze stattdessen ein leeres Objekt. Die vermutlich „sauberere“ Variante wäre es vorab zu prüfen ob `passenger` auch wirklich ein Objekt ist und das Destructuring nur dann auszuführen. Die Variante mit dem **Logical OR** Fallback ist allerdings schön kurz und dürfte in vielen Fällen ausreichen.
+
+###  Rest Operator
+
+
 
