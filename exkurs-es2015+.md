@@ -653,10 +653,34 @@ Der Wert von name wäre nun `Unknown passenger` wenn im `passenger` Objekt keine
 
 Jetzt wird es verrückt, denn auch das ist möglich. Die Umbenennung von Eigenschaften in Variablennamen bei gleichzeitiger Verwendung von Standardwerten. Die Syntax dafür ist allerdings etwas, wo man bei der ersten Begegnung sicherlich einen Moment länger hinschauen muss. Wir bleiben wieder bei unserem `passenger` Objekt aus den Beispielen zuvor. Anforderung ist nun die Zuweisung der `name` Eigenschaft zu einer Variable mit dem Namen `passengerName`, die den Wert `Unknown Passenger` tragen soll, wenn kein Name vorhanden ist. Außerdem möchten wir weiterhin `class` in `ticketClass` umbenennen und den Passagier gleichzeitig in `Economy` einordnen, sollte es im entsprechenden Objekt keine `class` Eigenschaft geben.
 
-```text
+```javascript
 const {
   name: passengerName = 'Unknown passenger',
   class: ticketClass = 'economy',
 } = passenger;
 ```
+
+Hier besitzen die Variablen `passengerName` und `ticketClass` die werte `Unknown passenger` und `economy` wenn diese nicht im destrukturierten Objekt existieren. Doch Vorsicht: das Objekt selbst darf nicht null sein, andernfalls bekommen wir vom JavaScript Interpreter einen unschönen Fehler geworfen:
+
+```javascript
+const {
+  name: passengerName = 'Unknown passenger',
+  class: ticketClass = 'economy',
+} = null;
+```
+
+{% hint style="danger" %}
+Uncaught TypeError: Cannot destructure property \`name\` of 'undefined' or 'null'.
+{% endhint %}
+
+Hier gibt es einen unsauberen aber doch oft praktischen Trick um sicherzustellen, dass das Objekt selbst nicht `null` oder `undefined` ist. Dazu machen wir uns den **Logical OR Operator** zu nutze und verwenden ein leeres Objekt als Fallback, falls unser eigentliches Objekt eben `null` oder `undefined` ist:
+
+```javascript
+const {
+  name: passengerName = 'Unknown passenger',
+  class: ticketClass = 'economy',
+} = passenger || {};
+```
+
+Mit dem angehängten `|| {}` sagen wir: ist das passenger Objekt **falsy**, nutze stattdessen ein leeres Objekt. Die „saubere“ Variante wäre es vorab zu prüfen ob `passenger` auch wirklich ein Objekt ist und das Destructuring nur dann auszuführen. Die Variante mit dem **Logical OR** Fallback ist allerdings schön kurz und dürfte in vielen Fällen ausreichen.
 
