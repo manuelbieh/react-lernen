@@ -686,5 +686,135 @@ Mit dem angehängten `|| {}` sagen wir: ist das `passenger` Objekt **falsy**, nu
 
 ###  Rest Operator
 
+Der Rest Operator ist dafür da, um sich um die verbliebenen Elemente aus einem **Destructuring** oder in Funktionsargumenten zu kümmern. Daher der Name: der Operator kümmert sich um den „Rest“.
 
+Wie schon der **Spread Operator** wird auch der **Rest Operator** mit drei Punkten … eingeleitet, jedoch nicht auf der **rechten** Seite einer Zuweisung, sondern auf der **linken**.
+
+Schauen wir uns zuerst einmal den Rest Operator bei Funktionsargumenten an. Sagen wir, wir möchten nun eine Funktion schreiben, die beliebig viele Argumente empfängt. Hier möchten wir natürlich auch auf all diese Argumente zugreifen können, egal ob das 2, 5 oder 25 sind. In ES5 gab es das Keyword `arguments`mittels dessen auf ein Array aller übergebenen Funktionsargumente zugegriffen werden konnte innerhalb der Funktion:
+
+```javascript
+function Example() {
+  console.log(arguments);
+}
+Example(1, 2, 3, 4, 5);
+```
+
+**Ausgabe:**
+
+{% hint style="info" %}
+`Arguments(5) [1, 2, 3, 4, 5, callee: ƒ]`
+{% endhint %}
+
+**Arrow Functions** bieten diese Möglichkeit nicht mehr und werfen stattdessen einen Fehler:
+
+```javascript
+const Example = () => {
+  console.log(arguments);
+}
+Example(1, 2, 3, 4, 5);
+```
+
+**Ausgabe:**
+
+{% hint style="danger" %}
+Uncaught ReferenceError: arguments is not defined
+{% endhint %}
+
+Hier kommt nun erstmals der **Rest Operator** ins Spiel. Dieser schreibt uns sämtliche übergebene Funktionsargumente die wir nicht bereits in benannte Variablen geschrieben haben in eine weitere Variable mit einem beliebigen Namen:
+
+```javascript
+const Example = (...rest) => {
+  console.log(rest);
+}
+Example(1, 2, 3, 4, 5);
+```
+
+**Ausgabe:**
+
+{% hint style="info" %}
+`[1, 2, 3, 4, 5]`
+{% endhint %}
+
+Dies funktioniert nicht nur als einzelnes Funktionsargument sondern auch wenn wir vorher bereits benannte Parameter definiert haben. Hier kümmert sich der Rest Operator dann buchstäblich um den letzten verbliebenen **Rest:**
+
+```javascript
+const Example = (first, second, third, ...rest) => {
+  console.log('first:', first);
+  console.log('second:', second);
+  console.log('third:', third);
+  console.log('rest:', rest);
+}
+Example(1, 2, 3, 4, 5);
+```
+
+**Ausgabe:**
+
+{% hint style="info" %}
+`first: 1  
+second: 2  
+third: 3  
+rest: [4, 5]`
+{% endhint %}
+
+Der **Rest Operator** sammelt hier also die restlichen, verbliebenen Elemente aus einem **Destructuring** ein und speichert diese in einer Variable mit dem Namen, der hinter den drei Punkten angegeben wird. Dieser muss dabei nicht wie im obigen Beispiel `rest` heißen sondern kann jeden gültigen JavaScript-Variablennamen annehmen.
+
+Das funktioniert aber nicht nur bei Funktionen sondern ebenso bei **Array Destructuring**:
+
+```javascript
+const athletes = [
+  'Usain Bolt',
+  'Andre De Grasse',
+  'Christophe Lemaitre',
+  'Adam Gemili',
+  'Churandy Martina',
+  'LaShawn Merritt',
+  'Alonso Edward',
+  'Ramil Guliyev',
+];
+const [gold, silver, bronze, ...competitors] = athletes;
+console.log(gold);
+console.log(silver);
+console.log(bronze);
+console.log(competitors);
+```
+
+**Ausgabe:**
+
+{% hint style="info" %}
+`'Usain Bolt'  
+'Andre De Grasse'  
+'Christophe Lemaitre'`  
+`[  
+  'Adam Gemili',   
+  'Churandy Martina',   
+  'LaShawn Merritt',   
+  'Alonso Edward',   
+  'Ramil Guliyev'  
+]`
+{% endhint %}
+
+… wie auch beim **Object Destructuring:**
+
+```javascript
+const user = {
+  firstName: 'Manuel',
+  lastName: 'Bieh',
+  job: 'JavaScript Developer',
+  hair: 'Brown',
+}
+const { firstName, lastName, ...other } = user;
+console.log(firstName);
+console.log(lastName);
+console.log(other);
+```
+
+**Ausgabe:**
+
+{% hint style="info" %}
+`Manuel`  
+`Bieh`  
+`{ job: 'JavaScript Developer', hair: 'Brown' }`
+{% endhint %}
+
+All die Werte, die dabei nicht explizit in eine Variable geschrieben wurden während eines **Destructuring Assignments** können dann in der als **Rest** deklarierten Variable abgerufen werden.
 
