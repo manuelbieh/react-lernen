@@ -643,7 +643,7 @@ Hier schreiben wir den Wert der `class` Eigenschaft in eine Variable `ticketClas
 
 **Standardwerte beim Destructuring vergeben**
 
-Auch die Vergabe von Standardwerten beim **Destructuring** ist möglich. Ist im Objekt welches destrukturiert wird eine Eigenschaft nicht definiert, würde stattdessen der Default verwendet werden. Ähnlich wie bei der Umbenennung wird dabei die jeweilige Eigenschaft wie gehabt vorangestellt, dahinter jedoch gefolgt von einem Gleich-Zeichen und dem entsprechenden Standardwert.
+Auch die Vergabe von Standardwerten beim **Destructuring** ist möglich! Ist im Objekt welches destrukturiert wird eine Eigenschaft nicht definiert, wird stattdessen der Default verwendet. Ähnlich wie bei der Umbenennung wird dabei die jeweilige Eigenschaft wie gehabt vorangestellt, jedoch gefolgt von einem Gleich-Zeichen und dem entsprechenden Standardwert:
 
 ```javascript
 const { name = 'Unknown passenger' } = passenger;
