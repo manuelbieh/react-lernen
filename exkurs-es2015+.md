@@ -233,11 +233,11 @@ Keine `var self = this` Akrobatik mehr und auch kein `.bind(this)`. Wir können 
 
 ## Classes
 
-Mit ES2015 fanden auch Klassen Einzug in JavaScript. Klassen kennt man eher aus objektorientierten Sprachen wie Java, in JavaScript gab es sie so explizit bisher allerdings noch nicht. Zwar war es auch schon vorher möglich durch die Verwendung von Funktionsinstanzen objektorientiert zu arbeiten und durch die `prototype`-Eigenschaft einer Funktion eigene Methoden und Eigenschaften zu definieren, dies war verglichen mit echten objektorientierten Sprachen jedoch sehr mühsam.
+Mit ES2015 fanden auch **Klassen** Einzug in JavaScript. **Klassen** kennt man eher aus objektorientierten Sprachen wie Java, in JavaScript gab es sie so explizit bisher allerdings noch nicht. Zwar war es auch schon vorher möglich durch die Verwendung von Funktionsinstanzen objektorientiert zu arbeiten und durch die `prototype`-Eigenschaft einer Funktion eigene Methoden und Eigenschaften zu definieren, dies war verglichen mit echten objektorientierten Sprachen jedoch sehr mühsam und schreiblastig.
 
-Dies ändert sich mit ES2015, wo es nun erstmals auch Klassen gibt, die mittels `class` Keyword definiert werden. Das ist für uns insofern interessant, da React, obwohl es viele Prinzipien der funktionalen Programmierung \(**Functional Programming**\) verfolgt, gleichzeitig auch zum wesentlichen Teil auf ES2015 Klassen setzt bei der Erstellung von Komponenten, in diesem Fall speziell von **Class Components**.
+Dies ändert sich mit ES2015, wo es nun erstmals auch Klassen gibt, die mittels `class` Keyword definiert werden. Das ist für uns insofern interessant, da React, obwohl es viele Prinzipien der funktionalen Programmierung \(**Functional Programming**\) verfolgt, gleichzeitig auch in einem wesentlichen Punkt auf ES2015 Klassen setzt, nämlich bei der Erstellung von Komponenten, in diesem Fall speziell von **Class Components**. Auch vor der Einführung von ES2015 Klassen war es natürlich möglich Komponenten in React zu definieren, dazu gab es eine eigene `createClass()`-Methode. Diese ist aber mittlerweile nicht mehr Teil des React Cores und sollte möglichst auch nicht mehr verwendet werden.
 
-Eine Klasse besteht dabei aus einem Namen, kann \(optional\) einen **Constructor** haben der bei der Erstellung einer Klassen-Instanz aufgerufen wird und beliebig viele Klassen-Methoden besitzen.
+Eine Klasse besteht aus einem Namen, kann \(optional\) einen **Constructor** haben der bei der Erstellung einer Klassen-Instanz aufgerufen wird und beliebig viele Klassen-Methoden besitzen.
 
 ```javascript
 class Customer {
@@ -830,11 +830,13 @@ All die Werte, die dabei nicht explizit in eine Variable geschrieben wurden wäh
 
 ## Template Strings
 
-**Template Strings** in ES2015 sind eine „dritte Schreibweise“ für Strings in JavaScript. Bisher konnten Strings entweder in einfache Anführungszeichen \(`'Beispiel'`\) oder in doppelte Anführungszeichen \(`"Beispiel"`\) gesetzt werden. Nun kommt auch die Möglichkeit hinzu, diese in Backticks \(```Beispiel```\) zu setzen.
+**Template Strings** in ES2015 sind eine „dritte Schreibweise“ für Strings in JavaScript. Bisher konnten Strings entweder in einfache Anführungszeichen \(`'Beispiel'`\) oder in doppelte Anführungszeichen \(`"Beispiel"`\) gesetzt werden. Nun kommt auch die Möglichkeit hinzu, diese in Backticks \(```Beispiel```\) zu setzen. 
 
-**Template Strings** können in zwei Varianten auftreten. Als gewöhnliche **Template Strings** die auch JavaScript Ausdrücke enthalten können wie auch als sog. **Tagged Template Strings**. Letztere sind für die Arbeit mit React normalerweise wenig bis gar nicht relevant, weshalb ich es hier an dieser Stelle bei einer bloßen Erwähnung belasse. Gewöhnliche **Template Strings** hingegen sind bei der Arbeit mit React mitunter sehr hilfreich und nützlich, weshalb ich auf diese hier eingehen möchte.
+**Template Strings** können in zwei Varianten auftreten. Als gewöhnliche **Template Strings**, die JavaScript Ausdrücke enthalten können, sowie in erweiterter Form als sog. **Tagged Template Strings**.
 
-Wollte man sie mit JavaScript-Ausdrücken oder Werten mischen, griff man in ES5 für gewöhnlich zu **String Concatenation:**
+**Tagged Template Strings** sind eine deutlich mächtigere Form von **Template Strings**. Mit ihnen kann die Ausgabe von **Template Strings** mittels einer speziellen Funktion modifiziert werden. Das ist bei der gewöhnlichen Arbeit mit React erst einmal weniger wichtig. Später im Kapitel über **CSS in React** werde ich ihre Funktionsweise nochmal etwas genauer am Beispiel von **Styled Components** erklären. **Styled Components** sind eine Möglichkeit um Komponenten in React designen und basieren ganz grundlegend auf **Tagged Template Strings**. 
+
+Wollte man sie mit JavaScript-Ausdrücken oder Werten mischen, griff man in ES5 meist zu einfacher **String Concatenation:**
 
 ```javascript
 var age = 7;
@@ -866,6 +868,18 @@ Dabei können innerhalb der geschweiften Klammern sämtliche JavaScript Ausdrüc
 console.log(`Das heutige Datum ist ${new Date().toISOString()}`);
 console.log(`${firstName.toUpperCase()} ${lastName.toUpperCase()}`);
 ```
+
+## Fazit
+
+{% hint style="success" %}
+ES2015 und die nachfolgenden Versionen bieten eine Menge nützliche neue Funktionen die es bisher in JavaScript nicht gab. Viele davon sind bei der Arbeit mit React nahezu nicht wegzudenken. Zu den wichtigsten gehören die hier beschriebenen:
+
+– Variablendeklarationen mit `let` und `const`  
+– **Arrow Functions**, um Funktionen zu erstellen die kein eigenes `this` binden  
+– **Klassen**. Machen vieles einfacher und sind die Basis von **React Class Components**  
+– **Rest und Spread Operatoren**, die das Lesen und Schreiben von Daten in Arrays und Objekten deutlich vereinfachen  
+– **Template Strings**, um die Arbeit mit JavaScript Ausdrücken in Strings einfacher zu machen
+{% endhint %}
 
 
 
