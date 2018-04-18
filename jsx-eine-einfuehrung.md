@@ -38,7 +38,7 @@ Alle weiteren Argumente stellen die Kind-Elemente \(_„children“_\) des Eleme
 
 Wem das jetzt zu kompliziert klingt den kann ich beruhigen: das geht in der Praxis hinterher wie von selbst von der Hand. Fast so, als würde man HTML-Markup schreiben. Dennoch halte ich es für wichtig die Hintergründe zumindest einmal gelesen zu haben um spätere Beispiele besser nachvollziehen zu können.
 
-## Exkurs: Ausdrücke in JavaScript
+## Ausdrücke in JavaScript
 
 Was bedeutet dies nun für unsere JavaScript-Ausdrücke, auf die wir ja nun auch in JSX zurückgreifen können? 
 
