@@ -42,19 +42,19 @@ Wem das jetzt zu kompliziert klingt den kann ich beruhigen: das geht in der Prax
 
 Was bedeutet dies nun für unsere JavaScript-Ausdrücke, auf die wir ja nun auch in JSX zurückgreifen können? 
 
-Zuerst einmal ist ein Ausdruck in JavaScript, kurz gesagt, ein Stück Code, vergleichbar mit einem mathematischen Term, der am Ende einen „Wert“ erzeugt bzw ein „Ergebnis“ zur Folge hat. Vereinfacht gesagt: alles was man bei der Variablenzuweisung auf die rechte Seite des Gleich-Zeichens \(=\) schreiben kann.
+Zuerst einmal ist ein Ausdruck in JavaScript, kurz gesagt, ein Stück Code, der am Ende einen „Wert“ erzeugt bzw ein „Ergebnis“ zur Folge hat. Vereinfacht gesagt: alles was man bei der Variablenzuweisung auf die **rechte** Seite des Gleich-Zeichens \(=\) schreiben kann.
 
 ```javascript
 1 + 5
 ```
 
-… ist ein solcher Ausdruck, dessen Wert 6 beträgt. 
+… ist ein solcher Ausdruck, dessen Wert `6` beträgt. 
 
 ```javascript
 'Hal'+'lo'
 ```
 
-… ist ein anderer Ausdruck der die zwei Strings `Hal` und `lo` per **String-Concatenation** zu einem Wert `Hallo` zusammenfügt. 
+… ist ein anderer Ausdruck der die zwei Strings `Hal` und `lo` per **String Concatenation** zu einem Wert `Hallo` zusammenfügt. 
 
 Stattdessen könnten wir aber auch einfach gleich schreiben:
 
@@ -69,7 +69,7 @@ null
 
 … da **JavaScript-Datentypen** allesamt auch als Ausdruck verwendet werden können.
 
-Die ES2015 Template-Literal Syntax, die Backticks \` benutzt, ist ebenfalls ein Ausdruck, klar, sind sie doch letztlich nichts anderes als ein String:
+Die ES2015 **Template String Syntax**, die Backticks \` benutzt, ist ebenfalls ein Ausdruck. Klar, sind sie doch letztlich nichts anderes als ein String:
 
 ```javascript
 `Hallo ${name}`
@@ -89,7 +89,7 @@ const isVisible = if (active && visibility === 'visible') { … }
 
 Das würde mir jeder JavaScript-Interpreter wegen ungültiger Syntax um die Ohren hauen.
 
-Lasse ich das `if` hier hingegen allerdings weg habe ich einen **Logical AND Operator**, der wiederum ein Ausdruck ist und einen Wert zum Ergebnis hat:
+Lasse ich das `if` hier hingegen allerdings weg habe ich einen **Logical AND Operator**, der wiederum ein Ausdruck ist und einen Wert zum Ergebnis hat \(in diesem Fall `true` oder `false`\):
 
 ```javascript
 const isVisible = active && visibility === 'visible'
@@ -98,7 +98,7 @@ const isVisible = active && visibility === 'visible'
 Ebenso ist der Ternary-Operator \( ? : \) ein Ausdruck:
 
 ```javascript
-(Bedingung) ? wahr : unwahr
+Bedingung ? wahr : unwahr
 ```
 
 Ausdrücke sind aber nicht auf boolsche Werte, Nummern, Strings beschränkt sondern können auch Objekte, Arrays, Funktionsaufrufe und sogar Arrow-Functions sein, die ebenfalls neu in ES2015 eingeführt werden und uns hier nicht das letzte mal begegnet sein werden. 

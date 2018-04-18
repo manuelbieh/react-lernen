@@ -872,14 +872,12 @@ console.log(`${firstName.toUpperCase()} ${lastName.toUpperCase()}`);
 ## Fazit
 
 {% hint style="success" %}
-ES2015 und die nachfolgenden Versionen bieten eine Menge nützliche neue Funktionen die es bisher in JavaScript nicht gab. Viele davon sind bei der Arbeit mit React nahezu nicht wegzudenken. Zu den wichtigsten gehören die hier beschriebenen:
+ES2015 und die nachfolgenden Versionen bieten eine Menge nützliche neue Funktionen die es bisher in JavaScript nicht gab. Viele davon sind bei der Arbeit mit React nahezu nicht wegzudenken. Zu den wichtigsten Neuerungen gehören die hier beschriebenen:
 
-– Variablendeklarationen mit `let` und `const`  
-– **Arrow Functions**, um Funktionen zu erstellen die kein eigenes `this` binden  
-– **Klassen**. Machen vieles einfacher und sind die Basis von **React Class Components**  
-– **Rest und Spread Operatoren**, die das Lesen und Schreiben von Daten in Arrays und Objekten deutlich vereinfachen  
-– **Template Strings**, um die Arbeit mit JavaScript Ausdrücken in Strings einfacher zu machen
+* Variablendeklarationen mit `let` und `const`
+* **Arrow Functions**, um Funktionen zu erstellen die kein eigenes `this` binden
+* **Klassen**. Machen vieles einfacher und sind die Basis von **React Class Components**
+* Die **Rest und Spread Operatoren**, die das Lesen und Schreiben von Daten in Arrays und Objekten deutlich vereinfachen
+*  **Template Strings**, um die Arbeit mit JavaScript Ausdrücken in Strings einfacher zu machen
 {% endhint %}
-
-
 
