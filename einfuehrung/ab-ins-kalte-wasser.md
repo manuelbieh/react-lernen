@@ -72,9 +72,9 @@ Im Falle eines Arrays darf dieser Strings, Numbers, React-Elemente oder ebenfall
 
 Auch wenn man in der Gestaltung seiner JavaScript-Klassen natürlich vollkommen frei ist und dies daher nicht zwingend notwendig ist, so wird die `render()`-Methode der Übersicht halber in der Regel meist als letzte Methode einer Komponente definiert. So wird es z.B. in den Code-Guidelines von AirBnB, dessen Entwickler in der React-Szene sehr aktiv sind, aber auch von vielen anderen bekannten Entwicklern vorgegeben oder zumindest empfohlen. Aus eigener Erfahrung kann ich sagen, dass es die tägliche Arbeit mit React deutlich erleichtert sich an diese Empfehlung zu halten**.**
 
-![Fehlermeldungen bei fehlender render\(\)-Methode](.gitbook/assets/react-no-render-error.png)
+![Fehlermeldungen bei fehlender render\(\)-Methode](../.gitbook/assets/react-no-render-error.png)
 
-![Fehlermeldung bei fehlerhafter render\(\)-Methode](.gitbook/assets/invalid-react-element.png)
+![Fehlermeldung bei fehlerhafter render\(\)-Methode](../.gitbook/assets/invalid-react-element.png)
 
 > `React.createElement()`
 
