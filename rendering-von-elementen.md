@@ -76,6 +76,8 @@ setInterval(changeTime, 1000);
 Der Vorteil beim deklarativen Vorgehen ist, dass wir nur noch Zustände beschreiben und sagen wie etwas angezeigt werden soll und nicht selber jeden Schritt festlegen wie wir diesen Zielzustand erreichen wollen. Das macht insbesondere bei komplexeren Anwendungen viele Dinge einfacher, übersichtlicher und ist dadurch zugleich deutlich weniger fehleranfälliger.
 
 {% hint style="info" %}
-In der Praxis ist es eher üblich, dass `ReactDOM.render()` nur ein einziges Mal, meist beim Öffnen einer Seite aufgerufen wird. Der wiederholte Aufruf der `render()`-Methode diente hier nur zur Veranschaulichung wie ReactDOM und React Elemente zusammenhängen. Das Re-Rendering übernehmen meist stateful Components \(also Komponenten, die einen eigenen Zustand speichern\). Mit Komponenten geht es im nächsten Kapitel weiter!
+In der Praxis ist es eher üblich, dass `ReactDOM.render()` nur ein einziges Mal, meist beim Öffnen einer Seite aufgerufen wird. Der wiederholte Aufruf der `render()`-Methode dient hier nur zur Veranschaulichung wie **ReactDOM** und React **Elemente** zusammenspielen. 
+
+Das Re-Rendering übernehmen meist **stateful Components** \(also Komponenten, die einen eigenen Zustand speichern\). Mit Komponenten geht es im nächsten Kapitel weiter!
 {% endhint %}
 

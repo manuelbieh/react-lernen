@@ -2,9 +2,9 @@
 
 ## Die zwei Erscheinungsformen von React Components
 
-Eine erste einfache **HelloWorld**-Komponente haben wir schon beim [Sprung ins kalte Wasser](ab-ins-kalte-wasser.md) implementiert. Jedoch war dies natürlich eine sehr simple Komponente, die nicht gerade sehr praxisnah war und auch längst nicht alles beinhaltet hat was uns React bietet und diente lediglich zur ersten Anschauung dienen sollte, um die grundsätzliche Funktionsweise von von React-Komponenten kennenzulernen.
+Eine erste einfache **HelloWorld**-Komponente haben wir schon beim [Sprung ins kalte Wasser](ab-ins-kalte-wasser.md) implementiert. Jedoch war dies natürlich eine sehr simple Komponente, die nicht gerade sehr praxisnah war und auch längst nicht alles beinhaltet hat was uns React bietet und lediglich zur ersten Veranschaulichung dienen sollte, um die grundsätzliche Funktionsweise von von **React** und **React-Komponenten** kennenzulernen.
 
-Das Prinzip von Komponenten ist einfach erklärt: eine Komponente erlaubt es komplexe User Interfaces in einzelne kleine Stücke zu unterteilen. Diese sind im Idealfall wiederverwendbar, isoliert und in sich geschlossen. Sie verarbeiten beliebigen Input von außen in Form von Props \(engl. für „Properties“, also Eigenschaften\) und beschreiben letztendlich anhand ihrer `render()`-Funktion was auf dem Bildschirm erscheint.
+Das Prinzip von **Komponenten** ist einfach erklärt: eine **Komponente** erlaubt es komplexe User Interfaces in einzelne kleine Stücke zu unterteilen. Diese sind im Idealfall wiederverwendbar, isoliert und in sich geschlossen. Sie verarbeiten beliebigen Input von außen in Form von sogenannter **Props** \(engl. für „Properties“, also Eigenschaften\) und beschreiben letztendlich anhand ihrer `render()`-Funktion was auf dem Bildschirm erscheint.
 
 Komponenten können grob in zwei verschiedenen Varianten auftreten: rein funktionale Komponenten \(engl. **Functional Component**\), auch **Stateless Functional Component** \(_SFC_\) genannt, sowie **Class Components**, die eine gewöhnliche standard ES2015-Klasse repräsentieren.
 
@@ -18,11 +18,11 @@ function Hello(props) {
 }
 ```
 
-Diese Funktion erfüllt alle Kriterien einer gültigen React-Komponente: sie hat als `return`-Wert ein explizites `null` \(`undefined` ist dagegen **nicht** gültig!\) oder ein gültiges `React.Element` \(hier in Form von JSX\) und sie empfängt ein `props`-Objekt als erstes und einziges Funktionsargument, wobei sogar dieses optional ist und ebenfalls `null` sein kann.
+Diese Funktion erfüllt alle Kriterien einer gültigen **React-Komponente**: sie hat als `return`-Wert ein explizites `null` \(`undefined` ist dagegen **nicht** gültig!\) oder ein gültiges `React.Element` \(hier in Form von **JSX**\) und sie empfängt ein `props`-Objekt als erstes und einziges Funktionsargument, wobei sogar dieses optional ist und ebenfalls `null` sein kann.
 
-### Class Components
+###  Class Components / Stateful Components
 
-Die zweite Möglichkeit wie eine React-Komponente erstellt werden kann habe ich im Eingangsbeispiel schon kurz gezeigt: Class Components. Diese bestehen aus einer ES2015-Klasse, die von der `React.Component` oder `React.PureComponent`\(dazu später mehr\) Klasse ableitet und hat mindestens eine Methode mit dem Namen `render()`:
+Die zweite Möglichkeit wie eine **React-Komponente** erstellt werden kann habe ich im Eingangsbeispiel schon kurz gezeigt: **Class Components**. Diese bestehen aus einer ES2015-Klasse, die von der `React.Component` oder `React.PureComponent`\(dazu später mehr\) Klasse ableitet und hat mindestens eine Methode mit dem Namen `render()`:
 
 ```jsx
 class Hello extends React.Component {
@@ -32,7 +32,7 @@ class Hello extends React.Component {
 }
 ```
 
-Wichtiger Unterschied hier: während eine funktionale Komponente die Props einer Komponente als Funktionsargumente übergeben bekommt, bekommt die `render()`-Methode einer Klassen-Komponente selbst keinerlei Argumente übergeben, sondern es wird allein über die Instanz-Eigenschaft `this.props` auf die Props zugegriffen!
+Wichtiger Unterschied hier: während eine **funktionale Komponente** ihre **Props** einer **Komponente** als Funktionsargumente übergeben bekommt, bekommt die `render()`-Methode einer **Klassen-Komponente** selbst keinerlei Argumente übergeben, sondern es wird allein über die Instanz-Eigenschaft `this.props` auf die **Props** zugegriffen!
 
 Die beiden obigen Komponenten resultieren hier in einer komplett identischen Ausgabe!
 
@@ -42,11 +42,15 @@ Ein Kriterium das beide Arten von Komponenten gemeinsam haben ist, dass der `dis
 Beginnt der Name einer Komponente mit einem Kleinbuchstaben, behandelt React diese stattdessen als reines DOM-Element. `section` würde React also als DOM-Element interpretieren, während eine eigene Komponente durchaus den Namen `Section` haben kann und wegen ihres Großbuchstabens am Anfang von React korrekt vom `section` DOM-Element unterschieden werden würde.
 {% endhint %}
 
+Ein weiterer wichtiger Unterschied zu **funktionalen Komponenten** ist, dass **Class Components** einen eigenen **State** \(dt.: Zustand\) verwalten können, also **stateful** sind, während **funktionale Komponenten** lediglich mit statischen Props arbeiten \(daher **Stateless Functional Component**\).
+
+Wie wir in **Class Components** mit dem **State** arbeiten, diesen modifizieren und uns zu eigen machen ist sehr komplex, weswegen dem Thema ein eigenes Kapitel gewidmet ist. Dieses folgt direkt im Anschluss an dieses hier und ich würde empfehlen erst dieses Kapitel zu beenden um die Funktionsweise von Klassen zu verstehen, bevor wir hier tiefer einsteigen.
+
 ## Component Composition – mehrere Komponenten in einer
 
-Bisher haben unsere Beispiel-Komponenten jeweils nur DOM-Elemente ausgegeben. React-Komponenten können aber auch andere React-Komponenten beinhalten. Wichtig hierbei ist nur, dass die Komponente sich im selben Scope befindet, also entweder direkt im gleichen Scope definiert wurde oder bei der Verwendung von CommonJS- oder ES-Modules ins aktuelle File importiert wurden mittels `require()` oder `import`. 
+Bisher haben unsere Beispiel-Komponenten jeweils nur DOM-Elemente ausgegeben. **React-Komponenten** können aber auch andere React-Komponenten beinhalten. Wichtig hierbei ist nur, dass die Komponente sich im selben Scope befindet, also entweder direkt im gleichen Scope definiert wurde oder bei der Verwendung von CommonJS- oder ES-Modules ins aktuelle File importiert wurden mittels `require()` oder `import`. 
 
-Ein Beispiel:
+**Ein Beispiel:**
 
 ```jsx
 function Hello(props) {
@@ -204,11 +208,11 @@ Modifiziert eine Funktion ihren Input nicht und hat auch keine Abhängigkeit nac
 
 Mit anderen Worten: egal welche Variablen außerhalb der Funktion ihren Wert ändern, egal wie oft andere Funktionen anderswo aufgerufen werden: bekommt eine Pure Function die gleichen Parameter wie zuvor, gibt sie mir auch das gleiche Ergebnis wie zuvor zurück. Immer und ausnahmslos.
 
-Warum ist das wichtig? Nun, React verfolgt bei seinen Komponenten das Prinzip von Pure Functions. Erhält eine Komponente die gleichen Props von außen hineingereicht, ist der initiale Output auch immer identisch.
+Warum ist das wichtig? Nun, React verfolgt bei seinen Komponenten das Prinzip von **Pure Functions**. Erhält eine Komponente die gleichen Props von außen hineingereicht, ist der initiale Output auch immer identisch.
 
 ### Pure Functions im Detail
 
-Da das Prinzip von Pure Functions ein grundlegendes ist bei der Arbeit mit React möchte ich diese Anhand einiger Beispiele etwas näher beleuchten. Hier geht es überwiegend um Theorie, die sich sicherlich komplizierter anhört als das später bei der Arbeit mit React der Fall sein wird. Dennoch möchte ich diese zum besseren Verständnis nicht unerwähnt lassen.
+Da das Prinzip von **Pure Functions** ein grundlegendes ist bei der Arbeit mit React möchte ich diese Anhand einiger Beispiele etwas näher beleuchten. Hier geht es überwiegend um Theorie, die sich sicherlich komplizierter anhört als das später bei der praktischen Arbeit mit React der Fall sein wird. Dennoch möchte ich diese zum besseren Verständnis nicht unerwähnt lassen.
 
 #### Beispiel für eine simple Pure Function
 
@@ -264,10 +268,10 @@ Das obige Beispiel ist ebenfalls eine Funktion die nicht „pure“ ist, da sie 
 
 ```javascript
 console.log(accelerate(car)) 
-> {speed: 1}
+> {speed: 1, seats: 5}
 
 console.log(accelerate(car)) 
-> {speed: 2}
+> {speed: 2, seats: 5}
 ```
 
 Wie sorgen wir also nun dafür, dass auch unser letztes Beispiel „pure“ wird? Indem wir den Eingabewert nicht mehr modifizieren und stattdessen jedes Mal ein neues Objekt erzeugen, basierend auf dem Eingabewert, und dieses neue Objekt aus der Funktion zurückgebend,
