@@ -74,8 +74,6 @@ Auch wenn man in der Gestaltung seiner JavaScript-Klassen natürlich vollkommen 
 
 ![Fehlermeldungen bei fehlender render\(\)-Methode](.gitbook/assets/react-no-render-error.png)
 
-
-
 ![Fehlermeldung bei fehlerhafter render\(\)-Methode](.gitbook/assets/invalid-react-element.png)
 
 > `React.createElement()`
