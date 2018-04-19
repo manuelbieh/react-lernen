@@ -45,9 +45,10 @@ Schauen wir uns das mal in der Praxis an:
 
 ```javascript
 function showTime() {
+  var time = new Date().toLocaleTimeString();
   var timeElement = (
     <div>
-      <p>Es ist jetzt {new Date().toLocaleTimeString()} Uhr</p>
+      <p>Es ist jetzt {time} Uhr</p>
     </div>
   );
   ReactDOM.render(timeElement, document.getElementById('root'));
@@ -67,8 +68,9 @@ Eine ähnliche Funktionalität ohne React implementiert hätte stattdessen wohl 
 
 ```javascript
 function changeTime() {
+  var time = new Date().toLocaleTimeString();
   var timeEl = document.getElementById('time');
-  timeEl.textContent = new Date().toLocaleTimeString();
+  timeEl.textContent = time;
 }
 setInterval(changeTime, 1000);
 ```

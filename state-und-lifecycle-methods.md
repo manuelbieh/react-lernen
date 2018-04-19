@@ -6,11 +6,13 @@ Wie im Kapitel über Komponenten bereits angesprochen können **stateful Compone
 
 Das ist insofern hilfreich, als dass wir nicht mehr manuell `ReactDOM.render()` aufrufen müssen wann immer wir meinen dass sich etwas an unserem Interface geändert hat, sondern die Komponenten dies stattdessen selbst entscheiden können.
 
+Neben dem State an sich gibt es auch eine handvoll sogenannter Lifecycle-Methoden. Dies sind Methoden die **optional** in einer **Class Component** definiert werden können und von React bei bestimmten Anlässen ausgeführt werden. 
+
 ## Eine erste stateful Component
 
 Der **State** innerhalb einer Komponente ist verfügbar über die Instanz-Eigenschaft `this.state` und ist innerhalb einer **Komponente** gekapselt. Weder Eltern- noch Kind-Komponenten können ohne weiteres auf den State einer anderen Komponente zugreifen.
 
-Um in einer Komponente einen initialen Zustand zu definieren gibt es momentan zwei gängige Wege.
+Um in einer Komponente einen initialen Zustand zu definieren gibt es zwei einfache Wege, einen dritten lernen wir später mit der Lifecycle-Methode `getDerivedStateFromProps()` kennen..
 
 Indem man im Constructor die Instanz-Eigenschaft `this.state` setzt:
 
