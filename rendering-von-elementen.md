@@ -37,5 +37,11 @@ const myFirstElement = <div>Mein erstes React Element</div>;
 ReactDOM.render(myFirstElement, document.getElementById('app'));
 ```
 
-Führst du diesen Code nun im Browser aus, siehst du **innerhalb** des `app`-divs nun dein eben gerendertes `<div>Mein erstes React Element</div>`.
+Führst du diesen Code nun im Browser aus, siehst du **innerhalb** des `app`-divs nun dein `<div>Mein erstes React Element</div>`.
+
+**React Elemente** sind dabei **immutable**, also unveränderlich. Dies bedeutet, ist ein Element einmal erstellt, repräsentiert es immer einen bestimmten Zustand \(„State“\) im User Interface. Die offizielle React Dokumentation spricht hier metaphorisch von einem Einzelbild in einem Film. Möchten wir unser User Interface aktualisieren, müssen wir dazu ein neues **React Element** mit den veränderten Daten erstellen. Keine Angst, das klingt umständlicher als es ist und passiert später einmal ganz intuitiv.
+
+React selbst ist dabei so klug, dass es durch einen Vergleichsalgorithmus nur die Teile einer Anwendung aktualisiert, die sich auch tatsächlich verändert haben. Dabei werden React Elemente und ihre Kind-Elemente mit ihren Vorgängerversionen vergleichen und lösen nur eine DOM-Operation aus wenn eine Änderung vorliegt. Dies führt dazu, dass React Anwendungen, richtig gemacht, sehr gute Rendering-Performance aufweisen, da DOM-Operationen in der Regel sehr kostspielig \(also Performance lastig\) sind, durch React und seinen **Reconciliation** genannten Prozess aber auf ein Minimum verringert werden. Dabei werden nicht immer grundsätzlich ganze DOM-Elemente neu erzeugt anhand der Beschreibung eines React-Elements, sondern es werden auch nur einzelne Attribute aktualisiert, sollte sich nur ein solches geändert haben.
+
+Schauen wir uns das mal in der Praxis an.
 
