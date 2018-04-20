@@ -136,7 +136,35 @@ Möchten wir `myArray` also überschreibbar halten, müssen wir stattdessen `let
 
 ## Neue Methoden bei Strings, Arrays und Objekten
 
-Mit ES2015 erhielten auch eine ganze Reihe neue statische und prototype-Methoden Einzug in JavaScript.
+Mit ES2015 erhielten auch eine ganze Reihe neue statische und prototype-Methoden Einzug in JavaScript. Auch wenn die meisten davon nicht direkt relevant sind für die Arbeit mit React, erleichtern sie die Arbeit aber gelegentlich doch ungemein, weshalb ich hier ganz kurz auf die wichtigsten eingehen möchte.
+
+### String-Methoden
+
+Hat man in der Vergangenheit auf `indexOf()` oder reguläre Ausdrücke gesetzt um zu prüfen ob ein String einen bestimmten Wert enthält, mit einem bestimmten Wert anfängt oder aufhört, bekommt der String Datentyp nun seine eigenen Methoden dafür.
+
+Dies sind:
+
+```text
+string.includes(value);
+string.startsWith(value);
+string.endsWith(value);
+```
+
+Zurückgegeben wird jeweils ein Boolean, also `true` oder `false.` Möchte ich wissen ob mein String `Beispiel`ein `ei` enthält, prüfe ich ganz einfach auf `'Beispiel'.includes('ei')`. Analog verhält es sich mit startsWith: `'Beispiel'.startsWith('Bei')`und endsWith: `'Beispiel'.endsWith('spiel')`. Die Abfrage ist dabei case-sensitive, also unterscheidet zwischen Groß- und Kleinschreibung.
+
+### Array-Methoden
+
+Bei den Array-Methoden gibt es sowohl neue statische Methoden als auch Meethoden auf dem Array-Prototype. Was bedeutet dies? Prototype-Methoden arbeiten „mit dem Array“ als solches, also mit einer bestehenden **Array-Instanz**, statische Methoden sind im weiteren Sinne Helper-Methoden, die gewisse Dinge tun, die „mit Arrays zu tun haben“.
+
+Fangen wir mit den statischen Methoden an:
+
+```javascript
+Array.of(3);
+Array.of(1, 2, 3);
+Array.from(document.querySelectorAll('a'));
+```
+
+`Array.of()` erstellt eine neue Array-Instanz aus einer beliebigen Anzahl an Parametern, unabhängig von deren Typen.
 
 ## Arrow Functions
 
