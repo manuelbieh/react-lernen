@@ -150,17 +150,35 @@ string.startsWith(value);
 string.endsWith(value);
 ```
 
-Zurückgegeben wird jeweils ein Boolean, also `true` oder `false.` Möchte ich wissen ob mein String `Beispiel`ein `ei` enthält, prüfe ich ganz einfach auf `'Beispiel'.includes('ei')`. Analog verhält es sich mit startsWith: `'Beispiel'.startsWith('Bei')`und endsWith: `'Beispiel'.endsWith('spiel')`. Die Abfrage ist dabei case-sensitive, also unterscheidet zwischen Groß- und Kleinschreibung.
+Zurückgegeben wird jeweils ein Boolean, also `true` oder `false.` Möchte ich wissen ob mein String `Beispiel`ein `ei` enthält, prüfe ich ganz einfach auf
+
+```javascript
+'Beispiel'.includes('ei')
+```
+
+Analog verhält es sich mit `startsWith`:
+
+```javascript
+'Beispiel'.startsWith('Bei')
+```
+
+… wie  auch mit `endsWith`: 
+
+```javascript
+'Beispiel'.endsWith('spiel')
+```
+
+Die Methode arbeitet dabei case-sensitive, also unterscheidet zwischen Groß- und Kleinschreibung.
 
 ### Array-Methoden
 
-Bei den Array-Methoden gibt es sowohl neue statische Methoden als auch Meethoden auf dem Array-Prototype. Was bedeutet dies? Prototype-Methoden arbeiten „mit dem Array“ als solches, also mit einer bestehenden **Array-Instanz**, statische Methoden sind im weiteren Sinne Helper-Methoden, die gewisse Dinge tun, die „mit Arrays zu tun haben“.
+Bei den Array-Methoden gibt es sowohl neue statische Methoden als auch Methoden auf dem Array-Prototype. Was bedeutet dies? Prototype-Methoden arbeiten „mit dem Array“ als solches, also mit einer bestehenden **Array-Instanz**, statische Methoden sind im weiteren Sinne Helper-Methoden, die gewisse Dinge tun, die „mit Arrays zu tun haben“.
 
 Fangen wir mit den statischen Methoden an:
 
 ```javascript
-Array.of(3);
-Array.of(1, 2, 3);
+Array.of(3); // [3]
+Array.of(1, 2, 3); // [1,2,3]
 Array.from(document.querySelectorAll('a'));
 ```
 
