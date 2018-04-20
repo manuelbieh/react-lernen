@@ -69,13 +69,13 @@ Eine ähnliche Funktionalität ohne React implementiert hätte stattdessen wohl 
 ```javascript
 function changeTime() {
   var time = new Date().toLocaleTimeString();
-  var timeEl = document.getElementById('time');
-  timeEl.textContent = time;
+  var target = document.getElementById('root');
+  target.textContent = 'Es ist jetzt ' + time  ' Uhr';
 }
 setInterval(changeTime, 1000);
 ```
 
-Der Vorteil beim deklarativen Vorgehen ist, dass wir nur noch Zustände beschreiben und sagen wie etwas angezeigt werden soll und nicht selber jeden Schritt festlegen wie wir diesen Zielzustand erreichen wollen. Das macht insbesondere bei komplexeren Anwendungen viele Dinge einfacher, übersichtlicher und ist dadurch zugleich deutlich weniger fehleranfälliger.
+Der Vorteil beim deklarativen Vorgehen ist, dass wir nur noch **Zustände beschreiben** und sagen wie etwas angezeigt werden soll und nicht selber jeden Schritt festlegen wie wir diesen Zielzustand erreichen wollen. Das macht insbesondere bei komplexeren Anwendungen viele Dinge einfacher, übersichtlicher und ist dadurch zugleich deutlich weniger fehleranfälliger.
 
 {% hint style="info" %}
 In der Praxis ist es eher üblich, dass `ReactDOM.render()` nur ein einziges Mal, meist beim Öffnen einer Seite aufgerufen wird. Der wiederholte Aufruf der `render()`-Methode dient hier nur zur Veranschaulichung wie **ReactDOM** und React **Elemente** zusammenspielen. 

@@ -50,7 +50,7 @@ Alle Bekannten Editoren und IDEs wie bspw. Webstorm, Atom, Visual Studio Code od
 
 Für den Browser empfehle ich dringend jeweils die React-Devtools für [Chrome](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi) und [Firefox](https://addons.mozilla.org/de/firefox/addon/react-devtools/) zu installieren, für den späteren Verlauf außerdem die Redux-Devtools für beide Browser \([Chrome](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd), [Firefox](https://addons.mozilla.org/de/firefox/addon/remotedev/?)\). Die Devtools fügen sich nahtlos als neuer Tab in die bestehenden Browser-Devtools ein und bieten einen enormen Mehrwert beim Debugging von React-Komponenten. 
 
-![Chrome mit installierten Devtools-Plugins f&#xFC;r React und Redux](.gitbook/assets/image.png)
+![Chrome mit installierten Devtools-Plugins f&#xFC;r React und Redux](../.gitbook/assets/image.png)
 
 So lässt sich bspw. der State direkt im Browser manipulieren und die Auswirkungen live beobachten. Ich würde soweit gehen und behaupten, dass ein effizientes Debugging ohne die Devtools-Erweiterungen kaum oder sogar gar nicht möglich ist.
 

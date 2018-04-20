@@ -13,10 +13,11 @@ Klingt jetzt alles fürchterlich kompliziert, ist aber ganz einfach. Wirklich. E
 ```jsx
 <div id="app">
   <p>Ein Paragraph in JSX</p>
+  <p>Ein weiterer Paragraph</p>
 </div>
 ```
 
-Wird dieses HTML so in dieser Form in JSX verwendet, werden diese Elemente werden später durch Babel in das folgende ausführbare JavaScript transpiliert:
+Wird dieses HTML so in dieser Form in **JSX** verwendet, werden diese Elemente werden später durch Babel in das folgende ausführbare JavaScript transpiliert:
 
 ```javascript
 React.createElement(
@@ -26,6 +27,11 @@ React.createElement(
     "p",
     null,
     "Ein Paragraph in JSX"
+  ),
+  React.createElement(
+    "p",
+    null,
+    "Ein weiterer Paragraph"
   )
 );
 ```
@@ -34,7 +40,7 @@ Das erste Funktionsargument für `createElement()` ist dabei jeweils der Tag-Nam
 
 Das zweite Argument repräsentiert die **Props** eines Elements, also in etwa vergleichbar mit HTML-Attributen, wobei die Props in React deutlich flexibler sind und anders als herkömmliche HTML-Attribute nicht auf Strings beschränkt sind, sondern auch Arrays, Objekte oder gar andere React-Komponenten als Wert enthalten können.
 
-Alle weiteren Argumente stellen die Kind-Elemente \(_„children“_\) des Elements dar. Im obigen Beispiel hat unser `div` nur einen einzelnen Paragraphen \(`<p>`\) als Child-Element, welcher selbst keine eigenen Props hat \(`null`\) und lediglich einen Text-String \(`Ein Paragraph in JSX`\) als Kind-Element besitzt. 
+Alle weiteren Argumente stellen die Kind-Elemente \(_„children“_\) des Elements dar. Im obigen Beispiel hat unser `div` zwei Paragraphen \(`<p>`\) als Kind-Elemente, welche selbst keine eigenen Props haben \(`null`\) und lediglich einen Text-String \(`Ein Paragraph in JSX` bzw `Ein weiterer Paragraph`\) als Kind-Element besitzt. 
 
 Wem das jetzt zu kompliziert klingt den kann ich beruhigen: das geht in der Praxis hinterher wie von selbst von der Hand. Fast so, als würde man HTML-Markup schreiben. Dennoch halte ich es für wichtig die Hintergründe zumindest einmal gelesen zu haben um spätere Beispiele besser nachvollziehen zu können.
 
@@ -69,7 +75,7 @@ null
 
 … da **JavaScript-Datentypen** allesamt auch als Ausdruck verwendet werden können.
 
-Die ES2015 **Template String Syntax**, die Backticks \` benutzt, ist ebenfalls ein Ausdruck. Klar, sind sie doch letztlich nichts anderes als ein String:
+Die ES2015 **Template String Syntax**, die Backticks \(`````\) benutzt, ist ebenfalls ein Ausdruck. Klar, sind sie doch letztlich nichts anderes als ein String:
 
 ```javascript
 `Hallo ${name}`
