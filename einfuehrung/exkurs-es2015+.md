@@ -26,9 +26,7 @@ Möchte man den Wert einer Variable nochmal überschreiben, beispielsweise in ei
 
 Doch Vorsicht: anders als bei anderen Sprachen bedeutet `const` nicht, dass der komplette Inhalt der Variable konstant bleibt. Bei Objekten oder Arrays kann deren Inhalt auch bei mit `const` deklarierten Variablen noch verändert werden. Es kann lediglich das Referenzobjekt auf welche die Variable zeigt nicht mehr verändert werden.
 
-### Beispiele
-
-#### Der Unterschied zwischen `let`/`const` und `var`
+### Der Unterschied zwischen `let`/`const` und `var`
 
 Erst einmal zur Demonstration ein kurzes Beispiel wie sich die Variablendeklaration von `let` und `const` von denen mit `var` unterscheiden und was es bedeutet, dass erstere nur in dem Scope sichtbar sind, in dem sie definiert wurden:
 
@@ -135,6 +133,10 @@ Uncaught TypeError: Assignment to constant variable.
 {% endhint %}
 
 Möchten wir `myArray` also überschreibbar halten, müssen wir stattdessen `let` verwenden oder uns damit begnügen dass zwar der Inhalt des mittels `const` deklarierten Arrays veränderbar ist, nicht jedoch die Variable selbst.
+
+## Neue Methoden bei Strings, Arrays und Objekten
+
+Mit ES2015
 
 ## Arrow Functions
 
