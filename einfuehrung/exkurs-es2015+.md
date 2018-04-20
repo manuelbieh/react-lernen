@@ -178,11 +178,12 @@ Fangen wir mit den statischen Methoden an:
 
 ```javascript
 Array.of(3); // [3]
-Array.of(1, 2, 3); // [1,2,3]
+Array.of(1, 2, 3); // [1, 2 ,3]
 Array.from(document.querySelectorAll('a'));
+Array.rom('Example'); // ['E', 'x', 'a', 'm', 'p', 'l', 'e']
 ```
 
-`Array.of()` erstellt eine neue Array-Instanz aus einer beliebigen Anzahl an Parametern, unabhängig von deren Typen.
+`Array.of()` erstellt eine neue Array-Instanz aus einer beliebigen Anzahl an Parametern, unabhängig von deren Typen. `Array.from()` erstellt ebenfalls eine Array-Instanz, allerdings aus einem Array-ähnlichen Objekt.
 
 ## Arrow Functions
 
