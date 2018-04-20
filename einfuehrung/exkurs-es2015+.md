@@ -136,7 +136,7 @@ Möchten wir `myArray` also überschreibbar halten, müssen wir stattdessen `let
 
 ## Neue Methoden bei Strings, Arrays und Objekten
 
-Mit ES2015
+Mit ES2015 erhielten auch eine ganze Reihe neue statische und prototype-Methoden Einzug in JavaScript.
 
 ## Arrow Functions
 
