@@ -187,6 +187,8 @@ Array.rom('Example'); // ['E', 'x', 'a', 'm', 'p', 'l', 'e']
 
 
 
+
+
 ## Arrow Functions
 
 **Arrow Functions** sind eine weitere **deutliche** Vereinfachung die uns ES2015 gebracht hat. Bisher funktionierte eine Funktionsdeklaration so: man schrieb das Keyword `function`, optional gefolgt von einem Funktionsnamen, Klammern, in der die Funktionsargumente beschrieben wurden, sowie dem **Function Body**, also dem eigentlichen Inhalt der Funktion:
