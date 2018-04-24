@@ -1,11 +1,8 @@
 # Exkurs ES2015+
 
-Testing Gitbook 2way Sync
-
 ## Das „neue“ JavaScript
 
-**ES2015** ist kurz gesagt eine modernisierte, aktuelle Version von JavaScript mit vielen neuen Funktionen und Syntax-Erleichterungen. **ES2015** ist der Nachfolger von **ECMAScript** in der Version 5 \(**ES5**\), hieß daher ursprünglich auch einmal **ES6** und wird auch in einigen Blogs und Artikeln immer noch so bezeichnet. Stößt du also beim Lesen von Artikeln zu React auf den Begriff **ES6** ist damit **ES2015** gemeint.
- Ich schreibe hier meist von **ES2015+** und meine damit Änderungen die seit 2015 in JavaScript eingeflossen sind. Dazu gehören ES2016 \(ES7\), ES2017 \(ES8\) und ES2018 \(ES9\).
+**ES2015** ist kurz gesagt eine modernisierte, aktuelle Version von JavaScript mit vielen neuen Funktionen und Syntax-Erleichterungen. **ES2015** ist der Nachfolger von **ECMAScript** in der Version 5 \(**ES5**\), hieß daher ursprünglich auch einmal **ES6** und wird auch in einigen Blogs und Artikeln immer noch so bezeichnet. Stößt du also beim Lesen von Artikeln zu React auf den Begriff **ES6** ist damit **ES2015** gemeint. Ich schreibe hier meist von **ES2015+** und meine damit Änderungen die seit 2015 in JavaScript eingeflossen sind. Dazu gehören ES2016 \(ES7\), ES2017 \(ES8\) und ES2018 \(ES9\).
 
 {% hint style="info" %}
 Das **ES** in **ES2015** und **ES6** steht für **ECMAScript**. Die ECMA International ist die Organisation, die hinter der Standardisierung der **ECMA-262** Spezifikation steht, auf der JavaScript basiert. Seit 2015 werden jährlich neue Versionen der Spezifikation veröffentlicht die aus historischen Gründen erst eine fortlaufende Versionsnummer beginnend ab Version 1 hatten, dann jedoch für mehr Klarheit die Jahreszahl ihrer Veröffentlichung angenommen haben. So wird **ES6** heute offiziell als **ES2015** bezeichnet, **ES7** als **ES2016**, usw.
@@ -19,11 +16,11 @@ Auf die meiner Meinung nach wichtigsten und nützlichsten neuen Funktionen und M
 
 ## Variablen-Deklarationen mit let und const
 
-Gab es bisher nur `var` um eine Variable zu deklarieren in JavaScript, kommen in ES2015 zwei neue Schlüsselwörter dazu mit denen Variablen deklariert werden können: `let` und `const`. Eine Variablendeklaration mit `var` wird dadurch in fast allen Fällen überflüssig, meist sind `let` oder `const` die sauberere Wahl. Doch wo ist der Unterschied? 
+Gab es bisher nur `var` um eine Variable zu deklarieren in JavaScript, kommen in ES2015 zwei neue Schlüsselwörter dazu mit denen Variablen deklariert werden können: `let` und `const`. Eine Variablendeklaration mit `var` wird dadurch in fast allen Fällen überflüssig, meist sind `let` oder `const` die sauberere Wahl. Doch wo ist der Unterschied?
 
 Anders als `var` existieren mit `let` oder `const` deklarierte Variablen **nur innerhalb des Scopes in dem sie deklariert wurden!** Ein solcher Scope kann eine Funktion sein wie sie bisher auch schon bei `var` einen neuen Scope erstellt hat aber auch Schleifen oder gar `if` Statements!
 
-**Grobe Merkregel:** überall dort wo man eine öffnende geschweifte Klammer findet, wird auch ein neuer Scope geöffnet. Konsequenterweise schließt die schließende Klammer diesen Scope wieder. Dadurch sind Variablen deutlich eingeschränkter und gekapselter, was für gewöhnlich eine gute Sache ist. 
+**Grobe Merkregel:** überall dort wo man eine öffnende geschweifte Klammer findet, wird auch ein neuer Scope geöffnet. Konsequenterweise schließt die schließende Klammer diesen Scope wieder. Dadurch sind Variablen deutlich eingeschränkter und gekapselter, was für gewöhnlich eine gute Sache ist.
 
 Möchte man den Wert einer Variable nochmal überschreiben, beispielsweise in einer Schleife, ist die Variable dafür mit `let` zu deklarieren. Möchte man die Referenz der Variable unveränderbar halten, sollte `const` benutzt werden.
 
@@ -165,7 +162,7 @@ Analog verhält es sich mit `startsWith`:
 'Beispiel'.startsWith('Bei')
 ```
 
-… wie  auch mit `endsWith`: 
+… wie auch mit `endsWith`:
 
 ```javascript
 'Beispiel'.endsWith('spiel')
@@ -187,10 +184,6 @@ Array.rom('Example'); // ['E', 'x', 'a', 'm', 'p', 'l', 'e']
 ```
 
 `Array.of()` erstellt eine neue Array-Instanz aus einer beliebigen Anzahl an Parametern, unabhängig von deren Typen. `Array.from()` erstellt ebenfalls eine Array-Instanz, allerdings aus einem „Array-ähnlichen“ iterierbaren Objekt. Das wohl griffigste Beispiel für ein solches Objekt ist eine DOMNodeList.
-
-
-
-
 
 ## Arrow Functions
 
@@ -267,7 +260,7 @@ function TimeButton() {
 }
 ```
 
-Hier spart man sich zumindest die zusätzliche Variable `self`. Auch das ist möglich, aber nicht besonders elegant. 
+Hier spart man sich zumindest die zusätzliche Variable `self`. Auch das ist möglich, aber nicht besonders elegant.
 
 An dieser Stelle kommt nun die **Arrow Function** ins Spiel, die, wie eben erwähnt, `this` aus ihrem **Parent Scope** erhält, also in diesem Fall aus unserer `TimeButton`-Instanz:
 
@@ -283,7 +276,7 @@ function TimeButton() {
 }
 ```
 
-Und schon haben wir im **Event Listener** Zugriff auf `this` des überliegenden Scopes! 
+Und schon haben wir im **Event Listener** Zugriff auf `this` des überliegenden Scopes!
 
 Keine `var self = this` Akrobatik mehr und auch kein `.bind(this)`. Wir können innerhalb des Event Listeners so arbeiten als befänden wir uns noch immer im `TimeButton` Scope! Das ist später insbesondere bei der Arbeit mit umfangreichen React-Komponenten mit vielen eigenen Class Properties und Methods hilfreich, da es Verwirrungen vorbeugt und nicht immer wieder einen neuen Scope erzeugt.
 
@@ -301,7 +294,7 @@ class Customer {
     this.firstName = firstName;
     this.lastName = lastName;
   }
-  
+
   getFullName() {
     return this.firstName + ' ' + this.lastName;
   }
@@ -311,7 +304,7 @@ const firstCustomer = new Customer('Max', 'Mustermann');
 console.log(firstCustomer.getFullName());
 ```
 
- **Ausgabe:**
+**Ausgabe:**
 
 {% hint style="info" %}
 Max Mustermann
@@ -452,7 +445,7 @@ console.log(allSettings);
 }
 ```
 
-Das zuletzt genannte `userSettings` Objekt überschreibt hier die gleichnamige Eigenschaft `language`, die sich auch im `globalSettings` Objekt befindet. Der Spread Operator funktioniert hier ganz ähnlich wie die in ES2015 neu eingeführte Objekt-Methode `Object.assign()`. Auch diese wird in ES2015+ basierten Anwendungen gelegentlich genutzt. 
+Das zuletzt genannte `userSettings` Objekt überschreibt hier die gleichnamige Eigenschaft `language`, die sich auch im `globalSettings` Objekt befindet. Der Spread Operator funktioniert hier ganz ähnlich wie die in ES2015 neu eingeführte Objekt-Methode `Object.assign()`. Auch diese wird in ES2015+ basierten Anwendungen gelegentlich genutzt.
 
 Allerdings gibt es hier den nennenswerten Unterschied, dass sie ein bestehendes Objekt mutiert und nicht per se ein neues Objekt generiert, wie das die Object Spread Variante tut. Und Mutation ist bezogen auf React-Komponenten und ihre Props eben das, was wir ja nicht wollen. Dennoch der Vollständigkeit halber ein kurzes Beispiel.
 
@@ -503,7 +496,7 @@ Object.assign({}, a, b, c);
 
 Bevor ich zum **Rest Operator** komme, der logisch sehr eng mit dem **Spread Operator** in Verbindung steht und meist mit diesem in einem Atemzug genannt wird, möchte ich auf das **Destructuring Assignment** \(kurz: **Destructuring**\) oder eben die **destrukturierende Zuweisung** \(kurz: **Destrukturierung**\), wie der schöne Begriff auf Deutsch heißt, eingehen. Ich werde hier wie so oft beim englischen Begriff bleiben, da ich den deutschen Begriff selbst in deutschsprachigen Texten selten bisher gelesen habe.
 
-Mittels **Destructuring** ist es möglich einzelne Elemente aus Objekten oder Arrays zu extrahieren und Variablen zuzuweisen. Eine weitere **deutliche** Syntax-Erweiterung die uns ES2015 hier beschert hat. 
+Mittels **Destructuring** ist es möglich einzelne Elemente aus Objekten oder Arrays zu extrahieren und Variablen zuzuweisen. Eine weitere **deutliche** Syntax-Erweiterung die uns ES2015 hier beschert hat.
 
 #### Destructuring von Arrays
 
@@ -561,7 +554,7 @@ Möchten wir auf diese Weise einzelne Elemente des Arrays auslassen, ist das buc
 const [, silber, bronze] = athletes;
 ```
 
-Hier würden wir auf das Deklarieren einer `gold` Variable verzichten und nur die Gewinner der Silber- und Bronze-Medaille in entsprechenden Variablen speichern. 
+Hier würden wir auf das Deklarieren einer `gold` Variable verzichten und nur die Gewinner der Silber- und Bronze-Medaille in entsprechenden Variablen speichern.
 
 Doch nicht nur bei der offensichtlichen Variablenzuweisung mittels `let` oder `const` kann **Array Destructuring** verwendet werden. Auch bei weniger offensichtlichen Zuweisungen, wie bei der Übergabe von Funktionsargumenten in Form eines Arrays.
 
@@ -686,7 +679,7 @@ const { name, class } = passenger;
 ```
 
 {% hint style="danger" %}
- Uncaught SyntaxError: Unexpected token }
+Uncaught SyntaxError: Unexpected token }
 {% endhint %}
 
 Um hier den Namen der Variable umzubenennen muss der Eigenschaft der neue Namen getrennt durch einen Doppelpunkt `:` übergeben werden. Ein korrektes **Destructuring Assignment** wäre also in diesem Fall in etwa folgendes:
@@ -768,7 +761,7 @@ Example(1, 2, 3, 4, 5);
 **Ausgabe:**
 
 {% hint style="info" %}
-`Arguments(5) [1, 2, 3, 4, 5, callee: ƒ]`
+`Arguments(5) [1, 2, 3, 4, 5, callee: ƒ]`
 {% endhint %}
 
 **Arrow Functions** bieten diese Möglichkeit nicht mehr und werfen stattdessen einen Fehler:
@@ -816,9 +809,9 @@ Example(1, 2, 3, 4, 5);
 **Ausgabe:**
 
 {% hint style="info" %}
-`first: 1  
-second: 2  
-third: 3  
+`first: 1    
+second: 2    
+third: 3    
 rest: [4, 5]`
 {% endhint %}
 
@@ -847,20 +840,20 @@ console.log(competitors);
 **Ausgabe:**
 
 {% hint style="info" %}
-`'Usain Bolt'  
-'Andre De Grasse'  
+`'Usain Bolt'    
+'Andre De Grasse'    
 'Christophe Lemaitre'`  
-`[  
-  'Adam Gemili',
-   
-  'Churandy Martina',
-   
-  'LaShawn Merritt',
-   
-  'Alonso Edward',
-   
-  'Ramil Guliyev'  
-]`
+\`\[  
+'Adam Gemili',
+
+'Churandy Martina',
+
+'LaShawn Merritt',
+
+'Alonso Edward',
+
+'Ramil Guliyev'  
+\]\`
 {% endhint %}
 
 … wie auch beim **Object Destructuring:**
@@ -890,11 +883,11 @@ All die Werte, die dabei nicht explizit in eine Variable geschrieben wurden wäh
 
 ## Template Strings
 
-**Template Strings** in ES2015 sind eine „dritte Schreibweise“ für Strings in JavaScript. Bisher konnten Strings entweder in einfache Anführungszeichen \(`'Beispiel'`\) oder in doppelte Anführungszeichen \(`"Beispiel"`\) gesetzt werden. Nun kommt auch die Möglichkeit hinzu, diese in Backticks \(```Beispiel```\) zu setzen. 
+**Template Strings** in ES2015 sind eine „dritte Schreibweise“ für Strings in JavaScript. Bisher konnten Strings entweder in einfache Anführungszeichen \(`'Beispiel'`\) oder in doppelte Anführungszeichen \(`"Beispiel"`\) gesetzt werden. Nun kommt auch die Möglichkeit hinzu, diese in Backticks \(`Beispiel`\) zu setzen.
 
 **Template Strings** können in zwei Varianten auftreten. Als gewöhnliche **Template Strings**, die JavaScript Ausdrücke enthalten können, sowie in erweiterter Form als sog. **Tagged Template Strings**.
 
-**Tagged Template Strings** sind eine deutlich mächtigere Form von **Template Strings**. Mit ihnen kann die Ausgabe von **Template Strings** mittels einer speziellen Funktion modifiziert werden. Das ist bei der gewöhnlichen Arbeit mit React erst einmal weniger wichtig. Später im Kapitel über **CSS in React** werde ich ihre Funktionsweise nochmal etwas genauer am Beispiel von **Styled Components** erklären. **Styled Components** sind eine Möglichkeit um Komponenten in React designen und basieren ganz grundlegend auf **Tagged Template Strings**. 
+**Tagged Template Strings** sind eine deutlich mächtigere Form von **Template Strings**. Mit ihnen kann die Ausgabe von **Template Strings** mittels einer speziellen Funktion modifiziert werden. Das ist bei der gewöhnlichen Arbeit mit React erst einmal weniger wichtig. Später im Kapitel über **CSS in React** werde ich ihre Funktionsweise nochmal etwas genauer am Beispiel von **Styled Components** erklären. **Styled Components** sind eine Möglichkeit um Komponenten in React designen und basieren ganz grundlegend auf **Tagged Template Strings**.
 
 Wollte man sie mit JavaScript-Ausdrücken oder Werten mischen, griff man in ES5 meist zu einfacher **String Concatenation:**
 
@@ -932,12 +925,12 @@ console.log(`${firstName.toUpperCase()} ${lastName.toUpperCase()}`);
 ## Fazit
 
 {% hint style="success" %}
+
 ES2015 und die nachfolgenden Versionen bieten eine Menge nützliche neue Funktionen die es bisher in JavaScript nicht gab. Viele davon sind bei der Arbeit mit React nahezu nicht wegzudenken. Zu den wichtigsten Neuerungen gehören die hier beschriebenen:
 
 * Variablendeklarationen mit `let` und `const`
 * **Arrow Functions**, um Funktionen zu erstellen die kein eigenes `this` binden
 * **Klassen**. Machen vieles einfacher und sind die Basis von **React Class Components**
 * Die **Rest und Spread Operatoren**, die das Lesen und Schreiben von Daten in Arrays und Objekten deutlich vereinfachen
-*  **Template Strings**, um die Arbeit mit JavaScript Ausdrücken in Strings einfacher zu machen
-{% endhint %}
+* **Template Strings**, um die Arbeit mit JavaScript Ausdrücken in Strings einfacher zu machen
 

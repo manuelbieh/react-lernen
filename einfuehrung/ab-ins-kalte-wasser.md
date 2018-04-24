@@ -1,7 +1,3 @@
----
-description: Die erste React-Komponente im Schnelldurchlauf
----
-
 # Ab ins kalte Wasser
 
 Nun hatten wir bereits das „Was“, das „Wann“ und das „Wo“. Kommen wir also zum „Wie“ und schreiben unsere erste kleine **React-Komponente**. Neben **React** selbst benötigen wir für die Ausgabe unserer App im Browser auch das Package **ReactDOM** um unsere Anwendung **mounten** zu können, also grob gesagt: im Browser nutzbar zu machen.
