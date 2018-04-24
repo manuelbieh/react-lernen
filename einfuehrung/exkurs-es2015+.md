@@ -134,59 +134,6 @@ Uncaught TypeError: Assignment to constant variable.
 
 Möchten wir `myArray` also überschreibbar halten, müssen wir stattdessen `let` verwenden oder uns damit begnügen dass zwar der Inhalt des mittels `const` deklarierten Arrays veränderbar ist, nicht jedoch die Variable selbst.
 
-## Neue Methoden bei Strings, Arrays und Objekten
-
-Mit ES2015 erhielten auch eine ganze Reihe neue statische und prototype-Methoden Einzug in JavaScript. Auch wenn die meisten davon nicht direkt relevant sind für die Arbeit mit React, erleichtern sie die Arbeit aber gelegentlich doch ungemein, weshalb ich hier ganz kurz auf die wichtigsten eingehen möchte.
-
-### String-Methoden
-
-Hat man in der Vergangenheit auf `indexOf()` oder reguläre Ausdrücke gesetzt um zu prüfen ob ein String einen bestimmten Wert enthält, mit einem bestimmten Wert anfängt oder aufhört, bekommt der String Datentyp nun seine eigenen Methoden dafür.
-
-Dies sind:
-
-```text
-string.includes(value);
-string.startsWith(value);
-string.endsWith(value);
-```
-
-Zurückgegeben wird jeweils ein Boolean, also `true` oder `false.` Möchte ich wissen ob mein String `Beispiel`ein `ei` enthält, prüfe ich ganz einfach auf
-
-```javascript
-'Beispiel'.includes('ei')
-```
-
-Analog verhält es sich mit `startsWith`:
-
-```javascript
-'Beispiel'.startsWith('Bei')
-```
-
-… wie auch mit `endsWith`:
-
-```javascript
-'Beispiel'.endsWith('spiel')
-```
-
-Die Methode arbeitet dabei case-sensitive, also unterscheidet zwischen Groß- und Kleinschreibung.
-
-### Array-Methoden
-
-Bei den Array-Methoden gibt es sowohl neue statische Methoden als auch Methoden auf dem Array-Prototype. Was bedeutet dies? Prototype-Methoden arbeiten „mit dem Array“ als solches, also mit einer bestehenden **Array-Instanz**, statische Methoden sind im weiteren Sinne Helper-Methoden, die gewisse Dinge tun, die „mit Arrays zu tun haben“.
-
-Fangen wir mit den statischen Methoden an:
-
-```javascript
-Array.of(3); // [3]
-Array.of(1, 2, 3); // [1, 2 ,3]
-Array.from(document.querySelectorAll('a'));
-Array.rom('Example'); // ['E', 'x', 'a', 'm', 'p', 'l', 'e']
-```
-
-`Array.of()` erstellt eine neue Array-Instanz aus einer beliebigen Anzahl an Parametern, unabhängig von deren Typen. `Array.from()` erstellt ebenfalls eine Array-Instanz, allerdings aus einem „Array-ähnlichen“ iterierbaren Objekt. Das wohl griffigste Beispiel für ein solches Objekt ist eine `DOMNodeList`.
-
-
-
 ## Arrow Functions
 
 **Arrow Functions** sind eine weitere **deutliche** Vereinfachung die uns ES2015 gebracht hat. Bisher funktionierte eine Funktionsdeklaration so: man schrieb das Keyword `function`, optional gefolgt von einem Funktionsnamen, Klammern, in der die Funktionsargumente beschrieben wurden, sowie dem **Function Body**, also dem eigentlichen Inhalt der Funktion:
@@ -281,6 +228,156 @@ function TimeButton() {
 Und schon haben wir im **Event Listener** Zugriff auf `this` des überliegenden Scopes!
 
 Keine `var self = this` Akrobatik mehr und auch kein `.bind(this)`. Wir können innerhalb des Event Listeners so arbeiten als befänden wir uns noch immer im `TimeButton` Scope! Das ist später insbesondere bei der Arbeit mit umfangreichen React-Komponenten mit vielen eigenen Class Properties und Methods hilfreich, da es Verwirrungen vorbeugt und nicht immer wieder einen neuen Scope erzeugt.
+
+## Neue Methoden bei Strings, Arrays und Objekten
+
+Mit ES2015 erhielten auch eine ganze Reihe neue statische und prototype-Methoden Einzug in JavaScript. Auch wenn die meisten davon nicht direkt relevant sind für die Arbeit mit React, erleichtern sie die Arbeit aber gelegentlich doch ungemein, weshalb ich hier ganz kurz auf die wichtigsten eingehen möchte.
+
+### String-Methoden
+
+Hat man in der Vergangenheit auf `indexOf()` oder reguläre Ausdrücke gesetzt um zu prüfen ob ein String einen bestimmten Wert enthält, mit einem bestimmten Wert anfängt oder aufhört, bekommt der String Datentyp nun seine eigenen Methoden dafür.
+
+Dies sind:
+
+```javascript
+string.includes(value);
+string.startsWith(value);
+string.endsWith(value);
+```
+
+Zurückgegeben wird jeweils ein Boolean, also `true` oder `false.` Möchte ich wissen ob mein String `Beispiel`ein `eis` enthält, prüfe ich ganz einfach auf
+
+```javascript
+'Beispiel'.includes('eis')
+```
+
+Analog verhält es sich mit `startsWith`:
+
+```javascript
+'Beispiel'.startsWith('Bei')
+```
+
+… wie auch mit `endsWith`:
+
+```javascript
+'Beispiel'.endsWith('spiel')
+```
+
+Die Methode arbeitet dabei case-sensitive, also unterscheidet zwischen Groß- und Kleinschreibung.
+
+### Array-Methoden
+
+Bei den Array-Methoden gibt es sowohl neue statische Methoden als auch Methoden auf dem Array-Prototype. Was bedeutet dies? Prototype-Methoden arbeiten „mit dem Array“ als solches, also mit einer bestehenden **Array-Instanz**, statische Methoden sind im weiteren Sinne Helper-Methoden, die gewisse Dinge tun, die „mit Arrays zu tun haben“.
+
+Fangen wir mit den statischen Methoden an:
+
+```javascript
+Array.of(3); // [3]
+Array.of(1, 2, 3); // [1, 2 ,3]
+Array.from('Example'); // ['E', 'x', 'a', 'm', 'p', 'l', 'e']
+```
+
+`Array.of()` erstellt eine neue Array-Instanz aus einer beliebigen Anzahl an Parametern, unabhängig von deren Typen. `Array.from()` erstellt ebenfalls eine Array-Instanz, allerdings aus einem „Array-ähnlichen“ iterierbaren Objekt. Das wohl griffigste Beispiel für ein solches Objekt ist eine `HTMLCollection` oder eine `NodeList`. Solche erhält man bspw. bei der Verwendung von DOM-Methoden wie `getElementsByClassName()` oder dem moderneren `querySelectorAll()`. Diese besitzen selbst keine Methoden wie `.map()` oder `.filter()`. Möchte man über eine solche also iterieren, muss man sie erst einmal in einen Array konvertieren. Dies geht mit ES2015 nun ganz einfach durch die Verwendung von `Array.from()`.
+
+```javascript
+const links = Array.from(document.querySelectorAll('a'));
+Array.isArray(links); // true
+```
+
+Die Methoden auf dem Array-Prototypen können **direkt auf eine Array-Instanz** angewendet werden. Die gängigsten während der Arbeit mit React und insbesondere später mit Redux sind:
+
+```javascript
+Array.find(function);
+Array.findIndex(function);
+Array.includes(value);
+```
+
+Die `Array.find()`-Methode dient, wie der Name es erahnen lässt dazu, das **erste** element eines Arrays zu finden, das bestimmte Kriterien erfüllt, die mittels der als ersten Parameter übergebenen Funktion geprüft werden.
+
+```javascript
+const numbers = [1,2,5,9,13,24,27,39,50];
+const biggerThan10 = numbers.find((number) => number > 10); // 13
+
+const users = [
+  {id: 1, name: 'Manuel'}, 
+  {id: 2, name: 'Bianca'}, 
+  {id: 3, name: 'Steve'}
+];
+const userWithId2 = users.find((user) => user.id === 2); // { id: 2, name: 'Bianca'}
+```
+
+Die `Array.findIndex()`-Methode folgt der gleichen Signatur, liefert aber anders als die `Array.find()`-Methode nicht das gefundene Element selbst zurück, sondern nur dessen Index im Array. In den obigen Beispielen wären dies also `3` sowie `1`.
+
+Die in ES2016 neu dazu gekommene Methode `Array.includes()` prüft ob ein Wert innerhalb eines Array existiert und gibt uns **endlich** einen Boolean zurück. Wer selbiges in der Vergangenheit mal mit `Array.indexOf()` realisiert hat wird sich erinnern wie umständlich es war. Nun also ein simples `Array.includes()`:
+
+```javascript
+[1,2,3,4,5].includes(4); // true
+[1,2,3,4,5].includes(6); // false
+```
+
+Aufgepasst: die Methode ist case-sensitive. `['a', 'b'].includes('A')` gibt also `false` zurück.
+
+### Objekt-Methoden
+
+Natürlich haben auch Objekte eine Reihe neuer Methoden und anderer schöner Möglichkeiten spendiert bekommen. Die wichtigsten im Überblick:
+
+```javascript
+Object.assign(target, source[, source[,...]]);
+Object.entries(Object)
+Object.keys(Object)
+Object.values(Object)
+Object.freeze(Object)
+```
+
+Wieder der Reihe nach. Die wohl nützlichste ist aus meiner Sicht `Object.assign()`. Damit ist es möglich die Eigenschaften eines Objekts oder auch mehrerer Objekte zu einem bestehenden Objekt hinzuzufügen (sozusagen ein Merge). Die Methode gibt dabei das Ergebnis als Objekt zurück. Allerdings findet dabei auch eine Mutation des **Ziel-Objekts** statt, weswegen die Methode mit Bedacht benutzt werden sollte. Beispiele sagen mehr also Worte, bitteschön:
+
+```javascript
+const user = { id: 1, name: 'Manuel' };
+const modifiedUser = Object.assign(user, { role: 'Admin' });
+console.log(user); // { id: 1, name: 'Manuel', role: 'Admin' }
+console.log(modifiedUser); // { id: 1, name: 'Manuel', role: 'Admin' }
+console.log(user === modifiedUser); // true
+```
+
+Hier fügen wir also die Eigenschaft `role` aus dem Objekt im zweiten Parameter der `Object.assign()`-Methode zum bestehenden **Ziel-Objekt** hinzu. 
+
+Da React dem Prinzip von **Pure Functions** folgt, das sind Funktionen die in sich geschlossen sind und ihre Eingabeparameter nicht modifizieren, sollten deartige Mutationen möglichst vermieden werden. Dies können wir umgehen indem wir als ersten Parameter einfach ein Object-Literal übergeben:
+
+```javascript
+const user = { id: 1, name: 'Manuel' };
+const modifiedUser = Object.assign({}, user, { role: 'Admin' });
+console.log(user); // { id: 1, name: 'Manuel' }
+console.log(modifiedUser); // { id: 1, name: 'Manuel', role: 'Admin' }
+console.log(user === modifiedUser); // false
+```
+
+Durch die Verwendung eines neu erstellten Objekts als Ziel-Objekt bekommen wir hier eben auch als Rückgabewert ein anderes Objekt als im ersten Beispiel. In einigen Fällen kann es gewünscht sein das **Ziel-Objekt** zu mutieren statt ein neues Objekt zu erstellen, während der Arbeit mit React ist dies jedoch in den deutlich überwiegenden Fällen nicht so.
+
+Die Methode verarbeitet dabei auch beliebig viele Objekte als Parameter. Gibt es gleichnamige Eigenschaften in einem Objekt, haben spätere Eigenschaften Vorrang:
+
+```javascript
+const user = { id: 1, name: 'Manuel' };
+const modifiedUser = Object.assign(
+  {},
+  user,
+  { role: 'Admin' },
+  { name: 'Nicht Manuel', job: 'Developer' }
+);
+console.log(modifiedUser); // { id: 1, name: 'Nicht Manuel', role: 'Admin', job: 'Developer' }
+```
+
+Die drei statischen Objekt-Methoden `Object.entries()`, `Object.keys()` und `Object.values()` funktionieren im Grunde sehr ähnlich, sie liefern zu einem übergebenen Objekt die Eigenschaften (`keys`), die Werte (`values`) oder die Einträge (`entries`) ala **Array** zurück, wobei die **Entries** ein verschachteltes Array sind in der Form `[[key, value], [key2, values2], …]`.
+
+Angewandt auf unser obiges Beispiel hat dies also folgende Return-Values zum Ergebnis:
+```javascript
+Object.keys({ id: 1, name: 'Manuel'}); // ['id', 'name']
+Object.values({ id: 1, name: 'Manuel'}); // [1, 'Manuel']
+Object.entries({id: 1, name: 'Manuel'}); // [['id', 1], ['name', 'Manuel']]
+```
+
+
+
+
 
 ## Classes
 
