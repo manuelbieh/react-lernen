@@ -329,26 +329,32 @@ Object.values(Object)
 Object.freeze(Object)
 ```
 
-Wieder der Reihe nach. Die wohl nützlichste ist aus meiner Sicht `Object.assign()`. Damit ist es möglich die Eigenschaften eines Objekts oder auch mehrerer Objekte zu einem bestehenden Objekt hinzuzufügen (sozusagen ein Merge). Die Methode gibt dabei das Ergebnis als Objekt zurück. Allerdings findet dabei auch eine Mutation des **Ziel-Objekts** statt, weswegen die Methode mit Bedacht benutzt werden sollte. Beispiele sagen mehr also Worte, bitteschön:
+Wieder der Reihe nach. Die wohl nützlichste ist aus meiner Sicht `Object.assign()`. Damit ist es möglich die Eigenschaften eines Objekts oder auch mehrerer Objekte zu einem bestehenden Objekt hinzuzufügen \(sozusagen ein Merge\). Die Methode gibt dabei das Ergebnis als Objekt zurück. Allerdings findet dabei auch eine Mutation des **Ziel-Objekts** statt, weswegen die Methode mit Bedacht benutzt werden sollte. Beispiele sagen mehr also Worte, bitteschön:
 
 ```javascript
 const user = { id: 1, name: 'Manuel' };
 const modifiedUser = Object.assign(user, { role: 'Admin' });
-console.log(user); // { id: 1, name: 'Manuel', role: 'Admin' }
-console.log(modifiedUser); // { id: 1, name: 'Manuel', role: 'Admin' }
-console.log(user === modifiedUser); // true
+console.log(user); 
+// -> { id: 1, name: 'Manuel', role: 'Admin' }
+console.log(modifiedUser); 
+// -> { id: 1, name: 'Manuel', role: 'Admin' }
+console.log(user === modifiedUser); 
+// -> true
 ```
 
-Hier fügen wir also die Eigenschaft `role` aus dem Objekt im zweiten Parameter der `Object.assign()`-Methode zum bestehenden **Ziel-Objekt** hinzu. 
+Hier fügen wir also die Eigenschaft `role` aus dem Objekt im zweiten Parameter der `Object.assign()`-Methode zum bestehenden **Ziel-Objekt** hinzu.
 
 Da React dem Prinzip von **Pure Functions** folgt, das sind Funktionen die in sich geschlossen sind und ihre Eingabeparameter nicht modifizieren, sollten deartige Mutationen möglichst vermieden werden. Dies können wir umgehen indem wir als ersten Parameter einfach ein Object-Literal übergeben:
 
 ```javascript
 const user = { id: 1, name: 'Manuel' };
 const modifiedUser = Object.assign({}, user, { role: 'Admin' });
-console.log(user); // { id: 1, name: 'Manuel' }
-console.log(modifiedUser); // { id: 1, name: 'Manuel', role: 'Admin' }
-console.log(user === modifiedUser); // false
+console.log(user); 
+// -> { id: 1, name: 'Manuel' }
+console.log(modifiedUser); 
+// -> { id: 1, name: 'Manuel', role: 'Admin' }
+console.log(user === modifiedUser); 
+// -> false
 ```
 
 Durch die Verwendung eines neu erstellten Objekts als Ziel-Objekt bekommen wir hier eben auch als Rückgabewert ein anderes Objekt als im ersten Beispiel. In einigen Fällen kann es gewünscht sein das **Ziel-Objekt** zu mutieren statt ein neues Objekt zu erstellen, während der Arbeit mit React ist dies jedoch in den deutlich überwiegenden Fällen nicht so.
@@ -363,21 +369,22 @@ const modifiedUser = Object.assign(
   { role: 'Admin' },
   { name: 'Nicht Manuel', job: 'Developer' }
 );
-console.log(modifiedUser); // { id: 1, name: 'Nicht Manuel', role: 'Admin', job: 'Developer' }
+console.log(modifiedUser); 
+// -> { id: 1, name: 'Nicht Manuel', role: 'Admin', job: 'Developer' }
 ```
 
-Die drei statischen Objekt-Methoden `Object.entries()`, `Object.keys()` und `Object.values()` funktionieren im Grunde sehr ähnlich, sie liefern zu einem übergebenen Objekt die Eigenschaften (`keys`), die Werte (`values`) oder die Einträge (`entries`) ala **Array** zurück, wobei die **Entries** ein verschachteltes Array sind in der Form `[[key, value], [key2, values2], …]`.
+Die drei statischen Objekt-Methoden `Object.entries()`, `Object.keys()` und `Object.values()` funktionieren im Grunde sehr ähnlich, sie liefern zu einem übergebenen Objekt die Eigenschaften \(`keys`\), die Werte \(`values`\) oder die Einträge \(`entries`\) ala **Array** zurück, wobei die **Entries** ein verschachteltes Array sind in der Form `[[key, value], [key2, values2], …]`.
 
-Angewandt auf unser obiges Beispiel hat dies also folgende Return-Values zum Ergebnis:
+Angewendet auf unser obiges Beispiel hat dies also folgende Return-Values zum Ergebnis:
+
 ```javascript
-Object.keys({ id: 1, name: 'Manuel'}); // ['id', 'name']
-Object.values({ id: 1, name: 'Manuel'}); // [1, 'Manuel']
-Object.entries({id: 1, name: 'Manuel'}); // [['id', 1], ['name', 'Manuel']]
+Object.keys({ id: 1, name: 'Manuel'}); 
+// -> ['id', 'name']
+Object.values({ id: 1, name: 'Manuel'}); 
+// -> [1, 'Manuel']
+Object.entries({id: 1, name: 'Manuel'}); 
+// -> [['id', 1], ['name', 'Manuel']]
 ```
-
-
-
-
 
 ## Classes
 
@@ -1024,7 +1031,6 @@ console.log(`${firstName.toUpperCase()} ${lastName.toUpperCase()}`);
 ## Fazit
 
 {% hint style="success" %}
-
 ES2015 und die nachfolgenden Versionen bieten eine Menge nützliche neue Funktionen die es bisher in JavaScript nicht gab. Viele davon sind bei der Arbeit mit React nahezu nicht wegzudenken. Zu den wichtigsten Neuerungen gehören die hier beschriebenen:
 
 * Variablendeklarationen mit `let` und `const`
@@ -1032,5 +1038,5 @@ ES2015 und die nachfolgenden Versionen bieten eine Menge nützliche neue Funktio
 * **Klassen**. Machen vieles einfacher und sind die Basis von **React Class Components**
 * Die **Rest und Spread Operatoren**, die das Lesen und Schreiben von Daten in Arrays und Objekten deutlich vereinfachen
 * **Template Strings**, um die Arbeit mit JavaScript Ausdrücken in Strings einfacher zu machen
-
 {% endhint %}
+
