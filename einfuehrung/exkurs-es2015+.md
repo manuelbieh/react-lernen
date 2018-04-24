@@ -183,7 +183,9 @@ Array.from(document.querySelectorAll('a'));
 Array.rom('Example'); // ['E', 'x', 'a', 'm', 'p', 'l', 'e']
 ```
 
-`Array.of()` erstellt eine neue Array-Instanz aus einer beliebigen Anzahl an Parametern, unabhängig von deren Typen. `Array.from()` erstellt ebenfalls eine Array-Instanz, allerdings aus einem „Array-ähnlichen“ iterierbaren Objekt. Das wohl griffigste Beispiel für ein solches Objekt ist eine DOMNodeList.
+`Array.of()` erstellt eine neue Array-Instanz aus einer beliebigen Anzahl an Parametern, unabhängig von deren Typen. `Array.from()` erstellt ebenfalls eine Array-Instanz, allerdings aus einem „Array-ähnlichen“ iterierbaren Objekt. Das wohl griffigste Beispiel für ein solches Objekt ist eine `DOMNodeList`.
+
+
 
 ## Arrow Functions
 
