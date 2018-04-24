@@ -1033,3 +1033,4 @@ ES2015 und die nachfolgenden Versionen bieten eine Menge nützliche neue Funktio
 * Die **Rest und Spread Operatoren**, die das Lesen und Schreiben von Daten in Arrays und Objekten deutlich vereinfachen
 * **Template Strings**, um die Arbeit mit JavaScript Ausdrücken in Strings einfacher zu machen
 
+{% endhint %}
