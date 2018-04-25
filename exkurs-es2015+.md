@@ -265,9 +265,23 @@ Analog verhält es sich mit `startsWith`:
 
 Die Methode arbeitet dabei case-sensitive, also unterscheidet zwischen Groß- und Kleinschreibung.
 
-### Array-Methoden
+Zwei weitere hilfreiche Methoden die mit ES2015 Einzug in JavaScript erhalten haben sind `String.prototype.padStart()` und `String.prototype.padEnd()`. Diese Methoden könnt ihr nutzen um einen String auf eine gewisse Länge zu bringen indem ihr am Anfang (`.padStart()`) oder am Ende (`.padEnd()`) Zeichen hinzufügt bis die angegebene Länge erreicht ist. Dabei gibt der erste Parameter die gewünschte Länge an, der optionale zweite Parameter das Zeichen mit dem ihr den String bis zu dieser Stelle auffüllen wollt. Gebt ihr keinen zweiten Parameter an, wird standardmäßig ein Leerzeichen benutzt.
+
+Hilfreich ist das bspw. wenn ihr Zahlen auffüllen wollt, so dass diese immer einheitlich dreistellig sind:
+
+```javascript
+  '7'.padStart(3, '0'); // 007
+ '72'.padStart(3, '0'); // 072
+'132'.padStart(3, '0'); // 132
+```
+
+`String.prototype.padEnd()` funktioniert nach dem gleichen Muster, mit dem Unterschied, dass es euren String am Ende auffüllt, nicht am Anfang.
+
+### Arrays
 
 Bei den Array-Methoden gibt es sowohl neue statische Methoden als auch Methoden auf dem Array-Prototype. Was bedeutet dies? Prototype-Methoden arbeiten „mit dem Array“ als solches, also mit einer bestehenden **Array-Instanz**, statische Methoden sind im weiteren Sinne Helper-Methoden, die gewisse Dinge tun, die „mit Arrays zu tun haben“.
+
+#### Statische Array-Methoden
 
 Fangen wir mit den statischen Methoden an:
 
@@ -283,6 +297,8 @@ Array.from('Example'); // ['E', 'x', 'a', 'm', 'p', 'l', 'e']
 const links = Array.from(document.querySelectorAll('a'));
 Array.isArray(links); // true
 ```
+
+#### Methoden auf dem Array-Prototypen
 
 Die Methoden auf dem Array-Prototypen können **direkt auf eine Array-Instanz** angewendet werden. Die gängigsten während der Arbeit mit React und insbesondere später mit Redux sind:
 
@@ -317,7 +333,9 @@ Die in ES2016 neu dazu gekommene Methode `Array.includes()` prüft ob ein Wert i
 
 Aufgepasst: die Methode ist case-sensitive. `['a', 'b'].includes('A')` gibt also `false` zurück.
 
-### Objekt-Methoden
+### Objekte
+
+#### Statische Objekt-Methoden
 
 Natürlich haben auch Objekte eine Reihe neuer Methoden und anderer schöner Möglichkeiten spendiert bekommen. Die wichtigsten im Überblick:
 
@@ -384,6 +402,88 @@ Object.values({ id: 1, name: 'Manuel'});
 // -> [1, 'Manuel']
 Object.entries({id: 1, name: 'Manuel'}); 
 // -> [['id', 1], ['name', 'Manuel']]
+```
+
+Zuletzt schauen wir uns `Object.freeze()` an. Auch diese Methode ist ziemlich selbsterklärend und tut genau was der Name vermuten lässt: sie friert ein Objekt ein, untersagt es dem Entwickler also neue Eigenschaften hinzuzfügen oder alte Eigenschaften zu löschen oder auch nur zu verändern. Auch dies ist im Umgang mit den Objekten, die in React in den meisten Fällen unveränderlich sind (oder zumindest sein sollten) unglaublich praktisch.
+
+```javascript
+const user = Object.freeze({ id: 1, name: 'Manuel' });
+user.id = 2;
+delete user.name;
+user.role = 'Admin';
+console.log(user);
+// -> { id: 1, name: 'Manuel' }
+```
+
+Ein mittels `Object.freeze()` erstelltes Objekt bietet auch guten Schutz vor versehentlicher mutation mittels der oben beschriebenen, ebenfalls neuen `Object.assign()`-Methode. Wird versucht ein mittels `Object.freeze()` erstelltes Objekt per `Object.assign()` zu modifizieren, führt dies unweigerlich zu seinem `TypeError`.
+
+#### Syntax-Erweiterungen und Vereinfachungen
+
+Die letzte Änderungen an der funktionsweise von Objekten sind keine Methode sondern Syntax-Erweiterungen. 
+
+Die erste sind die **Computed Properties** (also etwa _berechnete Eigenschaften_). Dahinter verbirbt sich die Möglichkeit Ausdrücke (bzw. deren Werte) als Objekt-Eigenschaften zu verwenden. Wollte man bspw. früher eine Eigenschaft in einem Objekt setzen, lief das meist so, dass man das Objekt erstellte (bspw. als **Object-Literal** `{}` oder per `Object.create()`), dieses einer Variablen zuwies und anschließend die neue Eigenschaft zum Objekt hinzufügte:
+
+```javascript
+const nationality = 'german';
+const user = {
+  name: 'Manuel',
+};
+user[nationality] = true;
+console.log(user);
+// -> { name: 'Manuel', german: true };
+```
+
+ES2015 erlaubt uns nun, Ausdrücke direkt als Objekt-Eigenschaft zu nutzen, indem wir sie in eckige Klammern `[]` setzen. Dadurch sparen wir uns den Umweg nachträglich noch Eigenschaften zum Bereits erstellten Objekt hinzuzufügen:
+
+```javascript
+const nationality = 'german';
+const user = {
+  name: 'Manuel',
+  [nationality]: true
+};
+console.log(user);
+// -> { name: 'Manuel', german: true };
+```
+
+Das Beispiel ist aus Gründen der einfacheren Verständlichkeit ein simples, doch die Verwendungsmöglichkeiten werden später mitunter noch deutlich komplexer und schaffen uns viele Möglichkeiten um sauberen und gut verständlichen Code zu schreiben, insbesondere wenn es um **JSX** geht.
+
+Die letzte nennenswerte Neuerung bei Objekten sind die sogenannten **Shorthand Property Names**. Diese ersparen uns eine Menge unnötige Schreibarbeit. Nicht erst seit React kennt man es, dass man auf Code wie dem folgenden stößt:
+
+```javascript
+const name = 'Manuel';
+const job = 'Developer';
+const role = 'Author';
+
+const user = {
+  name: name,
+  job: job,
+  role: role,
+};
+```
+
+Ziemlich viele unnötige Dopplungen wenn man sich das mal genau anschaut, oder? Genau diese nimmt uns die **Shorthand Property Name Syntax** in **ES2015** endlich ab. Und so reicht es nur noch die Variable zu schreiben wenn diese den Namen der entsprechenden Objekt-Eigenschaft trägt. Im obigen Fall also:
+
+```javascript
+const name = 'Manuel';
+const job = 'Developer';
+const role = 'Author';
+
+const user = {
+  name, job, role
+};
+```
+
+Jep. Seit **ES2015** führen beide Schreibweisen tatsächlich zum identischen Objekt! Dabei kann die Shorthand Syntax auch problemlos mit der herkömmlichen Syntax kombiniert werden:
+
+```javascript
+const name = 'Manuel';
+const job = 'Developer';
+
+const user = {
+  name,
+  job,
+  role: 'Author'
+};
 ```
 
 ## Classes
