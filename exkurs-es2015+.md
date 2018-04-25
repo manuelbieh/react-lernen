@@ -1046,20 +1046,18 @@ console.log(competitors);
 **Ausgabe:**
 
 {% hint style="info" %}
-`'Usain Bolt'    
+```javascript
+'Usain Bolt'
 'Andre De Grasse'    
 'Christophe Lemaitre'`  
-\`\[  
+[  
 'Adam Gemili',
-
 'Churandy Martina',
-
 'LaShawn Merritt',
-
 'Alonso Edward',
-
 'Ramil Guliyev'  
-\]\`
+]
+```
 {% endhint %}
 
 … wie auch beim **Object Destructuring:**
