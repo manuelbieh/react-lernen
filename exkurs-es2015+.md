@@ -265,7 +265,7 @@ Analog verhält es sich mit `startsWith`:
 
 Die Methode arbeitet dabei case-sensitive, also unterscheidet zwischen Groß- und Kleinschreibung.
 
-Zwei weitere hilfreiche Methoden die mit ES2015 Einzug in JavaScript erhalten haben sind `String.prototype.padStart()` und `String.prototype.padEnd()`. Diese Methoden könnt ihr nutzen um einen String auf eine gewisse Länge zu bringen indem ihr am Anfang (`.padStart()`) oder am Ende (`.padEnd()`) Zeichen hinzufügt bis die angegebene Länge erreicht ist. Dabei gibt der erste Parameter die gewünschte Länge an, der optionale zweite Parameter das Zeichen mit dem ihr den String bis zu dieser Stelle auffüllen wollt. Gebt ihr keinen zweiten Parameter an, wird standardmäßig ein Leerzeichen benutzt.
+Zwei weitere hilfreiche Methoden die mit ES2015 Einzug in JavaScript erhalten haben sind `String.prototype.padStart()` und `String.prototype.padEnd()`. Diese Methoden könnt ihr nutzen um einen String auf eine gewisse Länge zu bringen indem ihr am Anfang \(`.padStart()`\) oder am Ende \(`.padEnd()`\) Zeichen hinzufügt bis die angegebene Länge erreicht ist. Dabei gibt der erste Parameter die gewünschte Länge an, der optionale zweite Parameter das Zeichen mit dem ihr den String bis zu dieser Stelle auffüllen wollt. Gebt ihr keinen zweiten Parameter an, wird standardmäßig ein Leerzeichen benutzt.
 
 Hilfreich ist das bspw. wenn ihr Zahlen auffüllen wollt, so dass diese immer einheitlich dreistellig sind:
 
@@ -404,7 +404,7 @@ Object.entries({id: 1, name: 'Manuel'});
 // -> [['id', 1], ['name', 'Manuel']]
 ```
 
-Zuletzt schauen wir uns `Object.freeze()` an. Auch diese Methode ist ziemlich selbsterklärend und tut genau was der Name vermuten lässt: sie friert ein Objekt ein, untersagt es dem Entwickler also neue Eigenschaften hinzuzfügen oder alte Eigenschaften zu löschen oder auch nur zu verändern. Auch dies ist im Umgang mit den Objekten, die in React in den meisten Fällen unveränderlich sind (oder zumindest sein sollten) unglaublich praktisch.
+Zuletzt schauen wir uns `Object.freeze()` an. Auch diese Methode ist ziemlich selbsterklärend und tut genau was der Name vermuten lässt: sie friert ein Objekt ein, untersagt es dem Entwickler also neue Eigenschaften hinzuzfügen oder alte Eigenschaften zu löschen oder auch nur zu verändern. Auch dies ist im Umgang mit den Objekten, die in React in den meisten Fällen unveränderlich sind \(oder zumindest sein sollten\) unglaublich praktisch.
 
 ```javascript
 const user = Object.freeze({ id: 1, name: 'Manuel' });
@@ -419,9 +419,9 @@ Ein mittels `Object.freeze()` erstelltes Objekt bietet auch guten Schutz vor ver
 
 #### Syntax-Erweiterungen und Vereinfachungen
 
-Die letzte Änderungen an der funktionsweise von Objekten sind keine Methode sondern Syntax-Erweiterungen. 
+Die letzte Änderungen an der funktionsweise von Objekten sind keine Methode sondern Syntax-Erweiterungen.
 
-Die erste sind die **Computed Properties** (also etwa _berechnete Eigenschaften_). Dahinter verbirbt sich die Möglichkeit Ausdrücke (bzw. deren Werte) als Objekt-Eigenschaften zu verwenden. Wollte man bspw. früher eine Eigenschaft in einem Objekt setzen, lief das meist so, dass man das Objekt erstellte (bspw. als **Object-Literal** `{}` oder per `Object.create()`), dieses einer Variablen zuwies und anschließend die neue Eigenschaft zum Objekt hinzufügte:
+Die erste sind die **Computed Properties** \(also etwa _berechnete Eigenschaften_\). Dahinter verbirbt sich die Möglichkeit Ausdrücke \(bzw. deren Werte\) als Objekt-Eigenschaften zu verwenden. Wollte man bspw. früher eine Eigenschaft in einem Objekt setzen, lief das meist so, dass man das Objekt erstellte \(bspw. als **Object-Literal** `{}` oder per `Object.create()`\), dieses einer Variablen zuwies und anschließend die neue Eigenschaft zum Objekt hinzufügte:
 
 ```javascript
 const nationality = 'german';
@@ -439,7 +439,6 @@ ES2015 erlaubt uns nun, Ausdrücke direkt als Objekt-Eigenschaft zu nutzen, inde
 const nationality = 'german';
 const user = {
   name: 'Manuel',
-  [nationality]: true
 };
 console.log(user);
 // -> { name: 'Manuel', german: true };
@@ -1137,4 +1136,6 @@ ES2015 und die nachfolgenden Versionen bieten eine Menge nützliche neue Funktio
 * Die **Rest und Spread Operatoren**, die das Lesen und Schreiben von Daten in Arrays und Objekten deutlich vereinfachen
 * **Template Strings**, um die Arbeit mit JavaScript Ausdrücken in Strings einfacher zu machen
 {% endhint %}
+
+
 
