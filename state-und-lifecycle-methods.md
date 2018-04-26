@@ -180,3 +180,40 @@ Zuletzt gibt es noch eine Methode die in React 16 neu hinzukam und immer dann au
 
 Komponenten die eine `componentDidCatch()`-Methode implementieren werden auch als **Error Boundary** bezeichnet und dienen dazu eine Alternative zum fehlerhaften Elementenbaum darzustellen. Dies kann eine High Level Komponente sein \(bezogen auf die Komponenten-Hierarchie\), die grundsätzliche eine Fehler-Seite anzeigt und den Nutzer auffordert die Anwendung neu zu laden sollte ein Fehler auftreten, dies kann aber auch eine Low Level Komponente sein die nur einen kurzen Fehlertext neben einem Button ausgibt, sollte die Aktion die der Button ausgelöst hat einen Fehler geworfen haben.
 
+### Lifecycle-Methoden in der Praxis
+
+Werfen wir einmal einen Blick darauf wie sich die **Lifecycle-Methoden** in einer einfachen Komponente verhalten. Zu diesem Zweck implementieren wir beispielhalber eine Komponente die sekündlich ihren eigenen State verändert und jeweils die aktuelle Zeit ausgibt. Dazu wird beim **Mounting** der Komponente, also in der `componentDidMount()`-Methode, ein Interval gestartet, welches den State der Komponente aktualisiert, wodurch ein Rerendering ausgelöst und wieder die aktuelle Zeit angezeigt wird:
+
+```jsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+class Clock extends React.Component {
+  state = {
+    date: new Date(),
+  };
+  
+  componentDidMount() {
+    this.timer = setInterval(() => {
+      this.setState({
+        date: new Date(),
+      })
+    }, 1000);
+  }
+  
+  componentWillUnmount() {
+    clearTimeout(this.timer);
+  }
+  
+  render() {
+    return (
+      <div>{this.state.date.toLocaleTimeString()}</div>
+    );
+  }
+}
+
+ReactDOM.render(<Clock />, document.getElementById('root'));
+```
+
+
+
