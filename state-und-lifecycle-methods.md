@@ -159,11 +159,11 @@ Die folgenden Methoden werden **einmalig** aufgerufen wenn die Komponente erstma
 Die folgenden Methoden werden aufgerufen wenn Komponenten entweder durch die Hereingabe neuer Props von außen oder durch die Veränderung des eigenen States ein Update erhalten oder oder explizit die von React bereitgestellte `forceUpdate()`-Methode aufgerufen wird:
 
 * `componentWillReceiveProps()` \(deprecated ab React 17\)
-* `static getDerivedStateFromProps()  `
-* `shouldComponentUpdate()  `
+* `static getDerivedStateFromProps()`
+* `shouldComponentUpdate()`
 * `componentWillUpdate()`
-* `render()  `
-* `getSnapshotBeforeUpdate()  `
+* `render()`
+* `getSnapshotBeforeUpdate()`
 * `componentDidUpdate()`
 
 #### Unmounting
