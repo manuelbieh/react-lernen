@@ -228,5 +228,7 @@ Sollten wir dies einmal vergessen werden wir im Development-Modus von React aber
     in Clock
 {% endhint %}
 
+### Das Zusammenspiel von State und Props
+
 
 
