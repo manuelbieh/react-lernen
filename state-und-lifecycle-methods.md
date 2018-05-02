@@ -140,7 +140,7 @@ this.setState({ time: new Date().toLocaleTimeString() }, () => {
 
 Der Lifecycle einer Methode beginnt in dem Moment, in der diese **gemounted** wird, also innerhalb einer `render()`-Methode tatsächlich Teil zurückgegebenen Element-Baumes ist und endet, wenn die Komponente aus dem Baum der zu rendernden Elemente entfernt wird. Währenddessen gibt es noch Lifecycle-Methoden die auf Updates und auf Fehler reagieren.
 
-### Liste der Lifecycle-Methoden
+### Überblick über die Lifecycle-Methoden
 
 Im folgenden die Liste der Lifecycle-Methoden in der Reihenfolge wann und in welcher Phase diese durch React aufgerufen werden, sofern diese in einer Komponente definiert wurden:
 
@@ -228,7 +228,160 @@ Sollten wir dies einmal vergessen werden wir im Development-Modus von React aber
     in Clock
 {% endhint %}
 
+Anders als in einigen vorherigen Beispielen rufen wir hier die `ReactDOM.render()`-Methode nur ein einziges mal auf. Die Komponente kümmert sich ab dann „um sich selbst“ und löst einen Render-Vorgang aus, sobald sich ihr **State** aktualisiert hat. Dies ist die übliche Vorgehensweise bei der Entwicklung von Anwendungen die auf React basieren. Ein einziger `ReactDOM.render()`-Aufruf und ab dort verwaltet sich die App sozusagen von alleine, erlaubt Interaktion mit dem Benutzer, reagiert auf Zustandsänderungen und rendert regelmäßig das Interface neu.
+
 ### Das Zusammenspiel von State und Props
 
+Wir haben jetzt Beispiele gesehen für Komponenten, die Props verarbeiten und für Komponenten, die **stateful** sind, also ihren eigenen State verwalten. Doch es gibt noch eine ganze Menge mehr zu entdecken. Erst die Kombination mehrerer verschiedener Komponenten macht React erst zu dem mächtigen Werkzeug, das es ist. Eine Komponente kann dabei einen eigenen **State** haben und diesen gleichzeitig an Kind-Komponenten über deren **Props** weitergeben. So ist nicht nur die strikte Trennung von Business-Logik und Darstellung/Layout möglich sondern es erlaubt uns auch wunderbar Aufgaben basierte Komponenten zu entwickeln, die jeweils nur einen kleinen Teil der Applikation abbilden.
 
+Bei der Trennung von Business- und Layout-Komponenten ist im React Jargon meist die Rede von **Smart** \(Business-Logik\) und **Dumb** \(Layout\) Components. **Smart Components** sollten dabei möglichst wenig bis gar nicht mit der Darstellung des User Interfaces betraut werden, während **Dumb Components** frei von jeglicher Business-Logik oder Seiteneffekten sein sollten, sich also tatsächlich auf die reine Darstellung von statischen Werten konzentrieren.
+
+Schauen wir uns also das Zusammenspiel mehrerer Komponenten in einem weiteren Beispiel an:
+
+```jsx
+const ShowDate = ({ date }) => (
+  <div>Heute ist {date}</div>
+);
+
+const ShowTime = ({ time }) => (
+  <div>Es ist {time} Uhr</div>
+);
+
+class DateTime extends React.Component {
+  state = {
+    date: new Date(),
+  };
+
+  componentDidMount() {
+    this.intervalId = setInterval(() => {
+      this.setState(() => ({
+        date: new Date(),
+      }));
+    });
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalId);
+  }
+
+  render() {
+    return (
+      <div>
+        <ShowDate date={this.state.date.toLocaleDateString()} />
+        <ShowTime time={this.state.date.toLocaleTimeString()} />
+      </div>
+    )
+  }
+}
+
+ReactDOM.render(<DateTime />, document.getElementById('root'));
+```
+
+Zugegeben: das Beispiel ist sehr konstruiert, demonstriert aber leicht verständlich das Zusammenspiel mehrerer Komponenten. Die `DateTime` Komponente ist in diesem Sinne unsere **Logik-Komponente**: sie kümmert sich darum die Zeit zu "besorgen" und zu aktualisieren, überlässt dann aber den **Darstellungs-Komponenten** deren Ausgabe, indem sie das Datum \(`ShowDate`\) bzw. die Zeit \(`ShowTime`\) über die Props übergeben bekommt.
+
+Die Darstellungs-Komponenten selbst sind dabei als simple Stateless Functional Components implementiert, da diese selbst keinen eigenen State besitzen und daher kurz und knackig als SFC implementiert werden können.
+
+### Die Rolle der Lifecycle-Methoden im Zusammenspiel der Komponenten
+
+Eingangs habe ich neben den bisher in den Beispielen verwendeten `componentDidMount()` und `componentWillMount()` noch einige andere Lifecycle-Methoden erwähnt. Auch diese werden, sofern in einer Class Component definiert, zu den verschiedenen Anlässen von React berücksichtigt.
+
+Zu diesem Zweck wollen wir nun eine Übungskomponente entwickeln, welche die verschiedenen als Debug-Nachricht in der Console ausgibt. Genau genommen sind es zwei Komponenten, von denen eine als Eltern-Komponente, die andere als Kind-Komponente dient, die von ihrer Eltern-Komponente Props hineingereicht bekommt \(und in diesem Fall einfach ignoriert\).
+
+```jsx
+class ParentComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.log('constructor');
+  }
+
+  log = (method) => {
+    console.log('[parent component]', method);
+  };
+
+  componentDidMount() {
+    this.log('componentDidMount');
+    setTimeout(() => {
+      this.setState(() => ({
+        date: new Date(),
+      }));
+    }, 1000);
+  }
+
+  shouldComponentUpdate() {
+    this.log('shouldComponentUpdate');
+    return true;
+  }
+
+  componentDidUpdate() {
+    this.log('componentDidUpdate')
+  }
+
+  componentWillUnmount() {
+    this.log('componentWillUnmount');
+  }
+
+  render() {
+    return <ChildComponent />;
+  }
+}
+```
+
+```jsx
+class ChildComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.log('constructor');
+  }
+
+  log = (method) => {
+    console.log('[child component]', method);
+  };
+
+  componentDidMount() {
+    this.log('componentDidMount');
+  }
+
+  shouldComponentUpdate() {
+    this.log('shouldComponentUpdate');
+    return true;
+  }
+
+  componentDidUpdate() {
+    this.log('componentDidUpdate')
+  }
+
+  componentWillUnmount() {
+    this.log('componentWillUnmount');
+  }
+
+  render() {
+    this.log('render');
+    return null;
+  }
+}
+```
+
+
+
+```text
+[parent] constructor
+[parent] getDerivedStateFromProps
+[parent] render
+[child] constructor
+[child] getDerivedStateFromProps
+[child] render
+[child] componentDidMount
+[parent] componentDidMount
+[parent] shouldComponentUpdate
+[parent] render
+[child] getDerivedStateFromProps
+[child] shouldComponentUpdate
+[child] render
+[child] getSnapshotBeforeUpdate
+[parent] getSnapshotBeforeUpdate
+[child] componentDidUpdate
+[parent] componentDidUpdate
+[parent] componentWillUnmount
+[child] componentWillUnmount
+```
 
