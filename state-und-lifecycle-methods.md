@@ -288,77 +288,100 @@ Eingangs habe ich neben den bisher in den Beispielen verwendeten `componentDidMo
 Zu diesem Zweck wollen wir nun eine Übungskomponente entwickeln, welche die verschiedenen als Debug-Nachricht in der Console ausgibt. Genau genommen sind es zwei Komponenten, von denen eine als Eltern-Komponente, die andere als Kind-Komponente dient, die von ihrer Eltern-Komponente Props hineingereicht bekommt \(und in diesem Fall einfach ignoriert\).
 
 ```jsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+const log = (method, component) => {
+  console.log(`[${component}]`, method);
+};
+
 class ParentComponent extends React.Component {
+  state = {};
+
   constructor(props) {
     super(props);
-    this.log('constructor');
+    log('constructor', 'parent');
   }
 
-  log = (method) => {
-    console.log('[parent component]', method);
-  };
+  static getDerivedStateFromProps() {
+    log('getDerivedStateFromProps', 'parent');
+    return null;
+  }
 
   componentDidMount() {
-    this.log('componentDidMount');
-    setTimeout(() => {
+    log('componentDidMount', 'parent');
+    this.intervalId = setTimeout(() => {
       this.setState(() => ({
         date: new Date(),
       }));
-    }, 1000);
+    }, 2000);
   }
 
   shouldComponentUpdate() {
-    this.log('shouldComponentUpdate');
+    log('shouldComponentUpdate', 'parent');
     return true;
   }
 
+  getSnapshotBeforeUpdate() {
+    log('getSnapshotBeforeUpdate', 'parent');
+    return null;
+  }
+
   componentDidUpdate() {
-    this.log('componentDidUpdate')
+    log('componentDidUpdate', 'parent')
   }
 
   componentWillUnmount() {
-    this.log('componentWillUnmount');
+    log('componentWillUnmount', 'parent');
+    clearInterval(this.intervalId);
   }
 
   render() {
+    log('render', 'parent');
     return <ChildComponent />;
   }
 }
-```
 
-```jsx
 class ChildComponent extends React.Component {
   constructor(props) {
     super(props);
-    this.log('constructor');
+    log('constructor', 'child');
   }
 
-  log = (method) => {
-    console.log('[child component]', method);
-  };
+  static getDerivedStateFromProps() {
+    log('getDerivedStateFromProps', 'child');
+    return null;
+  }
 
   componentDidMount() {
-    this.log('componentDidMount');
+    log('componentDidMount', 'child');
   }
 
   shouldComponentUpdate() {
-    this.log('shouldComponentUpdate');
+    log('shouldComponentUpdate', 'child');
     return true;
   }
 
+  getSnapshotBeforeUpdate() {
+    log('getSnapshotBeforeUpdate', 'child');
+    return null;
+  }
+
   componentDidUpdate() {
-    this.log('componentDidUpdate')
+    log('componentDidUpdate', 'child');
   }
 
   componentWillUnmount() {
-    this.log('componentWillUnmount');
+    log('componentWillUnmount', 'child');
   }
 
   render() {
-    this.log('render');
+    log('render', 'child');
     return null;
   }
 }
+
+ReactDOM.render(<ParentComponent />, document.getElementById('root'));
 ```
 
 
