@@ -144,29 +144,29 @@ Der Lifecycle einer Methode beginnt in dem Moment, in der diese **gemounted** wi
 
 Im folgenden die Liste der Lifecycle-Methoden in der Reihenfolge wann und in welcher Phase diese durch React aufgerufen werden, sofern diese in einer Komponente definiert wurden:
 
-#### Mounting
+#### Mount-Phase
 
 Die folgenden Methoden werden **einmalig** aufgerufen wenn die Komponente erstmals gerendert werden, also, vereinfacht gesagt, erstmals zum DOM hinzugefügt werden:
 
-* `constructor()`
-* `getDerivedStateFromProps()`
-* `componentWillMount()` \(deprecated ab React 17\)
+* `constructor(props)`
+* `static getDerivedStateFromProps(nextProps, prevState)`
+* `componentWillMount(nextProps, nextState)` \(deprecated in React 17\)
 * `render()`
 * `componentDidMount()`
 
-#### Updating
+#### Update-Phase
 
 Die folgenden Methoden werden aufgerufen wenn Komponenten entweder durch die Hereingabe neuer Props von außen oder durch die Veränderung des eigenen States ein Update erhalten oder oder explizit die von React bereitgestellte `forceUpdate()`-Methode aufgerufen wird:
 
-* `componentWillReceiveProps()` \(deprecated ab React 17\)
-* `static getDerivedStateFromProps()`
-* `shouldComponentUpdate()`
-* `componentWillUpdate()`
+* `componentWillReceiveProps(nextProps)` \(deprecated in React 17\)
+* `static getDerivedStateFromProps(nextProps, prevState)`
+* `shouldComponentUpdate(nextProps, nextState)`
+* `componentWillUpdate(nextProps, nextState)` \(deprecated in React 17\)
 * `render()`
-* `getSnapshotBeforeUpdate()`
-* `componentDidUpdate()`
+* `getSnapshotBeforeUpdate(prevProps, prevState)`
+* `componentDidUpdate(prevProps, prevState, snapshot)`
 
-#### Unmounting
+#### Unmount-Phase
 
 Hier gibt es nur eine Methode, diese wird aufgerufen sobald die Komponente aus dem DOM entfernt wird. Dies ist nützlich um bspw. Event-Listener oder `setTimeout()`/`setInterval()`-Aufrufe, die beim Mounting der Komponente hinzugefügt wurden, wieder zu entfernen:
 
@@ -285,7 +285,7 @@ Die Darstellungs-Komponenten selbst sind dabei als simple Stateless Functional C
 
 Eingangs habe ich neben den bisher in den Beispielen verwendeten `componentDidMount()` und `componentWillMount()` noch einige andere Lifecycle-Methoden erwähnt. Auch diese werden, sofern in einer Class Component definiert, zu den verschiedenen Anlässen von React berücksichtigt.
 
-Zu diesem Zweck wollen wir nun eine Übungskomponente entwickeln, welche die verschiedenen als Debug-Nachricht in der Console ausgibt. Genau genommen sind es zwei Komponenten, von denen eine als Eltern-Komponente, die andere als Kind-Komponente dient, die von ihrer Eltern-Komponente Props hineingereicht bekommt \(und in diesem Fall einfach ignoriert\).
+Zu diesem Zweck wollen wir nun eine Übungskomponente erstellen, welche die verschiedenen Lifecycle-Methoden als Debug-Nachricht in der Console ausgibt. Genau genommen sind es zwei Komponenten, von denen eine als Eltern-Komponente, die andere als Kind-Komponente dient, die von ihrer Eltern-Komponente Props hineingereicht bekommt \(und in diesem Fall einfach ignoriert\).
 
 ```jsx
 import React from 'react';
@@ -311,6 +311,7 @@ class ParentComponent extends React.Component {
   componentDidMount() {
     log('componentDidMount', 'parent');
     this.intervalId = setTimeout(() => {
+      log('state update', 'parent');
       this.setState(() => ({
         date: new Date(),
       }));
@@ -384,7 +385,7 @@ class ChildComponent extends React.Component {
 ReactDOM.render(<ParentComponent />, document.getElementById('root'));
 ```
 
-
+Diese beiden Komponenten führen zuverlässig zur folgenden Ausgabe:
 
 ```text
 [parent] constructor
@@ -395,6 +396,7 @@ ReactDOM.render(<ParentComponent />, document.getElementById('root'));
 [child] render
 [child] componentDidMount
 [parent] componentDidMount
+[parent] state update
 [parent] shouldComponentUpdate
 [parent] render
 [child] getDerivedStateFromProps
@@ -407,4 +409,14 @@ ReactDOM.render(<ParentComponent />, document.getElementById('root'));
 [parent] componentWillUnmount
 [child] componentWillUnmount
 ```
+
+Oh wow. Hier passiert also eine ganze Menge. Gehen wir also Zeile für Zeile durch. 
+
+Als Erstes wird stets der `constructor` der `ParentComponent`-Komponente aufgerufen. React geht hier von „außen nach innen“ vor. Also Komponenten, die weiter oben in der Komponenten-Hierarchie stehen, werden zuerst instanziiert und anschließend deren `render()`-Methode aufgerufen. Dies ist notwendig, da React ansonsten nicht wüsste welche Kind-Komponenten überhaupt verarbeitet und berücksichtigt werden sollen, da React nur solche Kind-Komponenten berücksichtigt, die auch tatsächlich von der `render()`-Methode ihrer jeweiligen Eltern-Komponente zurückgegeben werden.
+
+Der Constructor bekommt als Parameter die Props der Komponente übergeben und sollte diese über `super(props)` an seine Elternklasse \(in der Regel ist das die `React.Component` oder `React.PureComponent` Klasse\) weitergeben, da `this.props` ansonsten im Constuctor `undefined` ist, was zu unerwünschtem Verhalten und Bugs führen kann.
+
+In vielen Fällen ist der Constructor heute gar nicht mehr notwendig wenn mit dem Babel-Plugin „Class Properties“ gearbeitet wird und sowohl State als auch Instanz-Methoden als Klassen-Eigenschaft implementiert werden. Ist dies nicht der Fall, ist der Constructor der Ort, um einen initialen State zu setzen \(bspw. `this.state = { }`\) und Instanz-Methoden mittels `.bind()` an die jeweilige Klassen-Instanz zu binden \(bspw. `this.handleClick = this.handleClick.bind(this)`\). Letzteres ist notwendig, da Instanz-Methoden bei der Verwendung als Event-Listener innerhalb von JSX sonst ihren Bezug zur Komponente verlieren würden und `this` nicht auf die Instanz der Komponente verweisen würde.
+
+Auf den Constructor folgt die statische `getDerivedStateFromProps()`-Methode. Da dies eine **statische** Methode ist \(und als solche wie auch in unserem Beispiel oben mit dem Keyword `static` ausgezeichnet werden muss\) hat sie keinerlei Zugriff auf die Instanz der Komponente mittels `this`. Die Methode dient dazu, um, basierend auf den in die Komponente hineingereichten Props und ggf. dem letzten State, den **nächsten State** der Komponente zu berechnen. Dieser wird als Objekt aus der Methode zurückgegeben. Sind keine Änderungen am State notwendig, soll `null` zurückgegeben werden.
 
