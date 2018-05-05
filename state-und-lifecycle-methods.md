@@ -466,7 +466,7 @@ Dies kann nützlich sein wenn man sich bspw. die aktuelle Scrollposition in eine
 
 Aus meiner Erfahrung wird diese Methode nur sehr selten verwendet, wahrscheinlich am seltensten von allen Lifecycle-Methoden.
 
-#### `componentDidUpdate(prevProps, prevState)`
+#### `componentDidUpdate(prevProps, prevState, snapshot)`
 
 
 
