@@ -60,7 +60,7 @@ Wieder erstellen wir ein **React-Element**, diesmal soll es uns beim Aufruf von 
 
 Ein Blick in die **Chrome Devtools** offenbart: bei jedem `ReactDOM.render()`-Aufruf wird stets nur die Uhrzeit selbst aktualisiert, die restlichen Elemente, wie die DOM-Nodes oder auch nicht betroffene Teil des angezeigten Textes bleiben unangetastet:
 
-![React aktualisiert nur die Zeit selbst, nichts anderes.](.gitbook/assets/react-update.png)
+![React aktualisiert nur die Zeit selbst, nichts anderes.](../.gitbook/assets/react-update.png)
 
 Und hier lernen wir zugleich auch eins der grundlegenden React Prinzipien in der Praxis kennen: das **deklarative** Vorgehen zur Erstellung von User Interfaces. Statt unserer Mini-App **imperativ** zu sagen, dass sie bitte sekündlich die Uhrzeit aktualisieren soll, definieren wir stattdessen **deklarativ** im **React-Element**, dass wir an einer gewissen Stelle jeweils stets bei jedem Re-Rendering die aktuelle Uhrzeit sehen möchten.
 
