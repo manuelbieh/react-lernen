@@ -6,7 +6,9 @@ Ich drücke einen Knopf und es passiert etwas. Ich schreibe einen Text in ein Fe
 
 Diese Inline-Events haben rein äußerlich sehr große Ähnlichkeit zu den HTML Event-Attributen \(also bspw. `<button onclick="myFunction" />`\) und doch ist ihre Funktionsweise grundlegend anders.
 
-Da wurde uns Web-Entwicklern über Jahre immer wieder beigebracht, dass man seine Event-Listener sauber von seinem Markup trennen sollte, Separation of Concerns, dann kommt React daher und macht wieder einfach alles anders. Und das ist in diesem Fall auch gut so, denn durch die Verwendung eines eigenen Systems zur Verwaltung von Events, nimmt uns React hier wieder eine ganze Menge Arbeit ab und erlaubt es uns außerdem im gewohnten Komponenten-Kontext zu bleiben.
+Da wurde uns Web-Entwicklern über Jahre immer wieder beigebracht, dass man seine Event-Listener sauber von seinem Markup trennen sollte, **Separation of Concerns**, dann kommt React daher und macht wieder einfach alles anders. 
+
+Und das ist in diesem Fall auch gut so, denn durch die Verwendung eines eigenen Systems zur Verwaltung von Events, nimmt uns React hier wieder eine ganze Menge Arbeit ab und erlaubt es uns außerdem relativ leicht im Komponenten-Kontext zu bleiben, indem wir alle Event-Handler als Klassen-Methoden implementieren können und so sowohl Darstellungslogik als auch Verhaltenslogik in einer einzigen Komponente kapseln können. Kein mühsames hin- und herspringen zwischen Controllern und Views!
 
 ### Unterschiede zur nativen Event API
 
@@ -16,9 +18,21 @@ Der dem Event-Handler übergebene erste Parameter ist auch kein Objekt vom Typ `
 
 Ein weiterer Unterschied zur nativen Browser-Event API ist der, dass explizit `preventDefault()` aufgerufen werden muss um das Standardverhalten des Browsers bei einem Event zu unterdrücken statt lediglich `false` aus dem Event-Handler zurückzugeben.
 
-Und nicht zuletzt, ist der im Event-Attribut \(bzw. Event-Prop in JSX\) angegebene Wert eine **Referenz zu einer Funktion** statt wie in HTML ein String. Folglich benötigen wir hier die geschweiften Klammern um unserem JSX mitzuteilen, dass es sich um einen Ausdruck handelt. Wie das aussieht? So:
+Und nicht zuletzt, ist der im Event-Attribut \(bzw. Event-Prop in JSX\) angegebene Wert eine **Referenz zu einer Funktion** statt wie in HTML ein String. Folglich benötigen wir hier die geschweiften Klammern um unserem JSX mitzuteilen, dass es sich um einen Ausdruck handelt. 
 
+Wie das aussieht? So:
 
+```jsx
+<button onClick={validateInput}>Validate</button>
+```
+
+Wohingegen ein vergleichbarer Event in HTML wie folgt aussähe:
+
+```markup
+<button onclick="validateInput">Validate</button>
+```
+
+Dieses Vorgehen, das auf den ersten Blick auf einige vielleicht erst einmal etwas eigenartig anmuten könnte bringt aber einige großartige Vorteile mit sich. Und so bekommen wir, wie eingangs bereits angesprochen, Cross-Browser-Kompatibilität „for free“. React registriert dabei im Hintergrund die Events sauber mittels `addEventListener()` und entfernt diese auch automatisch wieder für uns, sobald die Komponente entfernt \(_unmounted_\) wird. Praktisch!
 
 
 
