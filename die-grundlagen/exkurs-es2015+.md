@@ -415,7 +415,7 @@ console.log(user);
 // -> { id: 1, name: 'Manuel' }
 ```
 
-Ein mittels `Object.freeze()` erstelltes Objekt bietet auch guten Schutz vor versehentlicher mutation mittels der oben beschriebenen, ebenfalls neuen `Object.assign()`-Methode. Wird versucht ein mittels `Object.freeze()` erstelltes Objekt per `Object.assign()` zu modifizieren, führt dies unweigerlich zu seinem `TypeError`.
+Ein mittels `Object.freeze()` erstelltes Objekt bietet auch guten Schutz vor versehentlicher Mutation mittels der oben beschriebenen, ebenfalls neuen `Object.assign()`-Methode. Wird versucht ein mittels `Object.freeze()` erstelltes Objekt per `Object.assign()` zu modifizieren, führt dies unweigerlich zu seinem `TypeError`.
 
 #### Syntax-Erweiterungen und Vereinfachungen
 
