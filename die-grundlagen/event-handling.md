@@ -72,7 +72,7 @@ Hier definieren wir also einen `onClick`-Event um den Zähler jeweils um `1` zu 
 
 Und warum? **Scoping!** Da wir uns beim Klick auf den Button im Event-Handler `increase()` außerhalb der Komponenten-Instanz bewegen, können wir eben auch nicht auf `this.setState()` zugreifen. Dies ist kein fehlerhaftes Verhalten von React sondern das Standardverhalten von ES2015-Klassen. Um dieses Problem zu lösen gibt es nun verschiedene Möglichkeiten.
 
-#### Method Binding in der render\(\)-Methode
+#### Method-Binding in der render\(\)-Methode
 
 Die trivialste Methode ist das Binden der Methode innerhalb der `render()`-Methode. Dazu fügen wir ein `.bind(this)` an die Referenz zur Klassen-Methode:
 
@@ -80,5 +80,75 @@ Die trivialste Methode ist das Binden der Methode innerhalb der `render()`-Metho
 <button onClick={this.increase.bind(this)}>+1</button>
 ```
 
-Die Methode wird nun im Scope der Instanz aufgerufen und unser Counter zählt problemlos hoch. Dieses Muster sieht man relativ häufig, da es einfach implementiert ist, hat jedoch einen grundlegenden Nachteil. Denn es wird bei jedem Aufruf der Methode 
+Die Methode wird nun **im Scope der Komponenten-Instanz** aufgerufen und unser Counter zählt problemlos hoch. Dieses Muster sieht man relativ häufig, da es einfach implementiert ist, hat jedoch einen grundlegenden Nachteil. Denn es wird bei jedem Aufruf der Methode „on-the-fly“ eine neue Funktion erzeugt, die nicht mehr mit der vorherigen identisch ist. Ein simpler Check in einer `shouldComponentUpdate()`-Methode, der auf Gleichheit von `this.props.increase === prevProps.increase` prüft, würde somit stets `false` ergeben und ggf. ein Re-Rendering einer Komponente veranlassen, auch wenn sich die Funktion an sich nicht geändert hat. Dies ist ein potentielles **Performance-Bottleneck** und sollte daher möglichst vermieden werden!
+
+#### Method-Binding im Constructor
+
+Eine andere, sauberere Möglichkeit eine Methode an eine Klassen-Instanz zu binden ist, dies im Constructor bei der Instanziierung einer Klasse zu tun. 
+
+```jsx
+class Counter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.increase = this.increase.bind(this);
+  }
+  // […]
+}
+```
+
+Auf diesem Weg wird die Methode nur **einmal** an die Instanz gebunden. Ein eventueller Check auf Gleichheit von Methoden würde also `true` ergeben und unnötige Re-Renderings könnten bei der Verwendung sinnvoller `shouldComponentUpdate()`-Checks vermieden werden. Allerdings bringt dieser Weg auch eine ganze Menge Overhead mit sich. Vorausgesetzt wir nutzen nicht ohnehin bereits einen Constructor, müssen wir diesen nun implementieren. Dazu sollten wir die `super(props);` Methode aufrufen um die **Props** der Komponente an die `React.Component` Eltern-Klasse zu übergeben. Letztendlich schreiben wir noch zweimal den Namen der Methode die wir binden wollen indem wir sie sozusagen mit der an `this` gebundenen Version von sich selbst überschreiben.
+
+Das ist dennoch schon mal besser als die erste Methode, auch wenn es mehr Schreibarbeit ist, da wir uns potentielle Performance-Bottlenecks ersparen. Aber es gibt noch eine weitere, einfache Möglichkeit um mit minimalem Mehraufwand eine Methode an eine Instanz zu binden.
+
+#### Benutzung von Class Properties
+
+**Achtung:** dieser Weg setzt die Verwendung des Babel-Plugins `@babel/plugin-proposal-class-properties` voraus. Da dies jedoch wie bereits in der Einleitung beschrieben in den meisten React-Setups zum Standard gehört, gehe ich also davon aus, dass **Class Properties** genutzt werden können. ist dies nicht der Fall, sollten Event-Handler-Methoden immer im Constructor gebunden werden!
+
+Aber wie binden wir jetzt unsere Methode indem wir **Class Properties** nutzen? Streng genommen: indem wir schummeln! Statt eine echte Klassen-Methode zu implementieren wie im Eingangsbeispiel, definieren wir eine **Public Class Property** die als Wert eine per **Arrow Function** an die jeweilige Klasse gebundene Function zugewiesen bekommt. Das sieht dann wie folgt aus:
+
+```jsx
+increase = () => {
+  this.setState((state) => ({
+      counter: state.counter + 1,
+  }));
+}
+```
+
+Der entscheidende Faktor liegt hier in der ersten Zeile. Statt:
+
+```jsx
+increase() { … }
+```
+
+Schreiben wir:
+
+```jsx
+increase = () => { … }
+```
+
+**Problem gelöst! **
+
+Der Unterschied liegt hier wie erwähnt darin, dass wir im ersten Beispiel eine **echte Klassen-Methode** implementieren und im zweiten Fall stattdessen einer gleichnamigen Eigenschaft dieser Klasse eine **Arrow Function als Wert** zuweisen. Da diese kein eigenes `this` bindet, greifen wir in dieser auf das `this` der Klassen-Instanz zu.
+
+### Arbeiten mit dem `SyntheticEvent` Objekt
+
+**React übergibt Event-Handlern kein natives Event-Objekt** sondern ein eigenes Objekt vom Typ `SyntheticEvent`. Dies dient insbesondere dazu, Cross-Browser-Kompatibles Verhalten zu gewährleisten. React hält den originalen Event aber in der Objekt-Eigenschaft `nativeEvent` bereit. Sollte also jemals der Bedarf bestehen auf den Original-Event zuzugreifen \(ist mir bisher noch nie passiert\): ihr findet ihn in der `e.nativeEvent` Eigenschaft.
+
+Das `SyntheticEvent`-Objekt hat aber noch eine weitere Besonderheit im Vergleich mit dem nativen Event-Objekt, denn es ist **kurzlebig**. Aus Performance-Gründen wird das Objekt **nullified** nach dem Aufruf des Event-Callbacks, also kurz gesagt: es wird zurückgesetzt auf den Ausgangszustand. Ein Zugriff auf Eigenschaften des Event-Objekts außerhalb des originalen Event-Handlers ist daher nicht ohne Weiteres möglich.
+
+### Events außerhalb des Komponenten-Kontexts
+
+Die Verwendung von React schließt auch die Implementierung von nativen Browser-Events nicht aus. Allerdings sollte nach Möglichkeit immer das React eigene Event-System verwendet werden, da dieses Cross-Browser-Kompatibilität mitbringt, nach dem W3C Standard für Browser-Events arbeitet und zahlreiche Optimierungen vornimmt.
+
+Gelegentlich ist es jedoch notwendig Events außerhalb des Komponenten-Kontexts zu definieren. Ein Klassisches Beispiel sind `window.onresize` oder `window.onscroll` Events. Hier bietet React keine Möglichkeit von Haus aus um globale Events außerhalb des Komponenten spezifischen JSX zu definieren. Hier ist dann die `componentDidMount()`-Methode der richtige Ort um diese zu definieren. Dabei sollte allerdings auch stets darauf geachtet werden, dass Events die mittels `addEventListener()` definiert werden **immer auch entfernt werden!** 
+
+Der richtige Ort **dafür** ist dann die `componentWillUnmount()`-Methode. Werden eigene definierte globale Events nicht entfernt, werden diese mit jedem Mounting einer Komponente **erneut** hinzugefügt und auch erneut **mehrmals** aufgerufen, was letztendlich ebenfalls zu **Performance-Bottlenecks** und sogar zu **Memory-Leaks** führen kann.
+
+### Fazit
+
+{% hint style="info" %}
+* Zum Definieren von Events möglichst **immer** die Event-Props im JSX verwenden: `onChange`, `onMouseOver`, `onTouchStart`, `onKeyDown`, `onAnimationStart` usw.
+* Event-Handler müssen an die Klassen-Instanz gebunden werden. Der eleganteste Weg hierfür sind **Public Class Properties** und **Arrow Functions**
+* Eigene Events über die `addEventListener()`-API zu definieren sollte möglichst vermieden werden. Lässt es sich einmal nicht vermeiden, unbedingt daran denken diese Events beim Unmounting der Komponente mittels `removeEventListener()` zu entfernen!
+{% endhint %}
 
