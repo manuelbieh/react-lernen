@@ -167,16 +167,65 @@ class TextRepeater extends React.Component {
 }
 ```
 
-Wir registrieren einen onChange-Event, der bei einer Änderung im Textfeld den eingegebenen Wert in einem Paragraphen unter dem Textfeld wieder ausgibt. Um im Event-Handler auf den eingegebenen Wert zuzugreifen, das kennen wir möglicherweise aus nativem JavaScript oder von jQuery-Events, nutzen wir die `target`-Eigenschaft des `Event`-Objekts. Damit bekommen wir das Element, auf dem der Event stattgefunden hat, in unserem Beispiel also das Textfeld. Mittels `.value` greifen wir dann auf den aktuellen Wert des Textfelds zu um diesen in unseren State zu schreiben.
+Wir registrieren einen `onChange`-Event, der bei einer Änderung im Textfeld den eingegebenen Wert in einem Paragraphen unter dem Textfeld wieder ausgibt. Um im Event-Handler auf den eingegebenen Wert zuzugreifen, das kennt ihr möglicherweise bereits aus nativem JavaScript oder von jQuery-Events, Stelle das `Event`-Objekt die Eigenschaft `target` bereit. Damit bekommen wir das Element, auf dem der Event stattgefunden hat, in unserem Beispiel also das Textfeld. Dieses wiederum besitzt eine `value` Eigenschaft mittels der wir dann auf den aktuellen Wert des Textfelds zugreifen, um diesen in unseren State zu schreiben.
 
-Hier haben wir aber nun mit einem Fallstrick zu tun: der this.setState\(\)-Aufruf nutzt eine Updater-Funktion, also einen Callback. Dieser findet außerhalb des eigentlichen Event-Handler-Scopes statt. Das bedeutet, der SyntheticEvent wurde bereits wieder zurückgesetzt und e.target existiert zum Zeitpunkt des Aufrufs der Updater-Funktion schon gar nicht mehr:
+Hier haben wir aber nun mit einem Fallstrick zu tun: der `this.setState()`-Aufruf nutzt eine **Updater-Funktion**, also einen Callback. Dieser findet außerhalb des eigentlichen Event-Handler Scopes statt. Das bedeutet der `SyntheticEvent` wurde zu diesem Zeitpunkt bereits wieder zurückgesetzt und `e.target` existiert zum Zeitpunkt des Aufrufs der Updater-Funktion schon gar nicht mehr:
 
 {% hint style="danger" %}
 **TypeError  
 **Cannot read property 'value' of null
 {% endhint %}
 
+Die einfachste Lösung wäre hier statt der Updater-Funktion ein Object-Literal zu verwenden: 
 
+```jsx
+handleChange = (e) => {
+  this.setState({
+    value: e.target.value,
+  });
+}
+```
+
+Damit wäre unser Problem in dem Fall zwar gelöst, das hilft uns aber trotzdem nicht sonderlich weiter. Denn auf das gleiche Problem stoßen wir auch, wenn wir auf Eigenschaften des `SyntheticEvent`-Objekts bspw. in einem `setTimeout()`-Callback zugreifen wollen. Wir müssen uns also etwas anderes einfallen lassen.
+
+#### Werte in Variablen schreiben
+
+In den meisten Fällen sollte es ausreichen wenn einzelne Werte, auf die später im Callback zugegriffen werden, soll in eine Variable geschrieben werden. Im Callback wird dann nicht mehr auf den `SyntheticEvent` zugegriffen sondern lediglich auf die Variable, die einen Wert aus dem `SyntheticEvent` zugewiesen bekommen hat.
+
+```jsx
+handleChange = (e) => {
+  const value = e.target.value;
+  this.setState(() => ({
+    value: value,
+  }));
+}
+```
+
+Klappt. Bonuspunkte für Eleganz gibt es bei der Verwendung von **Object Destructuring** und dem **Object Property Shorthand**:
+
+```jsx
+handleChange = (e) => {
+  const { value } = e.target;
+  this.setState(() => ({ value }));
+}
+```
+
+#### Persistieren von `SyntheticEvents` mittels `e.persist()`
+
+Theoretisch möglich, in der Praxis aus meiner Erfahrung eher irrelevant: das `SyntheticEvent`-Objekt stellt eine eigene Methode `persist()` bereit, mit der eine Referenz zum entsprechenden Event beibehalten \(also persistiert\) werden kann. Ein möglicher Anwendungsfall wäre hier, das gesamte `SyntheticEvent`-Objekt an eine Callback-Funktion **außerhalb** des Event-Handlers weiterzugeben. 
+
+Sollte das jedoch notwendig sein, lohnt es sich aber womöglich darüber nachzudenken ob der Code der externen Callback-Funktion nicht besser im Event-Handler selbst besser aufgehoben wäre. Unsere Beispielfunktion von oben sieht in diesem Fall so aus:
+
+```jsx
+handleChange = (e) => {
+  e.persist();
+  this.setState(() => ({
+    value: e.target.value,
+  }));
+}
+```
+
+Zuerst rufen wir besagte `e.persist()`-Methode auf. Anschließend können wir auch in der **Updater-Funktion** sorglos auf `e.target` und dessen `value`-Eigenschaft zugreifen. 
 
 ### Fazit
 
@@ -184,5 +233,6 @@ Hier haben wir aber nun mit einem Fallstrick zu tun: der this.setState\(\)-Aufru
 * Zum Definieren von Events möglichst **immer** die Event-Props im JSX verwenden: `onChange`, `onMouseOver`, `onTouchStart`, `onKeyDown`, `onAnimationStart` usw.
 * Event-Handler müssen an die Klassen-Instanz gebunden werden. Der eleganteste Weg hierfür sind **Public Class Properties** und **Arrow Functions**
 * Eigene Events über die `addEventListener()`-API zu definieren sollte möglichst vermieden werden. Lässt es sich einmal nicht vermeiden, unbedingt daran denken diese Events beim Unmounting der Komponente mittels `removeEventListener()` zu entfernen!
+* `SyntheticEvent`-Objekte werden nullified. Vorsicht bei der Verwendung in Callback-Funktionen außerhalb des jeweiligen Event-Handlers!
 {% endhint %}
 
