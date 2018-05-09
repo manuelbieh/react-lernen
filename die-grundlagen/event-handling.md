@@ -130,12 +130,6 @@ increase = () => { … }
 
 Der Unterschied liegt hier wie erwähnt darin, dass wir im ersten Beispiel eine **echte Klassen-Methode** implementieren und im zweiten Fall stattdessen einer gleichnamigen Eigenschaft dieser Klasse eine **Arrow Function als Wert** zuweisen. Da diese kein eigenes `this` bindet, greifen wir in dieser auf das `this` der Klassen-Instanz zu.
 
-### Arbeiten mit dem `SyntheticEvent` Objekt
-
-**React übergibt Event-Handlern kein natives Event-Objekt** sondern ein eigenes Objekt vom Typ `SyntheticEvent`. Dies dient insbesondere dazu, Cross-Browser-Kompatibles Verhalten zu gewährleisten. React hält den originalen Event aber in der Objekt-Eigenschaft `nativeEvent` bereit. Sollte also jemals der Bedarf bestehen auf den Original-Event zuzugreifen \(ist mir bisher noch nie passiert\): ihr findet ihn in der `e.nativeEvent` Eigenschaft.
-
-Das `SyntheticEvent`-Objekt hat aber noch eine weitere Besonderheit im Vergleich mit dem nativen Event-Objekt, denn es ist **kurzlebig**. Aus Performance-Gründen wird das Objekt **nullified** nach dem Aufruf des Event-Callbacks, also kurz gesagt: es wird zurückgesetzt auf den Ausgangszustand. Ein Zugriff auf Eigenschaften des Event-Objekts außerhalb des originalen Event-Handlers ist daher nicht ohne Weiteres möglich.
-
 ### Events außerhalb des Komponenten-Kontexts
 
 Die Verwendung von React schließt auch die Implementierung von nativen Browser-Events nicht aus. Allerdings sollte nach Möglichkeit immer das React eigene Event-System verwendet werden, da dieses Cross-Browser-Kompatibilität mitbringt, nach dem W3C Standard für Browser-Events arbeitet und zahlreiche Optimierungen vornimmt.
@@ -143,6 +137,46 @@ Die Verwendung von React schließt auch die Implementierung von nativen Browser-
 Gelegentlich ist es jedoch notwendig Events außerhalb des Komponenten-Kontexts zu definieren. Ein Klassisches Beispiel sind `window.onresize` oder `window.onscroll` Events. Hier bietet React keine Möglichkeit von Haus aus um globale Events außerhalb des Komponenten spezifischen JSX zu definieren. Hier ist dann die `componentDidMount()`-Methode der richtige Ort um diese zu definieren. Dabei sollte allerdings auch stets darauf geachtet werden, dass Events die mittels `addEventListener()` definiert werden **immer auch entfernt werden!** 
 
 Der richtige Ort **dafür** ist dann die `componentWillUnmount()`-Methode. Werden eigene definierte globale Events nicht entfernt, werden diese mit jedem Mounting einer Komponente **erneut** hinzugefügt und auch erneut **mehrmals** aufgerufen, was letztendlich ebenfalls zu **Performance-Bottlenecks** und sogar zu **Memory-Leaks** führen kann.
+
+### Arbeiten mit dem `SyntheticEvent` Objekt
+
+**React übergibt Event-Handlern kein natives Event-Objekt** sondern ein eigenes Objekt vom Typ `SyntheticEvent`. Dies dient insbesondere dazu, Cross-Browser-Kompatibles Verhalten zu gewährleisten. React hält den originalen Event aber in der Objekt-Eigenschaft `nativeEvent` bereit. Sollte also jemals der Bedarf bestehen auf den Original-Event zuzugreifen \(ist mir bisher noch nie passiert\): ihr findet ihn in der `e.nativeEvent` Eigenschaft.
+
+Das `SyntheticEvent`-Objekt hat aber noch eine weitere Besonderheit im Vergleich mit dem nativen Event-Objekt, denn es ist **kurzlebig**. Aus Performance-Gründen wird das Objekt **nullified** nach dem Aufruf des Event-Callbacks, also kurz gesagt: es wird zurückgesetzt auf den Ausgangszustand. Ein Zugriff auf Eigenschaften des Event-Objekts außerhalb des originalen Event-Handlers ist daher nicht ohne Weiteres möglich.
+
+Was bedeutet das? Nun, folgendes Beispiel:
+
+```jsx
+class TextRepeater extends React.Component {
+  state = {};
+
+  handleChange = (e) => {
+    this.setState((state) => ({
+      value: e.target.value,
+    }));
+  }
+
+  render() {
+    return (
+      <div>
+        <input type="text" onChange={this.handleChange} />
+        <p>{this.state.value}</p>
+      </div>
+    )
+  }
+}
+```
+
+Wir registrieren einen onChange-Event, der bei einer Änderung im Textfeld den eingegebenen Wert in einem Paragraphen unter dem Textfeld wieder ausgibt. Um im Event-Handler auf den eingegebenen Wert zuzugreifen, das kennen wir möglicherweise aus nativem JavaScript oder von jQuery-Events, nutzen wir die `target`-Eigenschaft des `Event`-Objekts. Damit bekommen wir das Element, auf dem der Event stattgefunden hat, in unserem Beispiel also das Textfeld. Mittels `.value` greifen wir dann auf den aktuellen Wert des Textfelds zu um diesen in unseren State zu schreiben.
+
+Hier haben wir aber nun mit einem Fallstrick zu tun: der this.setState\(\)-Aufruf nutzt eine Updater-Funktion, also einen Callback. Dieser findet außerhalb des eigentlichen Event-Handler-Scopes statt. Das bedeutet, der SyntheticEvent wurde bereits wieder zurückgesetzt und e.target existiert zum Zeitpunkt des Aufrufs der Updater-Funktion schon gar nicht mehr:
+
+{% hint style="danger" %}
+**TypeError  
+**Cannot read property 'value' of null
+{% endhint %}
+
+
 
 ### Fazit
 
