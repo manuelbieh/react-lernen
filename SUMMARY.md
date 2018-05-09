@@ -13,4 +13,5 @@
   * [Komponenten in React](die-grundlagen/komponenten-in-react.md)
   * [State und Lifecycle-Methods](die-grundlagen/state-und-lifecycle-methods.md)
   * [Event-Handling](die-grundlagen/event-handling.md)
+  * [Formulare](die-grundlagen/formulare.md)
 
