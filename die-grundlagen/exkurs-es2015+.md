@@ -1127,7 +1127,122 @@ console.log(`${firstName.toUpperCase()} ${lastName.toUpperCase()}`);
 
 ## Promises und async/await
 
-Promises
+Promises (dt. _Versprechen_) sind kein grundsätzlich neues Konzept in JavaScript, in ES2015 haben sie aber erstmals Einzug in den Standard erhalten und können nativ ohne eine andere Library (z.B. q, Bluebird, rsvp.js, …) verwendet werden. Ganz grob erlauben Promises es, die asynchrone Entwicklung durch Callbacks zu _linearisieren_. Ein Promise bekommt eine **Executor-Funktion** übergeben, die ihrerseits die zwei Argumente `resolve` und `reject` übergeben bekommen, und kann einen von insgesamt drei verschiedenen Zuständen annehmen: als Initialwert ist dieser Zustand `pending` und je nachdem ob eine Operation erfolgreich oder fehlerhaft war, die Executor-Funktion also das erste (`resolve`) oder das zweite (`reject`) Argument ausgeführt hat, wechselt dieser Zustand zu `fulfilled` oder `rejected`. Auf die beiden Endzustände kann dann mittels der Methoden `.then()` und `.catch()` reagiert werden. Wird `resolve` aufgerufen, wird der ´then()`-Teil ausgeführt, wird `reject` aufgerufen, werden **sämtliche** `then()` Aufrufe übersprungen und der `catch()` Teil wird stattdessen ausgeführt.
+
+Eine Executor-Funktion **muss** dabei zwangsweise eine der beiden übergebenen Methoden ausführen, andernfalls bleibt das Promise dauerhaft _unfulfilled_, was zu fehlerhaften Verhalten und in bestimmten Fällen sogar zu Memory Leaks innerhalb einer Anwendung führen kann. 
+
+Um den Unterschied zwischen Promises und Callbacks einmal zu demonstrieren werfen wir einen Blick auf das folgende fiktive Beispiel:
+
+```javascript
+const errorHandler = (err) => {
+  console.error('An error occured:', err.message);
+};
+
+getUser(id, (user) => {
+    user.getFriends((friends) => {
+        friends[0].getSettings((settings) => {
+            if (settings.notifications === true) {
+                email.send('You are my first friend!', (status) => {
+                    if (status === 200) {
+                        alert('User has been notified via email!');
+                    }
+                }, errorHandler);
+            }
+        }, errorHandler);
+    }, errorHandler)
+}, errorHandler)
+```
+
+Wir rufen über die asynchrone `getUser()`-Funktion einen User zu einer entsprechenden `id` ab. Von diesem User besorgen wir uns mittels der asynchronen `getFriends()`-Methode eine Liste aller seiner Freunde. Vom ersten Freund (`friends[0]`) rufen wir mittels der asynchronen `getSettings()`-Methode die Benutzereinstellungen ab. Erlaubt der Benutzer E-Mail-Benachrichtigungen, schicken wir ihm eine E-Mail und reagieren, ebenfalls wieder asynchron, auf den Response des Mailservers. 
+
+Dabei ist das Beispiel noch ein relativ simples, es gibt keinerlei explizite Fehlerbehandlung und es gibt auch keine nennenswerten Ausnahmefälle. Dennoch ist der Code im Beispiel bereits **6 Ebenen** tief verschachtelt. Das Arbeiten mit Callbacks kann daher schnell unübersichtlich werden, insbesondere wenn innerhalb einer Callback-Funktion weitere Callback-Funktionen ausgeführt werden, wie in unserem Beispiel. So kommt es schnell zu der oft auch als **Pyradmid of Doom** bezeichneten Verschachtelung von Callbacks.
+
+Nun schreiben wir das Beispiel einmal um und gehen davon aus, unsere fiktiven API-Methoden geben jeweils ein Promise zurück:
+
+```javascript
+const errorHandler = (err) => {
+  console.error('An error occured:', err.message);
+};
+
+getUser(id)
+.then((user) => user.getFriends())
+.then((friends) => friends[0].getSettings())
+.then((settings) => {
+    if (settings.notifications === true) {
+        return email.send('You are my first friend!');
+    }
+})
+.then((status) => {
+    if (status === 200) {
+        alert('User has been notified via email');
+    }
+})
+.catch(errorHandler);
+```
+
+Wir reagieren hier nach jedem Schritt mittels `then()` auf das zurückgegebene Promise, erreichen das gleiche Resultat wie vorher bei der Callback-Version, haben aber an der tiefsten Stelle lediglich eine Verschachtelung die 2 Ebenen tief ist.
+
+Dabei ist es relativ simpel bestehenden, Callback basierenden Code in Promises umzuschreiben. Das möchte ich kurz anhand der Geolocation API und konkret deren `getCurrentPosition()`-Methode demonstrieren. Wer es nicht kennt: die Methode existiert auf dem `navigator.geolocation` Objekt, öffnet eine Benachrichtigung im Browser und fragt den Benutzer um Erlabnis ihn orten zu dürfen. Sie erwartet zwei Callbacks als Argument: das erste, der Success-Callback, bekommt ein Objekt mit der Position des Benutzers übergeben, falls dieser der Ortung zustimmt. Der zweite, der Error-Callback, bekommt ein Fehler-Objekt übergeben, falls der Benutzer einer Ortung entweder nicht zugestimmt hat oder eine Ortung aus anderen Gründen nicht möglich ist.
+
+```javascript
+navigator.geolocation.getCurrentPosition((position) => {
+  console.log(`User position is at ${position.coords.latitude}, ${position.coords.longitude}`);
+}, () => {
+  console.log('Unable to locate user');
+});
+```
+
+Und so wird der Callback in ein Promise umgewandelt:
+
+```javascript
+const getCurrentPositionPromise = () => {
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+```
+
+Jap. Das war es wirklich schon. Nun können wir statt mittels der Callback-Syntax über folgenden Aufruf auf die Position des Benutzers zugreifen:
+
+```javascript
+getCurrentPositionPromise()
+.then((position) => {
+  console.log(`User position is at ${position.coords.latitude}, ${position.coords.longitude}`);
+})
+.catch(() => {
+  console.log('Unable to locate user');
+});
+```
+
+Einige neuere JavaScript APIs im Browser sind bereits diesem Ansatz folgend implementiert worden. Wer mehr über Promises und deren Funktionsweise erfahren möchte, dem empfehle ich [den entsprechenden Artikel bei den MDN Web Docs](https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Promise) zu lesen. Die Erklärung zu Promises sollte nur einleitend sein um auf ein deutlich spannenderes neues Feature vorzubereiten, nämlich:
+
+### Asynchrone Funktionen mit `async` und `await`
+
+Asynchrone Funktionen mit den Schlüsselwörtern `async` und `await` kann vielleicht ein Bisschen als die „nächste Evolutionsstufe“ in der asynchronen Entwicklung nach Callbacks und Promises gesehen werden. Sie haben Einzug in die JavaScript-Spezifikation in ES2016 erhalten. Unter der Haube nutzen sie zwar noch immer Promises, machen diese aber weitgehend unsichtbar. Sie erlauben es uns asynchronen Code so zu schreiben, dass er nahezu wie synchroner Code aussieht. Keine Callbacks mehr und auch kein `then()` oder `catch()` mehr.
+
+Dazu wird einem asynchronen Funktionsaufruf das Schlüsselwort `await` vorangestellt. Um `await` nutzen zu können, muss die umgebende Funktion das zweite Schlüsselwort `async` vorangestellt werden, um dem JavaScript-Interpreter mitzuteilen, dass es sich um eine solche asynchrone Funktion handelt. Bei der Nutzung von `await` ohne eine Funktion als `async` zu markieren kommt es zu einer Exception.
+
+Werfen wir also nochmal einen Blick auf das Beispiel unseres Users, der eine E-Mail an seinen ersten Freund schicken möchte. Diesmal mit asynchronen Funktionen:
+
+```javascript
+(async () => {
+  try {
+    const user = await getUser(id);
+    const friends = await user.getFriends();
+    const settings = await friends[0].getSettings();
+    if (settings.notifications === true) {
+      const status = await email.send('You are my first friend!');
+      if (status === 200) {
+          alert('User has been notified via email');
+      }
+    }
+  } catch (err) {
+    console.error('An error occured:', err.message);
+  }
+})();
+```
+
+Asynchrone Funktionen mit `async` und `await` sind für mich persönlich eine der nennenswertesten Veränderungen von JavaScript in den vergangenen Jahren, da sie das Arbeiten mit asynchronen Daten fast zum Kinderspiel werden lassen, verglichen mit komplexen und unübersichtlichen Callbacks. Und auch Promises, die bereits eine große Erleichterung ggü. herkömmlichen Callbacks waren, wirken im direkten Vergleich mit asynchronen Funktionen schon beinahe komplex.
 
 ## Fazit
 
@@ -1138,6 +1253,7 @@ ES2015 und die nachfolgenden Versionen bieten eine Menge nützliche neue Funktio
 * **Arrow Functions**, um Funktionen zu erstellen die kein eigenes `this` binden
 * **Klassen**. Machen vieles einfacher und sind die Basis von **React Class Components**
 * Die **Rest und Spread Operatoren**, die das Lesen und Schreiben von Daten in Arrays und Objekten deutlich vereinfachen
-* **Template Strings**, um die Arbeit mit JavaScript Ausdrücken in Strings einfacher zu machen
+* **Template Strings**, um die Arbeit mit JavaScript-Ausdrücken in Strings einfacher zu machen
+* **Promises** und **Asynchrone Funktionen** mittels `async`/`await` um die Arbeit mit asynchronen Daten deutlich zu vereinfachen
 {% endhint %}
 
