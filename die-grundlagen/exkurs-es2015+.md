@@ -1125,10 +1125,13 @@ console.log(`Das heutige Datum ist ${new Date().toISOString()}`);
 console.log(`${firstName.toUpperCase()} ${lastName.toUpperCase()}`);
 ```
 
+## Promises und async/await
+
+
+
 ## Fazit
 
 {% hint style="success" %}
-
 ES2015 und die nachfolgenden Versionen bieten eine Menge nützliche neue Funktionen die es bisher in JavaScript nicht gab. Viele davon sind bei der Arbeit mit React nahezu nicht wegzudenken. Zu den wichtigsten Neuerungen gehören die hier beschriebenen:
 
 * Variablendeklarationen mit `let` und `const`
@@ -1136,4 +1139,5 @@ ES2015 und die nachfolgenden Versionen bieten eine Menge nützliche neue Funktio
 * **Klassen**. Machen vieles einfacher und sind die Basis von **React Class Components**
 * Die **Rest und Spread Operatoren**, die das Lesen und Schreiben von Daten in Arrays und Objekten deutlich vereinfachen
 * **Template Strings**, um die Arbeit mit JavaScript Ausdrücken in Strings einfacher zu machen
+{% endhint %}
 
