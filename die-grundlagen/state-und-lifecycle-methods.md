@@ -488,7 +488,7 @@ Event Listener. Gutes Stichwort. Darum kümmern wir uns im nächsten Kapitel, de
 
 ### Diagram
 
-![Diagram der verschiedenen Lifecycle Methods in ihren jeweiligen Phasen \(&#xA9; Dan Abramov\)](../.gitbook/assets/bmfcrqm.jpg)
+![Diagram der verschiedenen Lifecycle Methods in ihren jeweiligen Phasen \(CC0 Dan Abramov\)](../.gitbook/assets/bmfcrqm.jpg)
 
 
 
