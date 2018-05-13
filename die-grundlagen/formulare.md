@@ -119,9 +119,105 @@ Moment mal, denkt ihr euch jetzt vielleicht. Welches `value`-Attribut beim `<sel
 
 React vereinheitlicht hier den Mechanismus  ein wenig und erfordert für die drei Elemente `input` \(alle Typen mit Ausnahme `checkbox` und `radio`\), `textarea` und `select` ein `value`-Attribut! Bei einfachen Werten muss dies **immer ein String** sein, bei einer Auswahlliste mit dem `multiple`-Attribut wie eben erwähnt ein **Array bestehend aus Strings**!
 
-Darüber hinaus muss eine Änderung eines Formular-Elements immer auch zurück in den React-State übertragen werden.
+Darüber hinaus muss eine Änderung eines Formular-Elements immer auch zurück in den React-State übertragen werden. Dies kann mitunter etwas mühsam werden, insbesondere bei Checkboxen und Radiobuttons, bei denen nicht lediglich ein Wert geändert wird sondern der Status \(`checked`\) zu einem Wert.
 
+Im folgenden eine vollständig kontrollierte Komponente mit allen Grundtypen an Formular-Elementen die HTML kennt \(andere `input`-Elemente vom vom Typ `email`, `date`, `range`, etc. funktionieren identisch wie Eingabefelder vom Typ `text`\).
 
+```jsx
+class FullyControlledComponent extends React.Component {
+  state = {
+    text: "",
+    textarea: "",
+    checkbox: false,
+    singleSelect: "",
+    multipleSelect: [],
+  };
+
+  changeValue = ({ target: { name, value } }) => {
+    this.setState(() => ({
+      [name]: value,
+    }));
+  };
+
+  changeCheckbox = ({ target: { name, checked } }) => {
+    this.setState(() => ({
+      [name]: checked,
+    }));
+  };
+
+  changeSelect = ({ target: { name, value, selectedOptions, multiple } }) => {
+    if (multiple) {
+      value = Array.from(selectedOptions).map(option => option.value);
+    }
+
+    this.setState(() => ({
+      [name]: value,
+    }));
+  };
+
+  render() {
+    return (
+      <form>
+        <input
+          type="text"
+          name="text"
+          value={this.state.text}
+          onChange={this.changeValue}
+        />
+
+        <textarea
+          name="textarea"
+          value={this.state.textarea}
+          onChange={this.changeValue}
+        />
+
+        <input
+          type="checkbox"
+          name="checkbox"
+          checked={this.state.checkbox}
+          onChange={this.changeCheckbox}
+        />
+
+        <input
+          type="radio"
+          name="radio"
+          value="1"
+          checked={this.state.radio === "1"}
+          onChange={this.changeValue}
+        />
+        <input
+          type="radio"
+          name="radio"
+          value="2"
+          checked={this.state.radio === "2"}
+          onChange={this.changeValue}
+        />
+
+        <select
+          name="singleSelect"
+          value={this.state.singleSelect}
+          onChange={this.changeValue}
+        >
+          <option value="1">One</option>
+          <option value="2">Two</option>
+        </select>
+
+        <select
+          name="multipleSelect"
+          value={this.state.multipleSelect}
+          onChange={this.changeSelect}
+          multiple
+        >
+          <option value="1">One</option>
+          <option value="2">Two</option>
+        </select>
+
+        <pre>{JSON.stringify(this.state, null, 2)}</pre>
+      </form>
+    );
+  }
+}
+```
 
 
 
