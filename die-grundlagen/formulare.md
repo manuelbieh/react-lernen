@@ -198,6 +198,7 @@ class FullyControlledComponent extends React.Component {
           value={this.state.singleSelect}
           onChange={this.changeValue}
         >
+          <option value="">Bitte auswählen</option>
           <option value="1">One</option>
           <option value="2">Two</option>
         </select>
