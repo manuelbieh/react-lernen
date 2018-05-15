@@ -66,8 +66,8 @@ class Counter extends React.Component {
 Hier definieren wir also einen `onClick`-Event um den Zähler jeweils um `1` zu erhöhen, sobald der Benutzer auf den Button `+1` klickt. Beim Klick auf den Button sieht unser Benutzer aber stattdessen:
 
 {% hint style="danger" %}
-**TypeError  
-** Cannot read property 'setState' of undefined
+**TypeError**  
+ Cannot read property 'setState' of undefined
 {% endhint %}
 
 Und warum? **Scoping!** Da wir uns beim Klick auf den Button im Event-Handler `increase()` außerhalb der Komponenten-Instanz bewegen, können wir eben auch nicht auf `this.setState()` zugreifen. Dies ist kein fehlerhaftes Verhalten von React sondern das Standardverhalten von ES2015-Klassen. Um dieses Problem zu lösen gibt es nun verschiedene Möglichkeiten.
@@ -126,7 +126,7 @@ Schreiben wir:
 increase = () => { … }
 ```
 
-**Problem gelöst! **
+**Problem gelöst!** 
 
 Der Unterschied liegt hier wie erwähnt darin, dass wir im ersten Beispiel eine **echte Klassen-Methode** implementieren und im zweiten Fall stattdessen einer gleichnamigen Eigenschaft dieser Klasse eine **Arrow Function als Wert** zuweisen. Da diese kein eigenes `this` bindet, greifen wir in dieser auf das `this` der Klassen-Instanz zu.
 
@@ -172,8 +172,8 @@ Wir registrieren einen `onChange`-Event, der bei einer Änderung im Textfeld den
 Hier haben wir aber nun mit einem Fallstrick zu tun: der `this.setState()`-Aufruf nutzt eine **Updater-Funktion**, also einen Callback. Dieser findet außerhalb des eigentlichen Event-Handler Scopes statt. Das bedeutet der `SyntheticEvent` wurde zu diesem Zeitpunkt bereits wieder zurückgesetzt und `e.target` existiert zum Zeitpunkt des Aufrufs der Updater-Funktion schon gar nicht mehr:
 
 {% hint style="danger" %}
-**TypeError  
-**Cannot read property 'value' of null
+**TypeError**  
+Cannot read property 'value' of null
 {% endhint %}
 
 Die einfachste Lösung wäre hier statt der Updater-Funktion ein Object-Literal zu verwenden: 

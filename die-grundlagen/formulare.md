@@ -117,7 +117,7 @@ Moment mal, denkt ihr euch jetzt vielleicht. Welches `value`-Attribut beim `<sel
 
 React vereinheitlicht hier den Mechanismus zum ändern von Werten etwas und erfordert für die drei Elemente `input` \(alle Typen mit Ausnahme `checkbox` und `radio`\), `textarea` und `select` ein `value`-Attribut! Bei einfachen Werten muss dies **immer ein String** sein, bei einer Auswahlliste mit dem `multiple`-Attribut wie eben erwähnt ein **Array bestehend aus Strings**!
 
-Darüber hinaus muss eine Änderung eines Formular-Elements** immer auch zurück in den React-State übertragen werden**. Dies kann mitunter etwas mühsam werden, insbesondere bei Checkboxen und Radiobuttons, bei denen nicht lediglich ein Wert geändert wird sondern der Status \(`checked`\) zu einem Wert.
+Darüber hinaus muss eine Änderung eines Formular-Elements **immer auch zurück in den React-State übertragen werden**. Dies kann mitunter etwas mühsam werden, insbesondere bei Checkboxen und Radiobuttons, bei denen nicht lediglich ein Wert geändert wird sondern der Status \(`checked`\) zu einem Wert.
 
 Im folgenden möchte ich eine vollständig kontrollierte Komponente zeigen, die alle Grundtypen von Formular-Elementen die HTML beinhaltet \(andere `input`-Elemente vom vom Typ `email`, `date`, `range`, etc. funktionieren identisch wie Eingabefelder vom Typ `text`\).
 

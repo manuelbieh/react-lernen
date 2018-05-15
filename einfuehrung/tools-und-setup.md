@@ -18,7 +18,7 @@ Während Node mit npm bereits einen guten und soliden Package-Manager mitbringt,
 
 oder einfach kurz:
 
-`npm i -g yarn`
+`npm i -g yarn`
 
 Wir haben gerade außerdem unser erstes Package installiert. Easy! Das Commandline-Flag `--global` \(bzw. `-g`\)  sorgt dabei dafür, dass die `yarn` Executable global installiert wird und von überall auf eurem Gerät auf der Kommandozeile ausgeführt werden kann.
 
@@ -68,11 +68,11 @@ Und in der Tat, **Create React App** macht es gerade Einsteigern \(aber nicht nu
 
 Wer stattdessen npm bevorzugt, muss momentan noch zwei Befehle ausführen:
 
-`npm install -g create-react-app`
+`npm install -g create-react-app`
 
 … um die **Create React App** Executable global zu installieren und anschließend
 
-`create-react-app projektname`
+`create-react-app projektname`
 
 Und schon wird im Ordner „_projektname_“ ein vollständiges React-Setup mit einigen kleinen Beispiel-Komponenten erzeugt. Ich würde empfehlen dies jetzt einfach mal zu tun, denn die ersten Code-Beispiele werden zu Beginn allesamt auf einem gewöhnlichen CRA-Setup basieren und können so recht einfach ausprobiert werden. 
 
