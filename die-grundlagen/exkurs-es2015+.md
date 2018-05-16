@@ -1246,6 +1246,24 @@ Asynchrone Funktionen mit `async` und `await` sind für mich persönlich eine de
 
 ## import Syntax und Javascript Module
 
+Module in JavaScript sind so eine Sache. Offiziell gab es sie nie, aber es gab immer wieder Versuche, Module in JavaScript einzuführen. Wer schon etwas länger dabei ist wird vielleicht noch AMD (Asynchronous Module Definition) kennen, wer schon etwas mit Node.js gearbeitet hat, dem sollten CommonJS-Module (`require('./myModule')`) ein Begriff sein. Lange gab es dann ausführliche Diskussionen darum, auf welchen Modul-Standard man sich einigt, wie die Syntax aussieht und wie letztendlich die Implementierung auf Interpreter-Seite aussieht.
+
+Babel ist dann vorangegangen und hat eine eigene Lösung implementiert. Diese Umsetzung zwischendrin mal geändert, weil es Updates am entsprechenden Standard gab, dann kam Webpack und führte eine eigene JavaScript-Modulimplementierung an, die sich am Standard orientiert. Mittlerweile hat man sich geeinigt und die Umsetzung auf Seiten der JavaScript-Engines ist im vollen Gange. Klingt kompliziert, ist es zwischendrin auch mal gewesen, inzwischen gibt es aber breiten Konsens und für uns Entwickler herrscht Klarheit.
+
+Soviel zur Historie. Also wie funktionieren jetzt Imports und was sind Module überhaupt?
+
+## Module in JavaScript
+
+Das Ziel von Modulen ist es, Scopes in JavaScript auf einer per Modul-Ebene zu kapseln.
+
+Recht intuitiv, um genau zu sein. Kurzform: ihr schreibt das `import`-Keyword, gefolgt von einem (schreibgeschützten) Variablennamen unter dem ihr auf euren Import zugreifen wollt, gefolgt vom Keyword `from` und dem Pfad zur Datei bzw dem Modul. Also, direkt am Beispiel von React:
+
+```jsx
+import React from 'react';
+```
+
+Das ist aber nur die halbe Wahrheit. Denn erst einmal müsst ihr ein Modul haben aus dem ihr etwas exportiert, bevor ihr es anderswo importieren zu können. 
+
 ## Fazit
 
 {% hint style="success" %}
