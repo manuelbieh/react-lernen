@@ -1244,6 +1244,8 @@ Werfen wir also nochmal einen Blick auf das Beispiel unseres Users, der eine E-M
 
 Asynchrone Funktionen mit `async` und `await` sind für mich persönlich eine der nennenswertesten Veränderungen von JavaScript in den vergangenen Jahren, da sie das Arbeiten mit asynchronen Daten fast zum Kinderspiel werden lassen, verglichen mit komplexen und unübersichtlichen Callbacks. Und auch Promises, die bereits eine große Erleichterung ggü. herkömmlichen Callbacks waren, wirken im direkten Vergleich mit asynchronen Funktionen schon beinahe komplex.
 
+## import Syntax und Javascript Module
+
 ## Fazit
 
 {% hint style="success" %}
