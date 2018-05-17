@@ -1244,25 +1244,108 @@ Werfen wir also nochmal einen Blick auf das Beispiel unseres Users, der eine E-M
 
 Asynchrone Funktionen mit `async` und `await` sind für mich persönlich eine der nennenswertesten Veränderungen von JavaScript in den vergangenen Jahren, da sie das Arbeiten mit asynchronen Daten fast zum Kinderspiel werden lassen, verglichen mit komplexen und unübersichtlichen Callbacks. Und auch Promises, die bereits eine große Erleichterung ggü. herkömmlichen Callbacks waren, wirken im direkten Vergleich mit asynchronen Funktionen schon beinahe komplex.
 
-## import Syntax und Javascript Module
+## import-Syntax und Javascript-Module
 
-Module in JavaScript sind so eine Sache. Offiziell gab es sie nie, aber es gab immer wieder Versuche, Module in JavaScript einzuführen. Wer schon etwas länger dabei ist wird vielleicht noch AMD (Asynchronous Module Definition) kennen, wer schon etwas mit Node.js gearbeitet hat, dem sollten CommonJS-Module (`require('./myModule')`) ein Begriff sein. Lange gab es dann ausführliche Diskussionen darum, auf welchen Modul-Standard man sich einigt, wie die Syntax aussieht und wie letztendlich die Implementierung auf Interpreter-Seite aussieht.
+Module in JavaScript sind so eine Sache. Offiziell gab es sie bisher nicht, aber es gab immer wieder Versuche, Module in JavaScript einzuführen. Wer schon etwas länger dabei ist wird vielleicht noch **AMD** (Asynchronous Module Definition) kennen, wer mal mit Node.js gearbeitet hat, dem sollten außerdem CommonJS-Module (d.h. `module.exports` und `require('./myModule')`) ein Begriff sein. Lange gab es dann ausführliche Diskussionen darüber, auf welchen Modul-Standard man sich einigt, wie die Syntax aussieht und wie letztendlich die Implementierung auf Interpreter-Seite aussieht. Die Wahl fiel auf Modulen, die mittels `import` und `export` Keywords untereinander kommunizieren. 
 
-Babel ist dann vorangegangen und hat eine eigene Lösung implementiert. Diese Umsetzung zwischendrin mal geändert, weil es Updates am entsprechenden Standard gab, dann kam Webpack und führte eine eigene JavaScript-Modulimplementierung an, die sich am Standard orientiert. Mittlerweile hat man sich geeinigt und die Umsetzung auf Seiten der JavaScript-Engines ist im vollen Gange. Klingt kompliziert, ist es zwischendrin auch mal gewesen, inzwischen gibt es aber breiten Konsens und für uns Entwickler herrscht Klarheit.
+Babel ist dann vorangegangen und hat eine Lösung implementiert, die auf dem damaligen Stand der offiziellen Spezifikation basierte. Diese Umsetzung wurde dann zwischendurch mal geändert, weil es Updates am entsprechenden Standard gab, dann kam noch Webpack und implementierte einen eigenen Mechanismus zum Auflösen und Laden von JavaScript-Modulen, der sich am nun verabschiedeten Standard orientiert. Ebenso wie TypeScript. 
+
+Mittlerweile ist man sich nach gerade einmal **10** Jahren bei der Spezifikation einig und die Umsetzung auf Seiten der JavaScript-Engines ist im vollen Gange. Klingt kompliziert, ist es zwischendrin auch mal gewesen, inzwischen gibt es aber Konsens und für uns Entwickler herrscht allmählich Klarheit. Aber dennoch gibt es auch noch immer einige Fallstricke, durch die wir auch in Zukunft auf Webpack, Babel oder TypeScript setzen müssen (oder eher: sollten), um komfortabel mit Modulen zu arbeiten. Dazu später mehr.
 
 Soviel zur Historie. Also wie funktionieren jetzt Imports und was sind Module überhaupt?
 
-## Module in JavaScript
+### Module in JavaScript
 
-Das Ziel von Modulen ist es, Scopes in JavaScript auf einer per Modul-Ebene zu kapseln.
+Das Ziel von Modulen ist es, Scopes in JavaScript auf einer **per Modul-Ebene zu kapseln**. Ein Modul in diesem Sinne ist tatsächlich ein einzelnes **File**. Sofern man sie nicht explizit durch das Erstellen eines neuen Scopes begrenzt, z.B. indem man es in eine **IIFE** (Immediately Invoked Function Expression) einschließt, ist jede Funktion, jede Variable, die in JavaScript definiert wird erst einmal global verfügbar. Module wirken dem entgegen, indem sämtlicher Code erst einmal nur **innerhalb des Moduls** verfügbar ist. Dadurch vermeidet man Komplikationen, bspw. wenn zwei Libraries die gleiche Variable nutzen, außerdem schafft man auf einfache Art wiederverwendbaren Code, ohne auf der anderen Seite Angst haben zu müssen, dass dieser an anderer Stelle bereits existierende Variablen oder Funktionen ungewollt überschreibt. 
 
-Recht intuitiv, um genau zu sein. Kurzform: ihr schreibt das `import`-Keyword, gefolgt von einem (schreibgeschützten) Variablennamen unter dem ihr auf euren Import zugreifen wollt, gefolgt vom Keyword `from` und dem Pfad zur Datei bzw dem Modul. Also, direkt am Beispiel von React:
+Module können die in ihnen definierten Funktionen, Klassen oder Variablen **exportieren**, andere Module können diese Exports dann bei Bedarf importieren. Für den Export von Funktionen und Variablen gibt es ein `export`-Keyword, um diese Exports dann später an anderer Stelle zu importieren gibt es, ihr denkt es euch, das entsprechende `import`-Keyword. Exports können zwei Formen annehmen, nämlich zum Einen die eines **Named Exports** (dt. __benannte Exporte__) und auf der anderen Seite den, des **Default Export** (dt. __Standard Export__).
 
-```jsx
-import React from 'react';
+#### Named Exports 
+
+Nehmen wir an wir haben ein Modul `calc.mjs`, das allerhand Funktionen für uns bereitstellt, um Berechnungen verschiedener Art auszuführen. Das Modul könnte bspw. den folgenden Inhalt haben:
+
+```javascript
+export const double = (number) => number * 2;
+export const square = (number) => number * number;
+export const divideBy = (number, divisor) => number / divisor;
+export const divideBy5 = (number) => divideBy(number, 5);
 ```
 
-Das ist aber nur die halbe Wahrheit. Denn erst einmal müsst ihr ein Modul haben aus dem ihr etwas exportiert, bevor ihr es anderswo importieren zu können. 
+Wir kündigen hier also einen **Export** an, definieren direkt danach eine Variable der wir eine Arrow Function zuweisen, die einen Parameter bekommt (oder zwei) und direkt das Ergebnis der Berechnung zurückgibt. Alternativ geht das auch in zwei separaten Schritten:
+
+```javascript
+const double = (number) => number * 2;
+export double;
+```
+
+An anderer Stelle innerhalb unserer Anwendung können wir diese Funktionen nun mittels `import`-Keyword **importieren**. Dazu nutzen wir `import` gefolgt von den Exports, die wir importieren wollen, in geschweiften Klammern, gefolgt von `from` und dem Pfad zum Modul.
+
+```javascript
+import { double, square, divideBy5 } from './calc.mjs';
+
+const value = 5;
+console.log(double(value));     // 10
+console.log(square(value));     // 25
+console.log(divideBy5(value));  // 1
+
+```
+
+Ein File kann dabei theoretisch **unbegrenzt viele benannte Exports** haben, sie müssen sich jedoch in ihrem Namen unterscheiden und ein bereits exportierter Name **darf nicht ein weiteres Mal exportiert werden.**
+
+#### Default Export
+
+Zusätzlich zu den (Plural) sog. **Named Exports** aus dem obigen Beispiel gibt es noch den (Singular) `Default Export`. Eine spezielle Form eines Exports, der innerhalb eines jeden Moduls nur **ein einziges Mal** vorkommen darf und der mit dem Keyword `default` gekennzeichnet wird. Wird eine Variable oder eine Funktion als `default` gekennzeichnet ist es möglich, diesen Export auch ohne geschweifte Klammern zu importieren. Der **Default Export** kann auch dazu dienen, um mehrere benannte Exporte zu bündeln, um diese anschließend nicht einzeln importieren zu müssen.
+
+```javascript
+export const double = (number) => number * 2;
+export const square = (number) => number * number;
+export const divideBy = (number, divisor) => number / divisor;
+export const divideBy5 = (number) => divideBy(number, 5);
+
+export default {
+   double, square, divideBy, divideBy5
+}
+```
+
+Unsere Anwendung müsste dann stattdessen lediglich das Modul selbst importieren, also dessen **Default Export** und einer Variable zuweisen:
+
+```javascript
+import Calc from './calc.mjs';
+
+console.log(Calc.double(value));    // 10
+console.log(Calc.square(value));    // 25
+console.log(Calc.divideBy5(value)); // 1
+```
+
+Grundsätzlich ist es in vielen Fällen sinnvoll, dass ein Modul auch einen Default Export hat. Insbesondere bei Komponenten basierten Libraries wie React oder auch Vue.js ist es üblich nur einen Export pro Modul zu haben, dieser sollte dann der **Default Export** sein. Auch wenn dies syntaktisch nicht zwingend notwendig wäre, ist dies inzwischen de-facto Standard bei der Arbeit mit React.
+
+```javascript
+export default class MyComponent extends React.Component {
+  // ...
+}
+```
+
+#### Fallstricke: Browser vs. Node.js
+
+Wer aufmerksam war und gut aufgepasst hat, dem wird vielleicht aufgefallen sein, dass wir oben aus einem File mit dem Namen `calc.mjs` importieren, nicht `calc.js` (`.mjs` statt `.js`). Dies ist die Konvention, auf die man sich im langwierigen, oben beschriebenen Standardisierungsprozess geeinigt hat bei der Verwendung von JavaScript-Modulen in Node.js. 
+
+Wollt ihr also universelles JavaScript schreiben, also JavaScript das sowohl serverseitig mit Node.js ausgeführt werden kann, als auch clientseitig im Browser funktioniert, und wollt ihr das tun ohne einen Compiler-Zwischenschritt durch bspw. Babel, Webpack oder TypeScript einzulegen, **müsst** ihr zwangsweise die `.mjs`-Endung für eure Files verwenden.
+
+Das Laden von Modulen funktioniert in Node.js also etwas anders als im Browser. Während es dem Browser egal ist welche Datei-Endung ein Modul hat (solange der Server den Content-Type `text/javascript` mitsendet), benötigt Node.js zwangsweise die `.mjs` Datei-Endung um JavaScript-Module als solche zu identifizieren. 
+
+Um JavaScript-Module im Browser zu nutzen, muss das `type`-Attribut auf dem  `<script></script>`-Element den Wert `module` erhalten. Also:
+
+```html
+<script src="./myApp.mjs" type="module"></script>
+```
+
+Browser die den `type="module"` unterstützen, unterstützen auch gleichzeitig das `nomodule`-Attribut zur Auslieferung von Fallbacks für Browser ohne Module-Unterstützung und ignorieren dieses.
+
+```html
+<script src="./myApp.mjs" type="module"></script>
+<script src="./myApp.bundle.js" nomodule></script>
+```
+
 
 ## Fazit
 
