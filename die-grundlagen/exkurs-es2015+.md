@@ -1294,7 +1294,7 @@ Ein File kann dabei theoretisch **unbegrenzt viele benannte Exports** haben, sie
 
 #### Default Export
 
-Zusätzlich zu den (Plural) sog. **Named Exports** aus dem obigen Beispiel gibt es noch den (Singular) `Default Export`. Eine spezielle Form eines Exports, der innerhalb eines jeden Moduls nur **ein einziges Mal** vorkommen darf und der mit dem Keyword `default` gekennzeichnet wird. Wird eine Variable oder eine Funktion als `default` gekennzeichnet ist es möglich, diesen Export auch ohne geschweifte Klammern zu importieren. Der **Default Export** kann auch dazu dienen, um mehrere benannte Exporte zu bündeln, um diese anschließend nicht einzeln importieren zu müssen.
+Zusätzlich zu den (Plural) sog. **Named Exports** aus dem obigen Beispiel gibt es noch den (Singular) `Default Export`. Eine spezielle Form eines Exports, der innerhalb eines jeden Moduls nur **ein einziges Mal** vorkommen darf und der mit dem Keyword `default` gekennzeichnet wird. Wird eine Variable oder eine Funktion als `default` gekennzeichnet ist es möglich, diesen Export auch ohne geschweifte Klammern zu importieren. Der **Default Export** kann z.B. dazu dienen, um mehrere benannte Exporte zu bündeln, um diese anschließend nicht einzeln importieren zu müssen.
 
 ```javascript
 export const double = (number) => number * 2;
@@ -1325,7 +1325,7 @@ export default class MyComponent extends React.Component {
 }
 ```
 
-#### Fallstricke: Browser vs. Node.js
+### Fallstricke: Browser vs. Node.js
 
 Wer aufmerksam war und gut aufgepasst hat, dem wird vielleicht aufgefallen sein, dass wir oben aus einem File mit dem Namen `calc.mjs` importieren, nicht `calc.js` (`.mjs` statt `.js`). Dies ist die Konvention, auf die man sich im langwierigen, oben beschriebenen Standardisierungsprozess geeinigt hat bei der Verwendung von JavaScript-Modulen in Node.js. 
 
@@ -1346,6 +1346,25 @@ Browser die den `type="module"` unterstützen, unterstützen auch gleichzeitig d
 <script src="./myApp.bundle.js" nomodule></script>
 ```
 
+Ein Browser mit Module-Support würde hier die `myApp.mjs` laden, während alle anderen stattdessen ein gebundletes (bspw. durch Webpack) `myApp.bundle.js` laden würden.
+
+Doch das ist noch nicht alles, denn Node.js besitzt einen sehr eigenen Mechanismus zum Finden und Laden von Dateien. So werden bspw. Module die keinen relativen Pfad haben, also nicht mit `./` oder `../` beginnen, z.B. in `node_modules` oder `node_libraries` gesucht. Außerdem lädt Node.js standardmäßig eine darin befindliche index.js wenn Node.js einen Ordner mit dem angegebenen Namen findet.
+
+```javascript
+import MyModule from 'myModule';
+```
+
+Node.js würde also nach diesem Import u.a. im Ordner `./node_modules/myModule` suchen, dort eine `index.js` laden oder alternativ im `main`-Feld der `package.json` nach dem korrekten File suchen. Der Browser kann hingegen nicht nach belieben verschiedene Pfade ausprobieren um das richtige File zu finden, da dies jedesmal einen teuren Netzwerkrequest und möglicherweise viele 404 Responses verusachen würde.
+
+Hinzu kommt, dass **Import Specifier**, das ist der Part hinter dem `from`, also das Modul aus dem ihr importieren wollt, im Browser geschützt sind und aus einer gültigen URL oder einem relativen Pfad bestehen müssen. 
+
+Imports wie der folgende, sind damit im Browser momentan gar nicht möglich:
+
+```javascript
+import React from 'react';
+```
+
+Abhilfe schaffen sollen hier später einmal die **Package Name Maps**, ein Proposal, also ein Vorschlag, für kommende ECMAScript Versionen, das aber momentan noch ganz am Anfang der Diskussion steht. Darum kommen wir wie eingangs erwähnt in absehbarer Zeit nicht drum herum auch weiterhin einen Module Bundler wie Webpack zu benutzen, um komfortabel mit ES-Modules arbeiten zu können wenn wir JavaScript-Module gleichzeitig sowohl serverseitig als auch clientseitig nutzen wollen.
 
 ## Fazit
 
@@ -1358,6 +1377,7 @@ ES2015 und die nachfolgenden Versionen bieten eine Menge nützliche neue Funktio
 * Die **Rest und Spread Operatoren**, die das Lesen und Schreiben von Daten in Arrays und Objekten deutlich vereinfachen
 * **Template Strings**, um die Arbeit mit JavaScript-Ausdrücken in Strings einfacher zu machen
 * **Promises** und **Asynchrone Funktionen** mittels `async`/`await` um die Arbeit mit asynchronen Daten deutlich zu vereinfachen
+* **Import** und **Export** für die Kapselung von wiederverwendbarem JavaScript auf Module-Ebene
 {% endhint %}
 
 
