@@ -14,6 +14,11 @@
   * [State und Lifecycle-Methods](die-grundlagen/state-und-lifecycle-methods.md)
   * [Event-Handling](die-grundlagen/event-handling.md)
   * [Formulare](die-grundlagen/formulare.md)
-  * [Listen, Refs, Fragments und Conditional Rendering](die-grundlagen/untitled.md)
+  * [Listen, Refs, Fragments und Conditional Rendering](die-grundlagen/listen-refs-fragments-und-conditional-rendering.md)
+* Erweiterte Konzepte
+  * Higher Order Components
+  * Context API
+  * Render Props und Functions as a Child
+  * Error Boundaries
 * Die Praxis
 
