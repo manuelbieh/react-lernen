@@ -1,10 +1,12 @@
 # Listen, Refs, Fragments und Conditional Rendering
 
-Bis hier her habt ihr schon eine ganze Menge über React erfahren. Ihr wisst wofür die **Props** sind, was der **State** ist und wie er sich von den Props unterscheidet, ihr wisst wie eine React-Komponente implementiert wird, was der Unterschied einer React-Komponente und einem React-Element ist und wie ihr mit JSX einen Elementenbaum beschreibt, der später in eurer Anwendung gerendert wird. Lifecycle-Methoden helfen euch auf Änderungen eurer Daten zu reagieren. Damit habt ihr auch schon alles beisammen um eine simple React-Anwendung zu entwickeln. 
+Bis hier her habt ihr schon eine ganze Menge über React erfahren. Ihr wisst wofür die **Props** sind, was der **State** ist und wie er sich von den **Props** unterscheidet, ihr wisst wie eine React-Komponente implementiert wird, was der Unterschied einer React-**Komponente** und einem React-**Element** ist und wie ihr mit **JSX** einen Elementenbaum beschreibt, der später in eurer Anwendung gerendert wird. **Lifecycle-Methoden** helfen euch auf Änderungen eurer Daten zu reagieren. Damit habt ihr auch schon alles beisammen um eine simple React-Anwendung zu entwickeln. 
 
 Allerdings gibt es noch einige Details, die in den vorherigen Kapiteln bisher gar keine Erwähnung fanden oder ohne weitere Erklärung in Beispielen benutzt wurden, die aber, gerade wenn eure Anwendung anfängt komplexer zu werden zunehmend relevanter werden.
 
 Im Speziellen betrifft das die Arbeit mit **Listen**, also Arrays mit Daten, sogenannte **Refs**, damit sind Referenzen zu DOM-Repräsentationen von React-Elementen gemeint, **Fragments**, eine spezielle Art Komponente, die keine Spuren im gerenderten Output hinterlässt und **Conditional Rendering**, also Unterscheidungsmöglichkeiten, wann ihr was rendert, basierend auf **Props** und **State**.
+
+Die Themen haben eins gemeinsam: sie sind zu wichtig um sie nicht im Grundlagenteil dieses Buchs zu erwähnen aber gleichzeitig zu kurz um ihnen jeweils ein komplettes eigenes Kapitel zu widmen.
 
 ## Listen
 
@@ -150,7 +152,7 @@ const MyList = () => (
 Hier hat sich React im Laufe der Zeit weiterentwickelt und hat uns so historisch bedingt verschiedene Möglichkeiten geschaffen um solche **Refs** zu erstellen. Die **Refs**, egal in welcher Form, werden dabei stets über die `ref`-Prop eines DOM-Elements im **JSX** bzw. `createElement()`-Aufruf definiert.
 
 {% hint style="warning" %}
-Eine Warnung jedoch gleich noch vorweg: auch wenn React es erlaubt, durch die Verwendung von **Refs** direkt auf DOM-Elemente zuzugreifen, sollte dies **immer der letzte Ausweg sein!** Sämtliche Manipulation von Attributen oder Attribut-Werten, das Hinzufügen oder Entfernen bspw. von Klassen oder Event-Listenern oder das Ändern von anderen Eigenschaften wie `aria-hidden` sollte **immer** über den **State**, **JSX** und entsprechende **Re-Renderings** realisiert werden!
+Eine Warnung jedoch gleich noch vorweg: auch wenn React es erlaubt, durch die Verwendung von **Refs** direkt auf DOM-Elemente zuzugreifen, sollte dies **immer der letzte Ausweg sein!** Sämtliche Manipulation von Attributen oder Attribut-Werten, das Hinzufügen oder Entfernen bspw. von Klassen oder Event-Listenern oder das Ändern von anderen Eigenschaften wie `aria-hidden` sollte **immer** deklarativ über den **State**, **JSX** und entsprechende **Re-Renderings** realisiert werden!
 {% endhint %}
 
 ### String Refs
@@ -266,9 +268,9 @@ Würdet ihr die Prop hier `ref` nennen, also `<UsernameInput ref={this.setUserna
 
 ### Refs über createRef\(\)
 
-Neu in React 16.3. eingeführt wurde die Top Level Methode `React.createRef()`. Sie ähneln von der Art der Verwendung her ein wenig den **Callback Refs**, jedoch mit kleinen Unterschieden. So müsst ihr euch auch hier um das Handling selbst kümmern. Durch ihre Ähnlichkeit zu **Callback Refs**, ist es auch hier empfehlenswert die **Refs** einer **Instanz-Eigenschaft** zuzuweisen.
+Neu in React 16.3. eingeführt wurde die Top Level Methode `React.createRef()`. Sie ähnelt von der Art der Verwendung her ein wenig den **Callback Refs**, jedoch mit kleinen Unterschieden. So müsst ihr euch auch hier um das Handling selbst kümmern. Durch ihre Ähnlichkeit zu **Callback Refs**, ist es auch hier gängige Praxis die **Refs** einer **Instanz-Eigenschaft** zuzuweisen.
 
-Statt jedoch jedesmal eine nahezu identische Methode in der Form `(el) => { this.property = el }` zu übergeben, erstellt ihr bei der Instanziierung bereits die Referenz und übergebt diese dann an die `ref`-Prop des jeweiligen Elements.
+Statt jedoch jedesmal eine nahezu identische Methode in der Form `(el) => { this.property = el }` zu übergeben, erstellt ihr bei der Instanziierung der Komponente bereits die Referenz und übergebt diese dann an die `ref`-Prop des jeweiligen Elements.
 
 ```jsx
 import React from 'react';
@@ -294,9 +296,125 @@ ReactDOM.render(
 );
 ```
 
-Vom Prinzip her sehr ähnlich zu den Callback Refs, allerdings mit einem entscheidenden Unterschied: auf die entsprechende Referenz greift ihr hier via `this.usernameEl.current` zu. Die Referenz zum Element wird hier also nicht in der Instanz-Eigenschaft gespeichert der ihr die Ref zuordnet, sondern dort in der `.current` Eigenschaft. Ansonsten ist ihr Verhalten soweit vergleichbar mit den Callback Refs. Ihr könnt diese ebenfalls an Kind-Komponenten über deren Props weitergeben und dann aus der Eltern-Komponente auf das jeweilige DOM-Element zugreifen.
+Vom Prinzip her also sehr ähnlich zu den **Callback Refs**, allerdings mit einem entscheidenden Unterschied: auf die entsprechende Referenz greift ihr hier via `this.usernameEl.current` zu. 
+
+Die Referenz zum Element wird hier also nicht in der Instanz-Eigenschaft gespeichert, der ihr die Ref zuordnet, sondern in deren `.current` Eigenschaft. Ansonsten ist ihr Verhalten soweit vergleichbar mit den Callback Refs. Ihr könnt diese ebenfalls an Kind-Komponenten über deren Props weitergeben und dann aus der Eltern-Komponente auf das jeweilige DOM-Element zugreifen.
+
+Im direkten Vergleich hier noch einmal die **Callback Ref**:
+
+```jsx
+class MyComponent extends React.Component {
+  usernameEl = null;
+  render () {
+    return (
+      <input ref={(el) => { this.usernameEl = el; } />
+    )
+  }
+}
+```
+
+Zugriff auf das Element via:  `this.usernameEl` 
+
+Und alternativ dazu die mittels **`React.createRef()`** erstellte Referenz:
+
+```jsx
+class MyComponent extends React.Component {
+  usernameEl = React.createRef();
+  render () {
+    return (
+      <input ref={this.usernameEl} />
+    )
+  }
+}
+```
+
+Zugriff auf das Element via: `this.usernameEl.current`.
 
 ## Conditional Rendering
 
+**Conditional Rendering**, also das Rendering von Komponenten auf Basis verschiedener Bedingungen ist ein zentrales Konzept in React. Da React-Komponenten unter der Haube lediglich eine Komposition aus JavaScript-Funktionen, -Objekten und -Klassen sind, funktionieren und verhalten sich Bedingungen hier exakt wie auch in herkömmlichen JavaScript.
 
+Eine React-Komponente **rendert Zustände eines User Interfaces basierend auf ihren Props und ihrem aktuellen State**, optimalerweise frei von Seiten-Effekten. Um also korrekt auf diese verschiedenen Parameter reagieren zu können machen wir uns Rendering-Funktionen zu nutze die an verschiedene Bedingungen geknüpft sind. Ist mein Parameter A, rendere dies, ist mein Parameter B, rendere das. Habe ich eine Liste mit Daten, zeige mir die Daten in einer Liste an. Habe ich keinerlei Daten, zeige mir stattdessen einen Platzhalter an.
+
+Was einfach klingt, ist es im Grunde genommen auch. Aber man sollte die richtigen Wege kennen, insbesondere in JSX. Die `render()`-Funktion von Komponenten und Stateless Functional Components kann grundsätzlich ein **React-Element** \(natürlich auch in Form von JSX\), einen **String**, eine **Nummer**, `null`, für den Fall, dass nichts gerendert werden soll oder ein **Array** aus den zuvor genannten Typen zurückgeben.
+
+### if/else
+
+Die wohl einfachste Form des **Conditional Renderings** ist ein klassisches `if`/`else`-Konstrukt. 
+
+```jsx
+const NotificationList = ({ items }) => {
+  if (items.length) {
+    return (
+      <ul>
+        {items.map((notification) => (
+          <li>{notification.title}</li>
+        ))}
+      </ul>
+    );
+  }
+  return <p>Keine neuen Benachrichtigungen</p>
+};
+```
+
+Einfacher Anwendungsfall. Wir haben eine Komponente `NotificationList`, die eine Liste an Items in Form einer Prop entgegen nimmt. Enthält diese Liste Einträge, werden diese als simple ungeordnete Liste ausgegeben. Ist die Liste hingegen leer, lassen wir unsere Komponente stattdessen eben einen Hinweis ausgeben, dass keine neuen Benachrichtigungen vorhanden sind.
+
+Ein weiteres Beispiel mit einem komplexeren Fall. Wir haben einen Wert und möchten diesen editierbar machen. Unsere Komponente kennt zwei verschiedene Modi: `edit` und `view`. Je nachdem ob wir im View-Mode oder im Edit-Mode sind, möchten wir nur den Text anzeigen oder ein vorausgefülltes Textfeld mit dem jeweiligen Wert.
+
+```jsx
+import React from 'react';
+import { render } from 'react-dom';
+
+class EditableText extends React.Component {
+  state = {
+    value: null,
+  };
+  static getDerivedStateFromProps(nextProps, prevState) {
+    console.log('PS:', prevState);
+    if (prevState.value === null) {
+      return {
+        value: nextProps.initialValue || '',
+      };
+    }
+    return {};
+  }
+
+  handleChange = (e) => {
+    const { value } = e.target;
+    this.setState(() => ({
+      value,
+    }));
+  }
+
+  setMode = (mode) => () => {
+    this.setState(() => ({
+      mode,
+    }));
+  }
+
+  render() {
+    if (this.state.mode === 'edit') {
+      return (
+        <div>
+          <input type="text" value={this.state.value} onChange={this.handleChange} /><br />
+          <button onClick={this.setMode('view')}>Done</button>
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        {this.state.value}<br />
+        <button onClick={this.setMode('edit')}>Edit</button>
+      </div>
+    )
+  }
+}
+
+render(
+  <EditableText initialValue='Example' />, 
+  document.getElementById('root')
+);
+
+```
 
