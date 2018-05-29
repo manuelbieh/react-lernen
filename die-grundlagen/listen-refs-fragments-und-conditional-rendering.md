@@ -119,7 +119,7 @@ const CryptoList = ({ currencies }) => (
 
 Obwohl es das `<li></li>`-Element ist welches letztendlich gerendert wird, muss dennoch die `<CryptoListItem />`-Komponente die `key`-Prop bekommen, da sie es ist, die von `Array.map()` an der entsprechenden Stelle im JSX zurückgegeben wird. 
 
-Offtopic: die `CryptoList`-Komponente könnte durch Verwendung der Object-Spread Syntax weiter vereinfacht werden:
+Offtopic: die `CryptoList`-Komponente könnte durch Verwendung der **Object-Spread Syntax** weiter vereinfacht werden:
 
 ```jsx
 const CryptoList = ({ currencies }) => (
@@ -332,9 +332,9 @@ Zugriff auf das Element via: `this.usernameEl.current`.
 
 ## Conditional Rendering
 
-**Conditional Rendering**, also das Rendering von Komponenten auf Basis verschiedener Bedingungen ist ein zentrales Konzept in React. Da React-Komponenten unter der Haube lediglich eine Komposition aus JavaScript-Funktionen, -Objekten und -Klassen sind, funktionieren und verhalten sich Bedingungen hier exakt wie auch in herkömmlichen JavaScript.
+**Conditional Rendering**, also das Rendering von Komponenten auf Basis verschiedener Bedingungen ist ein zentrales Konzept in React. Da React-Komponenten unter der Haube lediglich eine Komposition aus JavaScript-Funktionen, -Objekten und -Klassen sind, funktionieren und verhalten sich Bedingungen hier exakt wie auch in herkömmlichem JavaScript.
 
-Eine React-Komponente **rendert Zustände eines User Interfaces basierend auf ihren Props und ihrem aktuellen State**, optimalerweise frei von Seiten-Effekten. Um also korrekt auf diese verschiedenen Parameter reagieren zu können machen wir uns Rendering-Funktionen zu nutze die an verschiedene Bedingungen geknüpft sind. Ist mein Parameter A, rendere dies, ist mein Parameter B, rendere das. Habe ich eine Liste mit Daten, zeige mir die Daten in einer Liste an. Habe ich keinerlei Daten, zeige mir stattdessen einen Platzhalter an.
+Eine React-Komponente rendert **Zustände** eines **User Interfaces** basierend auf ihren **Props** und ihrem **aktuellen State**, optimalerweise **frei von Seiten-Effekten.** Um also korrekt auf diese verschiedenen Parameter reagieren zu können machen wir uns Rendering-Funktionen zu nutze, die an verschiedene Bedingungen geknüpft sind. Ist mein Parameter A, rendere dies, ist mein Parameter B, rendere das. Habe ich eine Liste mit Daten, zeige mir die Daten in einer HTML-Liste an. Habe ich keinerlei Daten, zeige mir stattdessen einen Platzhalter an.
 
 Was einfach klingt, ist es im Grunde genommen auch. Aber man sollte die richtigen Wege kennen, insbesondere in JSX. Die `render()`-Funktion von Komponenten und Stateless Functional Components kann grundsätzlich ein **React-Element** \(natürlich auch in Form von JSX\), einen **String**, eine **Nummer**, `null`, für den Fall, dass nichts gerendert werden soll oder ein **Array** aus den zuvor genannten Typen zurückgeben.
 
@@ -359,7 +359,7 @@ const NotificationList = ({ items }) => {
 
 Einfacher Anwendungsfall. Wir haben eine Komponente `NotificationList`, die eine Liste an Items in Form einer Prop entgegen nimmt. Enthält diese Liste Einträge, werden diese als simple ungeordnete Liste ausgegeben. Ist die Liste hingegen leer, lassen wir unsere Komponente stattdessen eben einen Hinweis ausgeben, dass keine neuen Benachrichtigungen vorhanden sind.
 
-Ein weiteres Beispiel mit einem komplexeren Fall. Wir haben einen Wert und möchten diesen editierbar machen. Unsere Komponente kennt zwei verschiedene Modi: `edit` und `view`. Je nachdem ob wir im View-Mode oder im Edit-Mode sind, möchten wir nur den Text anzeigen oder ein vorausgefülltes Textfeld mit dem jeweiligen Wert.
+Ein weiteres Beispiel mit einem komplexeren Fall. Wir haben einen Wert und möchten diesen editierbar machen. Unsere Komponente kennt zwei verschiedene Modi: `edit` und `view`. Je nachdem ob wir uns **View-Mode** oder im **Edit-Mode** befinden, möchten wir nur den Text anzeigen oder ein vorausgefülltes Textfeld mit dem jeweiligen letzten aktuellen Wert.
 
 ```jsx
 import React from 'react';
@@ -369,8 +369,8 @@ class EditableText extends React.Component {
   state = {
     value: null,
   };
+
   static getDerivedStateFromProps(nextProps, prevState) {
-    console.log('PS:', prevState);
     if (prevState.value === null) {
       return {
         value: nextProps.initialValue || '',
@@ -396,7 +396,11 @@ class EditableText extends React.Component {
     if (this.state.mode === 'edit') {
       return (
         <div>
-          <input type="text" value={this.state.value} onChange={this.handleChange} /><br />
+          <input 
+            type="text" 
+            value={this.state.value} 
+            onChange={this.handleChange} />
+          <br />
           <button onClick={this.setMode('view')}>Done</button>
         </div>
       );
@@ -404,7 +408,8 @@ class EditableText extends React.Component {
 
     return (
       <div>
-        {this.state.value}<br />
+        {this.state.value}
+        <br />
         <button onClick={this.setMode('edit')}>Edit</button>
       </div>
     )
@@ -417,4 +422,24 @@ render(
 );
 
 ```
+
+Der für dieses Kapitel relevante Teil spielt sich innerhalb der `render()`-Methode der Komponente ab. Wir prüfen hier auf den Wert der State-Eigenschaft `mode` ist dieser `edit`,  geben wir direkt das Eingabefeld zurück. Ist dieses nicht `edit`, gehen wir davon aus, dass der Standardfall eintritt, der in diesem Falle der Ansichtsmodus \(`view`\) wäre. Gerendert wird jeweils der Text, einmal editierbar als `value` eines `input`-Felds, einmal lediglich als Textknoten an sich und dazu jeweils ein Button, um die State-Eigenschaft `mode` der Komponente zwischen `view` und `edit` hin und her zu wechseln.
+
+### null
+
+Nein. Die Überschrift ist kein Fehler. `null` zurückzugeben ist wohl der einfachste Fall für **Conditional Rendering.** Gibt die `render()`-Methode einer Komponente `null` zurück, wird diese nicht gerendert und erscheint daher auch nicht im DOM. Dies kann manchmal sinnvoll sein, bspw. wenn eine Fehler-Komponente nur dann angezeigt werden soll wenn auch ein Fehler aufgetreten ist.
+
+```jsx
+render() {
+  if (!this.state.error) {
+    return null;
+  }
+
+  return (
+    <div className="error-message">{this.state.error.message}</div>
+  );
+}
+```
+
+
 
