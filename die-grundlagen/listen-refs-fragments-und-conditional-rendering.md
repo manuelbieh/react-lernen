@@ -10,7 +10,7 @@ Die Themen haben eins gemeinsam: sie sind zu wichtig um sie nicht im Grundlagent
 
 ## Listen
 
-Mit Listen sind hier tatsächlich stumpfe JavaScript-Arrays gemeint, also einfache **Daten**, durch die iteriert werden kann. Sie sind bei der Arbeit mit \(nicht nur\) React alltäglich und keine Anwendung kommt ohne sie aus. **ES2015+** bietet uns mit `Array.map()`, `Array.filter()` oder `Array.find()` schöne Methoden, die wir als Ausdrücke in JSX innerhalb von geschweiften Klammern `{}` weiterverarbeiten können.
+Mit Listen sind hier tatsächlich stumpfe JavaScript-Arrays gemeint, also einfache **Daten**, durch die iteriert werden kann. Sie sind bei der Arbeit nicht nur mit React alltäglich und keine Anwendung kommt ohne sie aus. **ES2015+** bietet uns mit `Array.map()`, `Array.filter()` oder `Array.find()` schöne deklarative Methoden, die wir als Ausdrücke in JSX innerhalb von geschweiften Klammern `{}` nutzen können.
 
 Welche Rolle Ausdrücke in JSX spielen und wie wir Ausdrücke in JSX nutzen können, habe ich bereits im Kapitel über JSX angesprochen. Kurz aufgefrischt: Arrays können als Ausdruck in JavaScript genutzt werden und somit auch in JSX. Das heißt sie können in geschweiften Klammern stehen und werden dann von beim Transpiling von JSX als Child-Node behandelt.
 
@@ -64,7 +64,7 @@ Und würde dann etwa so benutzt werden:
 
 Heraus kommt eine Liste mit den entsprechenden Kryptowährungen und ihrem jeweiligen Preis. Allerdings bekommen wir auch direkt eine Warnung von React an den Kopf geworfen:
 
-![Fehlermeldung bei fehlender key Prop in einer durch einen Iterator erzeugten Liste](../.gitbook/assets/react-missing-key.png)
+![Fehlermeldung bei fehlender key-Prop in einer durch einen Iterator erzeugten Liste](../.gitbook/assets/react-missing-key.png)
 
 React erwartet bei allen Arrays und von einem Iterator zurückgegebenen Werten eine `key`-Prop. Diese dient dazu dem Reconciler \(also dem React-Vergleichsalgorithmus\) eine Möglichkeit zu geben, um Listen-Elemente zu identifizieren und letztendlich vergleichen zu können. Der Reconciler erkennt dadurch welche Array-Elemente hinzugefügt, entfernt oder modifiziert wurden. Die `key`-Prop nimmt dabei die Funktion einer eindeutigen ID ein und muss **innerhalb dieses Arrays einmalig** sein. In der Praxis wird hier typischerweise die ID eines Datensatzes verwendet. 
 
@@ -441,5 +441,99 @@ render() {
 }
 ```
 
+Hier wird geprüft ob im State der Komponente eine error-Eigenschaft gesetzt ist. Ist dies nicht der Fall, wird `null` zurückgegeben und somit auch nichts gerendert. Existiert die Eigenschaft hingegen, wird die entsprechende Fehlermeldung in einem `div` ausgegeben, wozu wir wieder auf das Conditional Rendering mit einem einfachen `if` zurückgreifen.
 
+### Ternary Operator
+
+Dies waren Beispiele für Bedingungen die relativ grundlegende Unterschiede in ihren Komponenten ausgeben. Oftmals möchte man allerdings nur kleine Unterschiede ausgeben, etwa eine CSS-Klasse hinzufügen wenn ein bestimmter State gesetzt ist. Hier hilft uns der Ternary Operator weiter. Kurze Auffrischung: der **Ternary Operator** ist ein Ausdruck und hat die Form `Bedingung ? Erfüllt : Nicht Erfüllt`. Also etwa: `isLoggedIn ? 'Logout' : 'Login';` 
+
+Und damit hätten wir auch schon unser erstes Beispiel für die Verwendung des **Ternary Operators** innerhalb von JSX. Er kann sowohl innerhalb von Props verwendet werden als auch einfach um, je nach Bedingung, verschiedene Elemente zu rendern. Ein konkreter Anwendungsfall für das eben genannte Beispiel wäre die Ausgabe von Text in Abhängigkeit zu einer Bedingung:
+
+```jsx
+render() {
+  const { isLoggedIn } = this.props;
+  return (
+    <button type="submit">{ isLoggedIn ? 'Logout' : 'Login' }</button>
+  );
+}
+```
+
+In diesem Fall würden wir stets einen Button ausgeben, dieser hätte aber abhängig von seiner `isLoggedIn`-Prop entweder die Beschriftung **Logout** oder **Login**. 
+
+Genau in der gleichen Form kann der **Ternary Operator** in Props verwendet werden. Nehmen wir an wir wollen ein Liste mit Benutzern ausgeben, von denen einige deaktiviert wurden. In diesem Fall möchten wir eine Klasse setzen um diese mittels CSS markieren zu können. Ein entsprechendes Markup könnte dann bspw. so aussehen:
+
+```jsx
+render() {
+  const { user } = this.props;
+  return (
+    <div className={user.isDisabled ? 'is-disabled' : 'is-active'}>{user.name}</div>
+  );
+}
+```
+
+Deaktivierte Benutzer würden hier mit einer Klasse `is-disabled` gekennzeichnet, aktive Benutzer hingegen mit einer Klasse `is-active`. 
+
+Auch komplexeres JSX lässt sich mittels **Ternary Operator** abbilden. Dazu muss lediglich die allgemein gültige Regel befolgt werden, dass sich über mehrere Zeilen erstreckendes JSX in Klammern gefasst werden muss:
+
+```jsx
+render() {
+  const { country } = this.props;
+  return (
+    <div>
+      <p>State:</p>
+      {country === 'de' ? (
+        <select name="state">
+          <option value="bw">Baden-Württemberg</option>
+          <option value="by">Bayern</option>
+          <option value="be">Berlin</option>
+          <option value="bb">Brandenburg</option>
+          […]
+        </select>
+      ) : (
+        <input type="text" name="state" />
+      )}
+    </div>
+  );
+}
+```
+
+In diesem Fall rendern wir also eine Select-Liste mit allen deutschen Bundesländern wenn das zuvor ausgewählte Land **Deutschland** \(`de`\) ist, in allen anderen Fällen zeigen wir dem Benutzer nur ein Textfeld an, in das dieser sein entsprechendes Bundesland frei eintragen kann. Hier sollte jedoch immer abgewogen werden ob dies sinnvoll ist, denn der **Ternary Operator** kann insbesondere in komplexerem JSX schnell unübersichtlich werden.
+
+### Logical AND \(&&\) und Logical OR \(\|\|\)
+
+Der **Logical Operator** hat auf den ersten Blick Ähnlichkeit zum **Ternary Operator**, jedoch mit dem Unterschied dass er noch kürzer und prägnanter ist. Anders als beim **Ternary Operator** wird hier kein „zweiter Fall“ benötigt, also ein Wert der verwendet wird, falls die Bedingung nicht erfüllt ist. Ist die Bedingung in einem **Logical AND Operator** nicht erfüllt, ist der Ausdruck `undefined` und verursacht somit keinerlei sichtbare Ausgabe im User Interface:
+
+```jsx
+render() {
+  const { isMenuVisible } = this.props;
+  return (
+    <header>
+      { isMenuVisible && <Menu /> }
+    </header>
+  );
+}
+```
+
+In diesem Fall würde eine Komponente prüfen ob der Wert ihrer `isMenuVisible`-Prop `true` ist **und** dann eine `Menu`-Komponente anzeigen. Ist der Wert `false`, gibt der Ausdruck `undefined` zurück und die Komponente rendert dementsprechend keine Ausgabe an dieser Stelle. 
+
+In Verbindung mit dem **Logical OR Operator** kann hier ein Fall wie beim Ternary Operator herbeigeführt werden:
+
+```jsx
+render() {
+  const { isLoggedIn } = this.props;
+  return (
+    <button type="submit">{ isLoggedIn && 'Logout' || 'Login' }</button>
+  );
+}
+```
+
+**\[TODO\]:** Bessere Beispiele finden und das alles irgendwie deutlich verständlicher formulieren und beschreiben \(mit dann hoffentlich besseren Beispielen\).
+
+### render\(\)-Methoden
+
+TODO
+
+### Eigene Komponenten für zu Conditions
+
+TODO
 

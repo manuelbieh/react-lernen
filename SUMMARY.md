@@ -19,7 +19,7 @@
   * Higher Order Components
   * Context API
   * Render Props und Functions as a Child
-  * Portals
   * Error Boundaries
+  * Portals
 * Die Praxis
 
