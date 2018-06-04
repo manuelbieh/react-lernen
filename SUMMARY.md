@@ -16,10 +16,12 @@
   * [Formulare](die-grundlagen/formulare.md)
   * [Listen, Refs, Fragments und Conditional Rendering](die-grundlagen/listen-refs-fragments-und-conditional-rendering.md)
 * Erweiterte Konzepte
+  * [Type Checking](erweiterte-konzepte/type-checking.md)
   * Higher Order Components
   * Context API
   * Render Props und Functions as a Child
   * Error Boundaries
   * Portals
 * Die Praxis
+* Das Ecosystem
 
