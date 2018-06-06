@@ -6,7 +6,7 @@
 * [Einführung](einfuehrung/README.md)
   * [Ab ins kalte Wasser](einfuehrung/ab-ins-kalte-wasser.md)
   * [Tools und Setup](einfuehrung/tools-und-setup.md)
-* Die Grundlagen
+* [Die Grundlagen](die-grundlagen/README.md)
   * [Exkurs ES2015+](die-grundlagen/exkurs-es2015+.md)
   * [JSX – eine Einführung](die-grundlagen/jsx-eine-einfuehrung.md)
   * [Rendering von Elementen](die-grundlagen/rendering-von-elementen.md)
@@ -15,13 +15,13 @@
   * [Event-Handling](die-grundlagen/event-handling.md)
   * [Formulare](die-grundlagen/formulare.md)
   * [Listen, Refs, Fragments und Conditional Rendering](die-grundlagen/listen-refs-fragments-und-conditional-rendering.md)
-* Erweiterte Konzepte
+* [Erweiterte Konzepte](erweiterte-konzepte/README.md)
   * [Type Checking](erweiterte-konzepte/type-checking.md)
-  * Higher Order Components
-  * Context API
-  * Render Props und Functions as a Child
-  * Error Boundaries
-  * Portals
-* Die Praxis
-* Das Ecosystem
+  * [Higher Order Components](erweiterte-konzepte/higher-order-components.md)
+  * [Context API](erweiterte-konzepte/context-api.md)
+  * [Render Props und Functions as a Child](erweiterte-konzepte/render-props-und-functions-as-a-child.md)
+  * [Error Boundaries](erweiterte-konzepte/error-boundaries.md)
+  * [Portals](erweiterte-konzepte/portals.md)
+* [Die Praxis](die-praxis.md)
+* [Das Ecosystem](das-ecosystem.md)
 

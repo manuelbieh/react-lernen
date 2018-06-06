@@ -340,7 +340,7 @@ Was einfach klingt, ist es im Grunde genommen auch. Aber man sollte die richtige
 
 ### if/else
 
-Die wohl einfachste Form des **Conditional Renderings** ist ein klassisches `if`/`else`-Konstrukt. 
+Die wohl einfachste und wahrscheinlich auch gängigste Form des **Conditional Renderings** ist ein klassisches `if`/`else`-Konstrukt. 
 
 ```jsx
 const NotificationList = ({ items }) => {
@@ -376,7 +376,7 @@ class EditableText extends React.Component {
         value: nextProps.initialValue || '',
       };
     }
-    return {};
+    return null;
   }
 
   handleChange = (e) => {
@@ -423,7 +423,9 @@ render(
 
 ```
 
-Der für dieses Kapitel relevante Teil spielt sich innerhalb der `render()`-Methode der Komponente ab. Wir prüfen hier auf den Wert der State-Eigenschaft `mode`, ist dieser `edit`,  geben wir direkt das Eingabefeld zurück. Ist dieses nicht `edit`, gehen wir davon aus, dass der Standardfall eintritt, der in diesem Falle der Ansichtsmodus \(`view`\) wäre. Gerendert wird jeweils der Text, einmal editierbar als `value` eines `input`-Felds, einmal lediglich als Textknoten und dazu jeweils ein Button, um die State-Eigenschaft `mode` der Komponente zwischen `view` und `edit` hin und her zu wechseln.
+Der für dieses Kapitel relevante Teil spielt sich innerhalb der `render()`-Methode der Komponente ab. Wir prüfen hier auf den Wert der State-Eigenschaft `mode`, ist dieser `edit`,  geben wir direkt das Eingabefeld zurück \(„early return“\). Ist dieses nicht `edit`, gehen wir davon aus, dass der „Standardfall“ eintritt, der in diesem Falle der Ansichtsmodus \(`view`\) wäre. Der `else`-Teil der Condition ist hier also gar nicht nötig und würde lediglich unnötig Komplexität hinzufügen. Gerendert wird jeweils der Text, einmal editierbar als `value` eines `input`-Felds, einmal lediglich als Textknoten und dazu jeweils ein Button, um die State-Eigenschaft `mode` der Komponente zwischen `view` und `edit` hin und her zu wechseln.
+
+Derartige `if`, `if`/`else` oder `if`/`else if`/`else`-Konstrukte sind in verschiedenen Varianten, auf die ich hier gleich noch eingehen werde, eine häufige Form wenn es darum geht eine Ausgabe auf Basis von **State** und **Props** innerhalb einer Komponente zu erzeugen.
 
 ### null
 
@@ -531,9 +533,41 @@ render() {
 
 ### render\(\)-Methoden
 
-TODO
+Eine Möglichkeit um die Übersicht bei **Conditional Rendering** zu erhöhen ist, bestimmte Teile aus der render\(\)-Methode in eigene `renderXY()`-Methoden zu verfrachten. Die `render()`-Methode stellt so gesehen den Kern einer Komponente dar, ist sie doch dafür verantwortlich zu entscheiden, was ein Benutzer später auf seinem Bildschirm sieht. Sie sollte also nicht zu komplex werden, nicht unnötig viel Logik enthalten und lesbar sein.
 
-### Eigene Komponenten für zu Conditions
+Nicht unüblich ist es daher sehr komplexe und lange `render()`-Methoden in kleine übersichtliche Häppchen zu unterteilen und als eigene Klassenmethoden zu implementieren. Dies führt bei sinnvoller Benamung der jeweiligen Methoden meist zur Erhöhung und zu besserer Verständlichkeit des Codes. Meist werden die einzelnen `render()`-Methoden noch mit `if`-Blöcken kombiniert:
 
-TODO
+```jsx
+class Countdown extends React.Component {
+  renderTimeLeft() {
+    // […]
+  }
+  
+  renderTimePassed() {
+    // […]
+  }
+  
+  render() {
+    const { currentDate, eventDate } = this.props;
+    if (currentDate < eventDate) {
+      // currentDate is before eventDate so render countdown
+      return this.renderTimeLeft();
+    }
+    // countdown is over so render how much time has passed since then
+    return this.renderTimePassed();
+  }
+}
+```
+
+Dies **kann** bei richtiger Verwendung die Lesbarkeit einer `render()`-Methode erhöhen, führt aber unweigerlich auch dazu, dass sich die Komplexität einer Komponente \(im etwas geringeren Maß\) erhöht. Viele Leute – ich zähle mich dazu – raten daher eher dazu Teile des Codes wiederum in eigene gekapselte Komponenten auszulagern statt `renderXY()`-Methoden zu verwenden.
+
+{% hint style="info" %}
+Sobald die Überlegung ansteht eine weitere `render()`-Methode innerhalb einer Komponente zu implementieren sollte darüber nachgedacht werden, stattdessen eine eigene, separate **Stateless Functional Component** zu erstellen.
+{% endhint %}
+
+### Eigene Komponenten bei komplexen Conditions
+
+Statt weiterer `render()`-Methoden innerhalb einer Komponente können auch eigene, neue Stateless Functional Components erstellt werden. Diese bekommen dann entsprechende Props aus ihrer Eltern-Komponente hereingereicht. \[TODO: hier noch weiter ausführen\].
+
+Bei der Verlagerung bestimmter Teile einer Komponente in eigene kleinere Komponenten muss mit Bedacht vorgegangen werden. An erster Stelle sollte die Überlegung stehen wie einfach sich die Daten aus der ursprünglichen Eltern-Komponente in die neue\(n\) Kind-Komponente\(n\) übertragen lassen. \[TODO: Erklären was gemeint ist. Nicht zu viele Props hin und her transportieren, möglichst keine Methoden weitergeben, etc …\]
 
