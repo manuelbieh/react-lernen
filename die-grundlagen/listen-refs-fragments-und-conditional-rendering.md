@@ -45,14 +45,14 @@ Dargestellt werden sollen die Daten erst einmal als einfache ungeordnete Liste i
 
 ```jsx
 const CryptoList = ({ currencies }) => (
-    <ul>
-        {currencies.map((currency) => (
-            <li>
-                <h1>{currency.name} ({currency.symbol})</h1>
-                <p>{currency.quotes.EUR.price.toFixed(2)} €</p>
-            </li>
-        ))}
-    </ul>
+  <ul>
+    {currencies.map((currency) => (
+      <li>
+        <h1>{currency.name} ({currency.symbol})</h1>
+        <p>{currency.quotes.EUR.price.toFixed(2)} €</p>
+      </li>
+    ))}
+  </ul>
 );
 ```
 
@@ -93,10 +93,10 @@ Um besser zu veranschaulichen was das genau bedeutet, machen wir aus unserem obi
 
 ```jsx
 const CryptoListItem = ({ name, symbol, quotes }) => (
-    <li>
-        <h1>{name} ({symbol})</h1>
-        <p>{quotes.EUR.price.toFixed(2)} €</p>
-    </li>
+  <li>
+    <h1>{name} ({symbol})</h1>
+    <p>{quotes.EUR.price.toFixed(2)} €</p>
+  </li>
 );
 ```
 
@@ -296,7 +296,7 @@ ReactDOM.render(
 );
 ```
 
-Vom Prinzip her also sehr ähnlich zu den **Callback Refs**, allerdings mit einem entscheidenden Unterschied: auf die entsprechende Referenz greift ihr hier via `this.usernameEl.current` zu. 
+Vom Prinzip her also sehr ähnlich zu den **Callback Refs**, allerdings mit einem weiteren entscheidenden Unterschied: auf die entsprechende Referenz greift ihr hier via `this.usernameEl.current` zu. 
 
 Die Referenz zum Element wird hier also nicht in der Instanz-Eigenschaft gespeichert, der ihr die Ref zuordnet, sondern in deren `.current` Eigenschaft. Ansonsten ist ihr Verhalten soweit vergleichbar mit den Callback Refs. Ihr könnt diese ebenfalls an Kind-Komponenten über deren Props weitergeben und dann aus der Eltern-Komponente auf das jeweilige DOM-Element zugreifen.
 
@@ -307,7 +307,7 @@ class MyComponent extends React.Component {
   usernameEl = null;
   render () {
     return (
-      <input ref={(el) => { this.usernameEl = el; } />
+      <input ref={(el) => { this.usernameEl = el; }} />
     )
   }
 }
@@ -330,13 +330,124 @@ class MyComponent extends React.Component {
 
 Zugriff auf das Element via: `this.usernameEl.current`.
 
+## Fragments
+
+Fragments sind eine Art Spezial-Komponente und dienen hilfsweise dazu gültiges JSX zu erzeugen ohne dabei sichtbare Spuren in der gerenderten Ausgabe zu hinterlassen. Gültiges JSX in dem Sinne, als das die `render()`-Methode immer nur ein Element auf oberster Ebene zurückgeben darf. Also etwa:
+
+```jsx
+render() {
+  return (
+    <ul>
+      <li>Bullet Point 1</li>
+      <li>Bullet Point 2</li>
+      <li>Bullet Point 3</li>
+    </ul>
+  );
+}
+```
+
+Aber eben nicht so etwas wie:
+
+```jsx
+render() {
+  return (
+    <li>Bullet Point 1</li>
+    <li>Bullet Point 2</li>
+    <li>Bullet Point 3</li>
+  );
+}
+```
+
+Hier geben wir aus der `render()`-Methode direkt und ohne umschließendes Eltern-Element mehrere `li`-Elemente zurück, was zu einer Fehlermeldung führt. Manchmal ist dies aber notwendig, bspw. wenn sich das umschließende Element in einer Eltern-Komponente befinden soll, die Kind-Elemente aber durch eine eigene Komponente erzeugt werden soll. 
+
+Innerhalb einiger Elemente \(`table`, `ul`, `ol`, `dl`, …\) ist es aber nicht erlaubt bspw. ein `div`-Element als Zwischenebene zu verwenden, um die Regel zu erfüllen stets nur ein einzelnes Root-Element aus einer Komponente zurückzugeben. In diesem Fall kommt das Fragment ins Spiel und würde angewendet auf das obige Beispiel folgende Änderung bedeuten um valides JSX zu erzeugen:
+
+```jsx
+render() {
+  return (
+    <React.Fragment>
+      <li>Bullet Point 1</li>
+      <li>Bullet Point 2</li>
+      <li>Bullet Point 3</li>
+    </React.Fragment>
+  );
+}
+```
+
+Dabei gilt auch hier die Regel, dass iterativ, also durch eine Schleife, erzeugte Ausgabe eine key-Prop besitzen muss. Mit der Fragment Helper-Komponente ist dies möglich. Schauen wir uns ein weiteres, etwas umfassenderes und praxisnäheres Beispiel an:
+
+```jsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+const TicketMeta = ({ metaData }) => (
+  <dl>
+    {Object.entries(metaData).map(([property, value]) => (
+      <React.Fragment key={property}>
+        <dt>{property}</dt>
+        <dd>{value}</dd>
+      </React.Fragment>
+    ))}
+  </dl>
+);
+
+ReactDOM.render(
+  <TicketMeta
+    metaData={{
+      createdAt: '2018-06-09',
+      author: 'Manuel Bieh',
+      category: 'General',
+    }}
+  />,
+  document.getElementById('root')
+);
+```
+
+Die so erzeugte Ausgabe wäre die folgende:
+
+```markup
+<dl>
+  <dt>createdAt</dt>
+  <dd>2018-06-09</dd>
+  <dt>author</dt>
+  <dd>Manuel Bieh</dd>
+  <dt>category</dt>
+  <dd>General</dd>
+</dl>
+```
+
+Hier wäre es beispielsweise nicht möglich ein `div` oder `span` oder ein sonstiges Element um `<dt><dt>` und `<dd></dd>` zu wrappen. Dies würde zu folgender Ausgabe führen:
+
+```markup
+<dl>
+  <div>
+    <dt>createdAt</dt>
+    <dd>2018-06-09</dd>
+  </div>
+  <div>
+    <dt>author</dt>
+    <dd>Manuel Bieh</dd>
+  </div>
+  <div>
+    <dt>category</dt>
+    <dd>General</dd>
+  </div>
+</dl>
+```
+
+… und wäre damit ungültiges HTML, da ein `dl`-Element nur `dt` und `dd` als Kind-Element erlaubt. Das Fragment hilft uns hier also gültiges JSX zu erzeugen, ohne dabei gleichzeitig das HTML ungültig werden zu lassen. Dies war in React bis zur Einführung von Fragments in Version 16.3. ein Problem was dazu führte, dass Komponenten unnötig kompliziert implementiert werden mussten um weder gegen JSX- noch gegen HTML-Regeln zu verstoßen.
+
+_\[**TODO**: sprachlich eine Katastrophe. Vielleicht nochmal den einen oder anderen Satz glatt ziehen und Beispiele und Erklärungen zur Short Syntax &lt;&gt;&lt;/&gt; einfügen\]_
+
 ## Conditional Rendering
 
 **Conditional Rendering**, also das Rendering von Komponenten auf Basis verschiedener Bedingungen ist ein zentrales Konzept in React. Da React-Komponenten unter der Haube lediglich eine Komposition aus JavaScript-Funktionen, -Objekten und -Klassen sind, funktionieren und verhalten sich Bedingungen hier exakt wie auch in herkömmlichem JavaScript.
 
 Eine React-Komponente rendert **Zustände** eines **User Interfaces** basierend auf ihren **Props** und ihrem **aktuellen State**, optimalerweise **frei von Seiten-Effekten.** Um also korrekt auf diese verschiedenen Parameter reagieren zu können machen wir uns Rendering-Funktionen zu nutze, die an verschiedene Bedingungen geknüpft sind. Ist mein Parameter A, rendere dies, ist mein Parameter B, rendere das. Habe ich eine Liste mit Daten, zeige mir die Daten in einer HTML-Liste an. Habe ich keinerlei Daten, zeige mir stattdessen einen Platzhalter an.
 
-Was einfach klingt, ist es im Grunde genommen auch. Aber man sollte die richtigen Wege kennen, insbesondere in JSX. Die `render()`-Funktion von Komponenten und Stateless Functional Components kann grundsätzlich ein **React-Element** \(natürlich auch in Form von JSX\), einen **String**, eine **Nummer**, `null`, für den Fall, dass nichts gerendert werden soll oder ein **Array** aus den zuvor genannten Typen zurückgeben.
+Was einfach klingt, ist es im Grunde genommen auch. Aber man sollte die richtigen Wege kennen, insbesondere in JSX. Die `render()`-Funktion von Komponenten, also sowohl von **Class Components** als auch **Stateless Functional Components** kann grundsätzlich ein **React-Element** \(natürlich auch in Form von JSX\), einen **String**, eine **Nummer**, `null`, für den Fall, dass nichts gerendert werden soll oder ein **Array** aus den zuvor genannten Typen zurückgeben.
+
+Darüber hinaus gibt es einige Möglichkeiten die `render()`-Methoden in den Komponenten übersichtlich zu halten. Diese Möglichkeiten werde ich euch hier vorstellen.
 
 ### if/else
 
@@ -571,28 +682,67 @@ Statt weiterer `render()`-Methoden innerhalb einer Komponente können wie eben b
 
 An erster Stelle sollte die Überlegung stehen wie einfach sich die Daten aus der ursprünglichen Eltern-Komponente in die neue\(n\) Kind-Komponente\(n\) übertragen lassen und vor allem welche Daten überhaupt in eine neue Komponente ausgelagert werden sollten. Dabei sollte beachtet werden dass die neuen Komponenten selbst wiederum nicht wieder zuviel Logik oder gar State enthalten sollten.
 
-Dieses Vorgehen bietet sich vor allem dann an wenn immer wiederkehrende Elemente in einer Komponente verwendet wird oder eine `render()`-Methode eben zu groß und unübersichtlich wird. Stellen wir uns ein Formular vor, das aus meist sehr ähnlichen Textfeldern besteht. Jedes Textfeld befindet sich in einem eigenen Paragraphen, hat ein Label und natürlich auch ein `type`-Attribute. Zum Label gehört natürlich auch eine id, die ebenfalls angegeben werden muss für jedes Feld:
+Dieses Vorgehen bietet sich vor allem dann an wenn immer wiederkehrende Elemente in einer Komponente verwendet wird oder eine `render()`-Methode eben zu groß und unübersichtlich wird. 
+
+Stellen wir uns ein Formular vor, das aus zumeist sehr ähnlichen Textfeldern besteht. Jedes Textfeld befindet sich in einem eigenen Paragraphen, hat ein Label und natürlich auch ein `type`-Attribute. Zum Label gehört außerdem auch eine id, die ebenfalls angegeben werden muss für jedes Feld:
 
 ```jsx
 render() {
   return (
-      <form>
-          <p>
-              <label for="email">
-                  Your email
-              </label><br />
-              <input type="email" name="email" id="email" />
-          </p>
-          <p>
-              <label for="password">
-                  Your password
-              </label><br />
-              <input type="password" name="password" id="password" />
-          </p>
-      </form>
+    <form>
+      <p>
+        <label for="email">
+          Email
+        </label>
+        <br />
+        <input type="email" name="email" id="email" />
+      </p>
+      <p>
+        <label for="password">
+          Password
+        </label>
+        <br />
+        <input type="password" name="password" id="password" />
+      </p>
+      <input type="submit" value="Send" />
+    </form>
   );
 }
 ```
 
+In diesem Fall haben wir lediglich zwei Formularfelder. Oft ist es aber bereits in durchschnittlich komplexen Anwendungen so, dass es deutlich größere Formulare mit deutlich mehr Feldern gibt. Doch bereits in diesem Fall kann es sinnvoll sein die sich wiederholenden Felder in eigene Komponenten auszulagern, da wir uns viel Schreibarbeit ersparen können.
 
+Wir erstellen also zunächst eine `TextField`-Komponente und lagern das sich wiederholende JSX aus unserer Formular-Komponente dorthin aus:
+
+```jsx
+const TextField = ({ id, label, ...HTMLInputAttributes }) => (
+  <p>
+    <label for={id}>
+      {label}
+    </label>
+    <br />
+    <input {...HTMLInputAttributes} id={id} />
+  </p>
+);
+
+export default TextField;
+```
+
+Unsere neue Komponente empfängt eine `id`, die wir benötigen, um das Label mit dem Eingabefeld zu verknüpfen und ein Label als solches. Mittels **Object Rest/Spread** fügen wir dem `input`-Element dann außerdem alle weiteren Props, die der Komponente übergeben werden, als Attribut hinzu.
+
+Unsere Komponente von oben sieht dann wie folgt aus:
+
+```jsx
+render() {
+  return (
+    <form>
+      <TextField name="email" label="Email" id="email" type="email" />
+      <TextField name="password" label="Password" id="password" type="password" />
+      <input type="submit" value="Send" />
+    </form>
+  );
+}
+```
+
+Aus einem langen und potentiell sehr unübersichtlichen Wust an Markup haben wir also eine übersichtliche, prägnante `render()`-Methode gemacht die auf oberster Ebene aus wenigen Komponenten besteht. Möchten wir in Zukunft außerdem eine Änderung vornehmen die sich auf alle Textfelder auswirkt, bspw. eine neue Klasse hinzufügen, muss dies nur noch an einer einzigen Stelle geändert werden, in der neuen `TextField`-Komponente.
 
