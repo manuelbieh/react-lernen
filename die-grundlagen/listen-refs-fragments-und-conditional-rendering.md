@@ -501,7 +501,7 @@ render() {
 
 In diesem Fall rendern wir also eine Select-Liste mit allen deutschen Bundesländern wenn das zuvor ausgewählte Land **Deutschland** \(`de`\) ist, in allen anderen Fällen zeigen wir dem Benutzer nur ein Textfeld an, in das dieser sein entsprechendes Bundesland frei eintragen kann. Hier sollte jedoch immer abgewogen werden ob dies sinnvoll ist, denn der **Ternary Operator** kann insbesondere in komplexerem JSX schnell unübersichtlich werden.
 
-### Logical AND \(&&\) und Logical OR \(\|\|\)
+### Logical AND \(`&&`\) und Logical OR \(`||`\)
 
 Der **Logical Operator** hat auf den ersten Blick Ähnlichkeit zum **Ternary Operator**, jedoch mit dem Unterschied dass er noch kürzer und prägnanter ist. Anders als beim **Ternary Operator** wird hier kein „zweiter Fall“ benötigt, also ein Wert der verwendet wird, falls die Bedingung nicht erfüllt ist. Ist die Bedingung in einem **Logical AND Operator** nicht erfüllt, ist der Ausdruck `undefined` und verursacht somit keinerlei sichtbare Ausgabe im User Interface:
 
@@ -516,7 +516,7 @@ render() {
 }
 ```
 
-In diesem Fall würde eine Komponente prüfen ob der Wert ihrer `isMenuVisible`-Prop `true` ist **und** dann eine `Menu`-Komponente anzeigen. Ist der Wert `false`, gibt der Ausdruck `undefined` zurück und die Komponente rendert dementsprechend keine Ausgabe an dieser Stelle. 
+In diesem Fall würde eine Komponente prüfen ob der Wert der `isMenuVisible`-Prop `true` ist **und** dann eine `Menu`-Komponente anzeigen. Ist der Wert `false`, gibt der Ausdruck `undefined` zurück und die Komponente rendert dementsprechend keine Ausgabe an dieser Stelle. 
 
 In Verbindung mit dem **Logical OR Operator** kann hier ein Fall wie beim Ternary Operator herbeigeführt werden:
 
@@ -529,11 +529,11 @@ render() {
 }
 ```
 
-**\[TODO\]:** Bessere Beispiele finden und das alles irgendwie deutlich verständlicher formulieren und beschreiben \(mit dann hoffentlich besseren Beispielen\).
+Die Beschriftung des Buttons ist hier also **Logout**, wenn die `isLoggedIn` **Prop** `true` ist, der Benutzer also eingeloggt ist oder **Login** wenn der Benutzer nicht eingeloggt ist.
 
-### render\(\)-Methoden
+### Eigene `render()`-Methoden
 
-Eine Möglichkeit um die Übersicht bei **Conditional Rendering** zu erhöhen ist, bestimmte Teile aus der render\(\)-Methode in eigene `renderXY()`-Methoden zu verfrachten. Die `render()`-Methode stellt so gesehen den Kern einer Komponente dar, ist sie doch dafür verantwortlich zu entscheiden, was ein Benutzer später auf seinem Bildschirm sieht. Sie sollte also nicht zu komplex werden, nicht unnötig viel Logik enthalten und lesbar sein.
+Eine Möglichkeit um die Übersicht bei **Conditional Rendering** zu erhöhen ist, bestimmte Teile aus der `render()`-Methode in eigene `renderXY()`-Methoden zu verfrachten. Die `render()`-Methode stellt so gesehen den Kern einer Komponente dar, ist sie doch dafür verantwortlich zu entscheiden, was ein Benutzer später auf seinem Bildschirm sieht. Sie sollte also nicht zu komplex werden, nicht unnötig viel Logik enthalten und lesbar sein.
 
 Nicht unüblich ist es daher sehr komplexe und lange `render()`-Methoden in kleine übersichtliche Häppchen zu unterteilen und als eigene Klassenmethoden zu implementieren. Dies führt bei sinnvoller Benamung der jeweiligen Methoden meist zur Erhöhung und zu besserer Verständlichkeit des Codes. Meist werden die einzelnen `render()`-Methoden noch mit `if`-Blöcken kombiniert:
 
@@ -559,7 +559,7 @@ class Countdown extends React.Component {
 }
 ```
 
-Dies **kann** bei richtiger Verwendung die Lesbarkeit einer `render()`-Methode erhöhen, führt aber unweigerlich auch dazu, dass sich die Komplexität einer Komponente \(im etwas geringeren Maß\) erhöht. Viele Leute – ich zähle mich dazu – raten daher eher dazu Teile des Codes wiederum in eigene gekapselte Komponenten auszulagern statt `renderXY()`-Methoden zu verwenden.
+Dies **kann** bei kluger Verwendung die Lesbarkeit einer `render()`-Methode erhöhen, führt aber unweigerlich auch dazu, dass sich die Komplexität einer Komponente \(im etwas geringeren Maß\) erhöht. Viele Leute – ich zähle mich dazu – raten daher eher dazu Teile des Codes wiederum in eigene gekapselte **Stateless Functional Components** auszulagern statt `renderXY()`-Methoden zu verwenden.
 
 {% hint style="info" %}
 Sobald die Überlegung ansteht eine weitere `render()`-Methode innerhalb einer Komponente zu implementieren sollte darüber nachgedacht werden, stattdessen eine eigene, separate **Stateless Functional Component** zu erstellen.
@@ -567,7 +567,32 @@ Sobald die Überlegung ansteht eine weitere `render()`-Methode innerhalb einer K
 
 ### Eigene Komponenten bei komplexen Conditions
 
-Statt weiterer `render()`-Methoden innerhalb einer Komponente können auch eigene, neue Stateless Functional Components erstellt werden. Diese bekommen dann entsprechende Props aus ihrer Eltern-Komponente hereingereicht. \[TODO: hier noch weiter ausführen\].
+Statt weiterer `render()`-Methoden innerhalb einer Komponente können wie eben bereits angesprochen auch eigene, neue, bevorzugterweise **Stateless Functional Components** erstellt werden. Diese bekommen dann entsprechende **Props** aus ihrer Eltern-Komponente hereingereicht und kümmern sich dann als eigenständige, unabhängige, wiederverwendbare und testbare Komponente um die Anzeige der ihnen übergebenen Daten. 
 
-Bei der Verlagerung bestimmter Teile einer Komponente in eigene kleinere Komponenten muss mit Bedacht vorgegangen werden. An erster Stelle sollte die Überlegung stehen wie einfach sich die Daten aus der ursprünglichen Eltern-Komponente in die neue\(n\) Kind-Komponente\(n\) übertragen lassen. \[TODO: Erklären was gemeint ist. Nicht zu viele Props hin und her transportieren, möglichst keine Methoden weitergeben, etc …\]
+An erster Stelle sollte die Überlegung stehen wie einfach sich die Daten aus der ursprünglichen Eltern-Komponente in die neue\(n\) Kind-Komponente\(n\) übertragen lassen und vor allem welche Daten überhaupt in eine neue Komponente ausgelagert werden sollten. Dabei sollte beachtet werden dass die neuen Komponenten selbst wiederum nicht wieder zuviel Logik oder gar State enthalten sollten.
+
+Dieses Vorgehen bietet sich vor allem dann an wenn immer wiederkehrende Elemente in einer Komponente verwendet wird oder eine `render()`-Methode eben zu groß und unübersichtlich wird. Stellen wir uns ein Formular vor, das aus meist sehr ähnlichen Textfeldern besteht. Jedes Textfeld befindet sich in einem eigenen Paragraphen, hat ein Label und natürlich auch ein `type`-Attribute. Zum Label gehört natürlich auch eine id, die ebenfalls angegeben werden muss für jedes Feld:
+
+```jsx
+render() {
+  return (
+      <form>
+          <p>
+              <label for="email">
+                  Your email
+              </label><br />
+              <input type="email" name="email" id="email" />
+          </p>
+          <p>
+              <label for="password">
+                  Your password
+              </label><br />
+              <input type="password" name="password" id="password" />
+          </p>
+      </form>
+  );
+}
+```
+
+
 
