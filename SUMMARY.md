@@ -16,7 +16,7 @@
   * [Formulare](die-grundlagen/formulare.md)
   * [Listen, Refs, Fragments und Conditional Rendering](die-grundlagen/listen-refs-fragments-und-conditional-rendering.md)
 * [Erweiterte Konzepte](erweiterte-konzepte/README.md)
-  * [Type Checking](erweiterte-konzepte/type-checking.md)
+  * [Typechecking mit PropTypes, Flow und TypeScript](erweiterte-konzepte/type-checking.md)
   * [Higher Order Components](erweiterte-konzepte/higher-order-components.md)
   * [Context API](erweiterte-konzepte/context-api.md)
   * [Render Props und Functions as a Child](erweiterte-konzepte/render-props-und-functions-as-a-child.md)
