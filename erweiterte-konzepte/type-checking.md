@@ -141,21 +141,20 @@ Das Plugin findet ihr unter: https://github.com/oliviertassinari/babel-plugin-tr
 
 ## Flow
 
-Anders als die **React PropTypes** ist **Flow** ein **statischer Typechecker** für sämtliches JavaScript, nicht nur für React Komponenten. Wie React selbst wird auch **Flow** von Facebook entwickelt und fügt sich ziemlich nahtlos in die meisten React Setups ein. Bis **Babel 6** war es sogar Teil des `babel-preset-react` Pakets wurde also sozusagen zur Verwendung „mit React mit-installiert“ und konnte ohne großen zusätzlichen Aufwand benutzt werden.
+Anders als die **React PropTypes** ist **Flow** ein **statischer Typechecker** für **sämtliches** JavaScript, nicht allein nur für React Komponenten. Wie React selbst wird auch **Flow** von Facebook entwickelt und fügt sich ziemlich nahtlos in die meisten React Setups ein. Bis **Babel 6** war es sogar Teil des `babel-preset-react` Pakets wurde also sozusagen zur Verwendung „mit React mit-installiert“ und konnte ohne zusätzlichen Aufwand einfach verwendet werden.
 
-Ab **Babel 7** ist **Flow** in ein eigenes **Babel Preset** ausgelagert worden, dass sich aber ebenso einfach über `npm install @babel/preset-flow` bzw. analog dazu `yarn add @babel/preset-flow` installieren lässt. Anschließend muss dann lediglich noch das entsprechende `@babel/preset-flow` als Preset in die Babel-Config eingetragen werden.
-
-Das **Preset** wird benötigt um die **Flow-Syntax**, die kein valides JavaScript wäre, im **Build-Prozess** aus dem entsprechenden Files zu entfernen, so dass es beim Aufruf im Browser nicht zu Syntax-Fehlern kommt.
+Ab **Babel 7** ist **Flow** in ein eigenes **Babel Preset** ausgelagert worden, dass sich aber ebenso einfach über `npm install @babel/preset-flow` bzw. analog dazu `yarn add @babel/preset-flow` installieren lässt. Anschließend muss dann lediglich noch das entsprechende `@babel/preset-flow` als Preset in die Babel-Config eingetragen werden. Das **Preset** wird benötigt um die **Flow-Syntax**, die kein valides JavaScript wäre, im **Build-Prozess** aus dem entsprechenden Files zu entfernen, so dass es beim Aufruf im Browser nicht zu Syntax-Fehlern kommt.
 
 Neben dem Babel Preset wird außerdem noch die **Flow Executable** benötigt, die sich in ihrer jeweils aktuellsten Version mittels `npm install flow-bin` bzw. `yarn add flow-bin` installieren lässt. Die **Flow Executable** führt dann das eigentliche Typechecking durch.
 
-Nachdem Flow installiert und das Preset in Babel eingerichtet wurde, wird noch eine Flow-Config benötigt. Diese erstellt ihr ganz einfach mittels `./node_modules/flow init`.
+Nachdem **Flow** installiert und das Preset in Babel eingerichtet wurde, wird noch eine **Flow-Config** benötigt. Diese erstellt ihr ganz einfach über den Aufruf von `./node_modules/flow init` im Terminal in eurem Projektverzeichnis.
 
-Tipp: um zu vermeiden jedes Mal ./node\_modules voran zu stellen wenn Flow aufgerufen werden soll, könnt ihr euch einen Eintrag in den script-Teil eurer package.json machen:
+**Tipp:** um zu vermeiden jedes Mal `./node_modules` voranzustellen wenn Flow aufgerufen werden soll, könnt ihr euch einen Eintrag in den `script`-Teil eurer `package.json` machen:
 
 ```javascript
 {
   "scripts": {
+    [...]
     "flow": "flow"
   }
 }
@@ -173,7 +172,24 @@ oder mit Yarn:
 yarn flow init
 ```
 
-Nachdem ihr `flow init` aufgerufen habt, solltet ihr in eurem Projektverzeichnis eine neue Datei `.flowconfig` sehen, die erst einmal ziemlich leer aussieht, von Flow aber benötigt wird. In diese Datei könnt ihr später auch Optionen setzen oder angeben welche Dateien mit Flow geprüft werden sollen oder welche eben nicht.
+Nachdem ihr `flow init` aufgerufen habt, solltet ihr in eurem Projektverzeichnis eine neue Datei `.flowconfig` sehen, die erst einmal ziemlich leer aussieht, von Flow aber benötigt wird. In diese Datei könnt ihr später Optionen setzen oder angeben welche Dateien mit Flow geprüft werden sollen oder welche eben nicht.
+
+Ihr habt eure Babel-Config aktualisiert, das `flow-bin` Package in euer Projekt installiert und die `.flowconfig` angelegt? Super. Dann kann es richtig losgehen. Um zu verifizieren dass alles korrekt eingerichtet wurde, könnt ihr einmal flow aufrufen. Wenn ihr den flow-Eintrag in eure package.json hinzugefügt habt könnt ihr das mit dem Befehl `yarn flow` in eurem Terminal. Ist alles korrekt eingerichtet, seht ihr eine Meldung wie die folgende:
+
+```bash
+No errors!
+Done in 0.57s.
+```
+
+Dies bedeutet Flow hat eure Files geprüft und keine Fehler gefunden. Wie auch, haben wir doch noch gar keine Files mit Typechecking erstellt.
+
+Die Standard-Einstellungen von Flow sehen vor, dass nur Files gecheckt werden, die Flow mit einem entsprechenden Kommentar im Code signalisieren, dass diese Typechecks beinhalten. Dazu fügt ihr einfach oben in einem beliebigen JavaScript-File folgende Zeile ein:
+
+```javascript
+// @flow
+```
+
+\[TODO: Weiter auf ESLint und eslint-plugin-flowtype eingehen, Beispiele hinzufügen wie React Class Components und SFCs getyped werden\]
 
 ## TypeScript
 
