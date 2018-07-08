@@ -14,9 +14,9 @@ TypeError: Cannot read property 'settings' of undefined
 
 ## PropTypes
 
-**PropTypes** reichen zurück bis in ganz frühe Versionen von React, lange bevor React seine heutige Popularität erreicht hat und wurden in React 15.5. aus dem Core heraus und in ein eigenes `prop-types` Package ausgelagert. Während man seine **PropTypes** vorher mittels bspw. `React.PropTypes.string` definieren konnte, erfolgt der Zugriff nun über das zuvor importierte `PropTypes` Modul: `PropTypes.string`. 
+**PropTypes** reichen zurück bis in ganz frühe Versionen von React, lange bevor React seine heutige Popularität erreicht hat und wurden in React 15.5. aus dem Core heraus und in ein eigenes `prop-types` Package ausgelagert. Während man seine **PropTypes** vorher mittels bspw. `React.PropTypes.string` direkt in der Core-Library definieren konnte, erfolgt der Zugriff nun über das zuvor importierte `PropTypes` Modul: `PropTypes.string`. 
 
-Das bedeutet auch, dass es erst als `devDependency` installiert werden muss. Auf der Kommandozeile reicht dafür ein simples:
+Das bedeutet auch, dass das Modul zuerst als `devDependency` installiert werden muss. Auf der Kommandozeile reicht dafür ein simples:
 
 ```text
 yarn add --dev prop-types
@@ -28,7 +28,7 @@ oder:
 npm install --save-dev prop-types
 ```
 
-**PropTypes** dienen dabei als eine Art Interface und legen fest, welche Form eine Prop annehmen darf und ob diese optional ist oder immer erforderlich ist. Gibt es Abweichungen, weist uns React **im Development-Modus** darauf hin. Bei einer korrekt veröffentlichten Anwendung, die die Production-Version von React nutzt und/oder mit der Umgebungsvariable `process.env.NODE_ENV=production` gebaut wurde bekommen wir diese Warnungen **nicht** mehr zu sehen!
+**PropTypes** dienen dabei als eine Art Interface und legen fest, welche Form bzw. welchen Typen eine Prop annehmen darf und ob diese optional ist oder erforderlich ist. Gibt es Abweichungen, weist uns React **im Development-Modus** darauf hin. Bei einer korrekt veröffentlichten Anwendung, die die Production-Version von React nutzt und/oder mit der Umgebungsvariable `process.env.NODE_ENV=production` gebaut wurde bekommen wir diese Warnungen **nicht** mehr zu sehen!
 
 Doch wie sieht die Verwendung von **PropTypes** nun aus? Hier müssen wir unterscheiden zwischen der **Class Component** und der **Stateless Functional Component**. 
 
@@ -136,18 +136,19 @@ Nutzt wegen der fehlenden bzw. undefinierten `name`-Prop hingegen den `defaultVa
 {% hint style="info" %}
 Beim **Deployment in Production** lohnt es sich das **Babel-Plugin-Transform-React-Remove-Prop-Types** zu verwenden. Dies spart noch einmal ein paar Bytes Bandbreite, da die `propType`-Definitionen aus dem Build entfernt werden, da diese ohnehin **nur im Development-Modus** berücksichtigt werden.
 
-Das Plugin findet ihr unter: https://github.com/oliviertassinari/babel-plugin-transform-react-remove-prop-types
+Das Plugin findet ihr unter:   
+https://github.com/oliviertassinari/babel-plugin-transform-react-remove-prop-types
 {% endhint %}
 
 ## Flow
 
-Anders als die **React PropTypes** ist **Flow** ein **statischer Typechecker** für **sämtliches** JavaScript, nicht allein nur für React Komponenten. Wie React selbst wird auch **Flow** von Facebook entwickelt und fügt sich ziemlich nahtlos in die meisten React Setups ein. Bis **Babel 6** war es sogar Teil des `babel-preset-react` Pakets wurde also sozusagen zur Verwendung „mit React mit-installiert“ und konnte ohne zusätzlichen Aufwand einfach verwendet werden.
+Anders als die **React PropTypes** ist **Flow** ein **statischer Typechecker** für **sämtliches** JavaScript, nicht allein nur für React Komponenten. Wie React selbst wird auch **Flow** von Facebook entwickelt und fügt sich ziemlich nahtlos in die meisten React Setups ein. Bis **Babel 6** war es sogar Teil des `babel-preset-react` Pakets wurde also sozusagen zur Verwendung mit React „mit-installiert“ und konnte ohne jeglichen zusätzlichen Aufwand einfach verwendet werden.
 
-Ab **Babel 7** ist **Flow** in ein eigenes **Babel Preset** ausgelagert worden, dass sich aber ebenso einfach über `npm install @babel/preset-flow` bzw. analog dazu `yarn add @babel/preset-flow` installieren lässt. Anschließend muss dann lediglich noch das entsprechende `@babel/preset-flow` als Preset in die Babel-Config eingetragen werden. Das **Preset** wird benötigt um die **Flow-Syntax**, die kein valides JavaScript wäre, im **Build-Prozess** aus dem entsprechenden Files zu entfernen, so dass es beim Aufruf im Browser nicht zu Syntax-Fehlern kommt.
+Ab **Babel 7** ist **Flow** in ein eigenes **Babel Preset** ausgelagert worden, dass sich aber ebenso einfach über `npm install @babel/preset-flow` \(bzw. analog dazu `yarn add @babel/preset-flow`\) installieren lässt. Anschließend muss dann lediglich noch das entsprechende `@babel/preset-flow` als Preset in die Babel-Config eingetragen werden. Das **Preset** wird benötigt um die **Flow-Syntax**, die kein valides JavaScript wäre, im **Build-Prozess** aus dem entsprechenden Files zu entfernen, so dass es beim Aufruf im Browser nicht zu Syntax-Fehlern kommt.
 
-Neben dem Babel Preset wird außerdem noch die **Flow Executable** benötigt, die sich in ihrer jeweils aktuellsten Version mittels `npm install flow-bin` bzw. `yarn add flow-bin` installieren lässt. Die **Flow Executable** führt dann das eigentliche Typechecking durch.
+Neben dem Babel Preset wird außerdem noch die **Flow Executable** benötigt, die sich in ihrer jeweils aktuellsten Version mittels `npm install flow-bin` \(bzw. `yarn add flow-bin`\) installieren lässt. Die **Flow Executable** führt dann das eigentliche **Typechecking** durch.
 
-Nachdem **Flow** installiert und das Preset in Babel eingerichtet wurde, wird noch eine **Flow-Config** benötigt. Diese erstellt ihr ganz einfach über den Aufruf von `./node_modules/flow init` im Terminal in eurem Projektverzeichnis.
+Nachdem **Flow** installiert und das **Babel Preset** eingerichtet wurde, wird noch eine **Flow-Config** benötigt. Diese erstellt ihr ganz einfach über den Aufruf von `./node_modules/flow init` im Terminal in eurem Projektverzeichnis.
 
 **Tipp:** um zu vermeiden jedes Mal `./node_modules` voranzustellen wenn Flow aufgerufen werden soll, könnt ihr euch einen Eintrag in den `script`-Teil eurer `package.json` machen:
 
@@ -189,7 +190,118 @@ Die Standard-Einstellungen von Flow sehen vor, dass nur Files gecheckt werden, d
 // @flow
 ```
 
-\[TODO: Weiter auf ESLint und eslint-plugin-flowtype eingehen, Beispiele hinzufügen wie React Class Components und SFCs getyped werden\]
+Schauen wir uns das obige Beispiel noch einmal an. Diesmal mit Flow als Typechecker anstelle von PropTypes:
+
+```jsx
+// @flow
+import React from 'react';
+import ReactDOM from 'react-dom';
+​
+type PropsT = {
+  date: Date,
+  description?: string,
+  ticketsUrl?: string,
+  title: string,
+};
+
+class EventOverview extends React.Component<PropsT> {
+  render() {
+    const { date, description, ticketUrl, title } = this.props;
+    return (
+      <div>
+        <h1>{title}</h1>
+        <h2>{date.toLocaleString()}</h2>
+        {description && (
+          <div className="description">{description}</div>
+        )}
+        {ticketsUrl && <a href={ticketsUrl}>Tickets!</a>}
+      </div>
+    );
+  }
+}
+​
+ReactDOM.render(
+  <EventOverview date={new Date()} title="React lernen und verstehen" />,
+  document.getElementById('root')
+);
+```
+
+Anders als bei den PropTypes definieren wir hier zuerst eine Type-Definition mit dem Namen `PropsT`. Der Name kann hier grundsätzlich frei gewählt werden. Oft werden `T` oder `Type` an den Namen der Type-Definitions angehängt, um es für Entwickler gleich ersichtlich zu machen, dass es sich dabei um eben solche handelt. Aber rein aus technischer Sicht ist das nicht notwendig. Den eben definierten Type übergeben wir dann in Form eines sogenannten „Generic Type“ an die Komponente: 
+
+```jsx
+[…] extends React.Component<PropsT>
+```
+
+Type-Definitions können auch inline definiert werden. Allerdings wirkt sich das ab einer gewissen Anzahl auch auf die Lesbarkeit aus. In unserem Beispiel sähe die dann so aus:
+
+```jsx
+class EventOverview extends React.Component<{
+  date: Date,
+  description?: string,
+  ticketsUrl?: string,
+  title: string,
+}> {
+  […]
+}
+```
+
+Doch schauen wir uns die **Type-Definition** einmal genauer an. Wie schon bei den **PropTypes** legen wir hier fest welche **Props** eine Komponente übergeben bekommen kann und von welchem Typen diese sein müssen. Da wäre eine `date` Prop, die aus einer `Date`-Instanz bestehen muss und erforderlich ist. Als nächstes dann `description` und `ticketsUrl`, die durch ein `?` nach ihrem Namen als **optional** gekennzeichnet wurden und jeweils, sollten sie übergeben werden, vom Typ `string` sein müssen. Zuletzt wird eine `title` Prop erwartet, die ebenfalls ein `string` sein muss, aber nicht optional ist. Anders als bei **PropTypes** müssen hier nicht die erforderlichen Props mittels `isRequired` gekennzeichnet werden, sondern im Gegenteil die optionalen Props mittels Fragezeichen als optional markiert werden.
+
+**Stateless Functional Components** können in gleicher Form gleich der Übergabe der Props als Funktionsargument typisiert werden:
+
+```jsx
+const EventOverview = (props: PropsT) => ([…]);
+```
+
+bzw. in destrukturierter Form:
+
+```jsx
+const EventOverview = ({ date, description, ticketUrl, title }: PropsT) => ([…]);
+```
+
+oder als Inline-Definition:
+
+```jsx
+const EventOverview = ({
+    date,
+    description,
+    ticketUrl,
+    title
+}: {
+    date: Date,
+    description?: string,
+    ticketsUrl?: string,
+    title: string
+}) => {
+  […]
+};
+```
+
+Doch das ist noch nicht alles. Flow kann anders als PropTypes sämtliches JavaScript checken, nicht bloß Props von React-Komponenten. Dies bedeutet, dass auch der State einer Komponente typisiert werden kann. Dazu ist ein zweiter Parameter in den Generics vorgesehen:
+
+```jsx
+// @flow
+import React from 'react';
+import ReactDOM from 'react-dom';
+​
+type PropsT = {
+  date: Date,
+  description?: string,
+  ticketsUrl?: string,
+  title: string,
+};
+
+type StateT = {
+  isBookmarked: boolean,
+};
+
+class EventOverview extends React.Component<PropsT, StateT> {
+  state = {
+    isBookmarked: false,
+  };
+  […]
+}
+```
 
 ## TypeScript
 
