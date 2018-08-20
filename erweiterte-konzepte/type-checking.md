@@ -175,7 +175,7 @@ yarn flow init
 
 Nachdem ihr `flow init` aufgerufen habt, solltet ihr in eurem Projektverzeichnis eine neue Datei `.flowconfig` sehen, die erst einmal ziemlich leer aussieht, von Flow aber benötigt wird. In diese Datei könnt ihr später Optionen setzen oder angeben welche Dateien mit Flow geprüft werden sollen oder welche eben nicht.
 
-Ihr habt eure Babel-Config aktualisiert, das `flow-bin` Package in euer Projekt installiert und die `.flowconfig` angelegt? Super. Dann kann es richtig losgehen. Um zu verifizieren dass alles korrekt eingerichtet wurde, könnt ihr einmal flow aufrufen. Wenn ihr den flow-Eintrag in eure package.json hinzugefügt habt könnt ihr das mit dem Befehl `yarn flow` in eurem Terminal. Ist alles korrekt eingerichtet, seht ihr eine Meldung wie die folgende:
+Ihr habt eure Babel-Config aktualisiert, das `flow-bin` Package in euer Projekt installiert und die `.flowconfig` angelegt? Super. Dann kann es richtig losgehen. Um zu verifizieren dass alles korrekt eingerichtet wurde, könnt ihr einmal flow aufrufen. Wenn ihr den flow-Eintrag von oben in eurer `package.json` hinzugefügt habt könnt ihr das mit dem Befehl `yarn flow` in eurem Terminal. Ist alles korrekt eingerichtet, seht ihr eine Meldung wie die folgende:
 
 ```bash
 No errors!
@@ -184,18 +184,18 @@ Done in 0.57s.
 
 Dies bedeutet Flow hat eure Files geprüft und keine Fehler gefunden. Wie auch, haben wir doch noch gar keine Files mit Typechecking erstellt.
 
-Die Standard-Einstellungen von Flow sehen vor, dass nur Files gecheckt werden, die Flow mit einem entsprechenden Kommentar im Code signalisieren, dass diese Typechecks beinhalten. Dazu fügt ihr einfach oben in einem beliebigen JavaScript-File folgende Zeile ein:
+Die Standard-Einstellungen von Flow sehen vor, dass nur Files gecheckt werden, die Flow mit einem entsprechenden Kommentar im Code signalisieren, dass diese Typechecks beinhalten. Dazu fügt ihr einfach oben in jedem beliebigen JavaScript-File folgende Zeile ein:
 
 ```javascript
 // @flow
 ```
 
-Schauen wir uns das obige Beispiel noch einmal an. Diesmal mit Flow als Typechecker anstelle von PropTypes:
+Schauen wir uns das obige Beispiel noch einmal an. Diesmal mit **Flow** als Typechecker anstelle von **PropTypes**:
 
 ```jsx
 // @flow
-import React from 'react';
-import ReactDOM from 'react-dom';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 ​
 type PropsT = {
   date: Date,
@@ -226,13 +226,13 @@ ReactDOM.render(
 );
 ```
 
-Anders als bei den PropTypes definieren wir hier zuerst eine Type-Definition mit dem Namen `PropsT`. Der Name kann hier grundsätzlich frei gewählt werden. Oft werden `T` oder `Type` an den Namen der Type-Definitions angehängt, um es für Entwickler gleich ersichtlich zu machen, dass es sich dabei um eben solche handelt. Aber rein aus technischer Sicht ist das nicht notwendig. Den eben definierten Type übergeben wir dann in Form eines sogenannten „Generic Type“ an die Komponente: 
+Anders als bei den **PropTypes** definieren wir hier zuerst eine **Type Definition** mit dem Namen `PropsT`. Der Name kann hier grundsätzlich frei gewählt werden. Oft werden `T` oder `Type` an den Namen der Type-Definitions angehängt, um es für Entwickler gleich ersichtlich zu machen, dass es sich dabei um eben solche handelt. Aber rein aus technischer Sicht ist das nicht notwendig. Den eben definierten Type übergeben wir dann in Form eines sogenannten „Generic Type“ an die Komponente: 
 
 ```jsx
-[…] extends React.Component<PropsT>
+class EventOverview extends React.Component<PropsT>
 ```
 
-Type-Definitions können auch inline definiert werden. Allerdings wirkt sich das ab einer gewissen Anzahl auch auf die Lesbarkeit aus. In unserem Beispiel sähe die dann so aus:
+Type Definitions können auch inline definiert werden. Allerdings wirkt sich das ab einer gewissen Anzahl auch auf die Lesbarkeit aus. In unserem Beispiel sähe die dann so aus:
 
 ```jsx
 class EventOverview extends React.Component<{
@@ -277,12 +277,12 @@ const EventOverview = ({
 };
 ```
 
-Doch das ist noch nicht alles. Flow kann anders als PropTypes sämtliches JavaScript checken, nicht bloß Props von React-Komponenten. Dies bedeutet, dass auch der State einer Komponente typisiert werden kann. Dazu ist ein zweiter Parameter in den Generics vorgesehen:
+Doch das ist noch nicht alles. Flow kann anders als PropTypes sämtliches JavaScript checken, nicht bloß Props von React-Komponenten. Dies bedeutet, dass auch der State einer Komponente typisiert werden kann. Dazu ist ein zweiter Parameter in den **Generics** vorgesehen:
 
 ```jsx
 // @flow
-import React from 'react';
-import ReactDOM from 'react-dom';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 ​
 type PropsT = {
   date: Date,
@@ -303,5 +303,29 @@ class EventOverview extends React.Component<PropsT, StateT> {
 }
 ```
 
+Anders als in bisherigen Beispielen im Buch haben die Imports hier eine etwas andere Form. Statt:
+
+```jsx
+import React from 'react';
+```
+
+… wurde React in diesem Kapitel folgendermaßen importiert:
+
+```jsx
+import * as React from 'react';
+```
+
+Dies führt dazu, dass gleichzeitig auch die von React mitgelieferten Type Definitions mit importiert wurden. Dies ist notwendig, wenn wir bspw. ein React-Element aus einer Funktion zurückgeben und dieses typisieren wollen.
+
+\[TODO: Weiter ausführen, mehr Beispiele\]
+
 ## TypeScript
+
+**TypeScript** wird von Microsoft entwickelt und ist ein sogenanntes typisiertes **Superset** von JavaScript, was bedeutet, dass es nicht direkt im Browser ausgeführt werden kann sondern zuvor in einem Zwischenschritt von einem Compiler in „echtes“ JavaScript kompiliert wird. TypeScript sieht auf den ersten Blick erst einmal ähnlich aus wie **Flow** und funktioniert auch ähnlich. Während Flow allerdings lediglich ein reiner **Typechecker** ist bringt TypeScript als Superset noch etwas mehr mit. So war es lange vor ES2015 schon möglich Klassen und Imports in TypeScript zu verwenden.
+
+In der JavaScript-Community erfreut sich TypeScript immer wachsender Beliebtheit und auch in Verbindung mit React ist es immer häufiger zu finden. Aus diesem Grund möchte ich das hier nicht ganz unerwähnt lassen, wobei ich hier gleichzeitig nicht all zu sehr in die Tiefe gehen möchte, da TypeScript allein genug Material für ein eigenes Buch hergeben würde.
+
+Im Bezug auf React wichtig zu wissen ist, dass TypeScript-Files üblicherweise eine `.ts` Datei-Endung haben, enthält eine Datei auch JSX, muss die Datei zwingend mit `.tsx` enden.
+
+\[TODO: Weiter ausführen\]
 

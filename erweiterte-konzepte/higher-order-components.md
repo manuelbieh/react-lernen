@@ -20,7 +20,7 @@ const withFormatting = (WrappedComponent) => {
 };
 ```
 
-Hier haben wir eine Funktion `withFormatting` definiert, die eine React-Komponente entgegen nimmt. Die Funktion gibt dabei eine neue React-Komponente zurück welche die in die Funktion herein gegebene Komponente rendert und ihr dabei die Props `bold` und `italic` übergibt. Die hereingegebene Komponente kann nun auf diese Props zugreifen:
+Hier haben wir eine Funktion `withFormatting` definiert, die eine React-Komponente entgegen nimmt. Die Funktion gibt dabei eine neue React-Komponente zurück welche die _in die Funktion herein gegebene Komponente_ rendert und ihr dabei die Props `bold` und `italic` übergibt. Die hereingegebene Komponente kann nun auf diese Props zugreifen:
 
 ```jsx
 const FormattedComponent = withFormatting(({ bold, italic }) => (
@@ -30,13 +30,13 @@ const FormattedComponent = withFormatting(({ bold, italic }) => (
 ));
 ```
 
-Typischerweise werden **Higher Order Components** benutzt um Logik darin zu kapseln. In diesem Zusammenhang ist auch oft die Rede von **Smart** und **Dumb Components** also schlaue und dumme Komponenten. Die Smart Components \(zu denen Higher Order Components zählen\) sind dann dazu da um Business Logik abzubilden, mit APIs zu kommunizieren oder Verhaltenslogik zu verarbeiten. Dumme Komponenten hingegen bekommen weitestgehend statische Props übergeben und beschränken den Logik-Teil auf reine Darstellungslogik. Also bspw. ob ein Benutzerbild oder, falls dieses nicht vorhanden ist, stattdessen ein Platzhalterbild angezeigt wird. In diesem Zusammenhang fällt auch oft der Begriff **Container Component** \(für _Smart_ Components\) und **Layout Components** \(für _Dumb_ Components\).
+Typischerweise werden **Higher Order Components** benutzt um Logik darin zu kapseln. In diesem Zusammenhang ist auch oft die Rede von **Smart** und **Dumb Components** also: **schlaue** und **dumme** Komponenten. Die Smart Components \(zu denen Higher Order Components zählen\) sind dann dazu da um Business Logik abzubilden, mit APIs zu kommunizieren oder Verhaltenslogik zu verarbeiten. _Dumme_ Komponenten hingegen bekommen weitestgehend statische Props übergeben und beschränken den Logik-Teil auf reine Darstellungslogik. Also bspw. ob ein Benutzerbild oder, falls dieses nicht vorhanden ist, stattdessen ein Platzhalterbild angezeigt wird. In diesem Zusammenhang fällt auch oft der Begriff **Container Component** \(für _Smart_ Components\) und **Layout Components** \(für _Dumb_ Components\).
 
-Doch wozu das ganze überhaupt? Eine solche strikte Unterteilung in Business Logik und Darstellungslogik macht wirklich Komponenten getriebene Entwicklung erst einmal möglich. Sie erlaubt es Layout Komponenten zu erstellen die keinerlei Kenntnis von etwaigen APIs haben und nur stumpf die Daten darstellen die ihnen übergeben werden, völlig egal woher diese kommen. Gleichzeitig erlaubt sie es auch den Business Logik Komponenten sich um die reine Business Logik zu kümmern, völlig gleichgültig wie die Daten letzten Endes dargestellt werden.
+Doch wozu das überhaupt? Eine solche strikte Unterteilung in Business Logik und Darstellungslogik macht echte Komponenten getriebene Entwicklung erst einmal möglich. Sie erlaubt es Layout Komponenten zu erstellen die keinerlei Kenntnis von etwaigen APIs haben und nur stumpf die Daten darstellen die ihnen übergeben werden, völlig egal woher diese kommen. Gleichzeitig erlaubt sie es auch den Business Logik Komponenten sich um die reine Business Logik zu kümmern, völlig gleichgültig wie die Daten letzten Endes dargestellt werden.
 
-Stellen wir uns ein gängiges Beispiel aus der Interface Entwicklung einmal vor: die Umschaltung zwischen einer Listen und einer Karten-Ansicht. Hier würde sich eine **Container-Komponente** darum kümmern die Daten zu beschaffen die relevant sind für den Benutzer. Sie würde die beschafften Daten dann an die frei konfigurierbare **Layout-Komponente** übergeben. Solange beide Komponenten sich an das vom Entwickler vorgebene Interace \(Stichwort PropTypes\) halten sind beide Daten beliebig austauschbar und können vollkommen unabhängig voneinander entwickelt und **getestet** werden!
+Stellen wir uns ein gängiges Beispiel aus der Interface Entwicklung einmal vor: die Umschaltung zwischen einer **Listen-** und einer **Karten-Ansicht**. Hier würde sich eine **Container-Komponente** darum kümmern die Daten zu beschaffen die relevant sind für den Benutzer. Sie würde die beschafften Daten dann an die frei konfigurierbare **Layout-Komponente** übergeben. Solange beide Komponenten sich an das vom Entwickler vorgebene Interface \(Stichwort **PropTypes**\) halten sind beide Komponenten beliebig austauschbar und können vollkommen unabhängig voneinander entwickelt und **getestet** werden!
 
-Genug Theorie. Zeit für ein weiteres Beispiel. Wir wollen uns eine Liste mit den 10 größten Kryptowährungen laden und ihren momentanen Preis anzeigen. Dazu erstellen wir eine Higher Order Component die sich diese Daten über die freie Coinmarketcap API beschafft und an eine Layout-Komponente übergibt.
+Genug Theorie. Zeit für ein weiteres Beispiel. Wir wollen uns eine Liste mit den 10 größten Kryptowährungen laden und ihren momentanen Preis anzeigen. Dazu erstellen wir eine **Higher Order Component** die sich diese Daten über die frei zugängliche Coinmarketcap API beschafft und an eine Layout-Komponente übergibt.
 
 ```jsx
 const withCryptoPrices = (WrappedComponent) => {
@@ -53,7 +53,8 @@ const withCryptoPrices = (WrappedComponent) => {
     loadData = async () => {
       this.setState(() => ({
         isLoading: true,
-      }))
+      }));
+
       try {
         const cryptoTicker = await fetch(
           'https://api.coinmarketcap.com/v2/ticker/?limit=10&convert=EUR'
@@ -89,9 +90,9 @@ const withCryptoPrices = (WrappedComponent) => {
 };
 ```
 
-Voilà, fertig ist die **HOC** für die Abfrage der Crypto-Preise auf coinmarketcap.com. Doch die Higher Order Component allein reicht wie gesagt noch nicht. Wir benötigen nun auch noch eine Layout-Komponente, der wir die Verantwortung übertragen die Daten entsprechend anzuzeigen. 
+Voilà, fertig ist die **HOC** für die Abfrage der Crypto-Preise auf coinmarketcap.com. Doch die **Higher Order Component** allein reicht noch nicht. Wir benötigen nun auch noch eine Layout-Komponente, an die wir die Verantwortung delegieren die Daten entsprechend anzuzeigen. 
 
-Hierzu erstellen wir eine generische `PriceTable`-Komponente, die selbst keinerlei Kenntnis davon hat ob sie nun die aktuellen Joghurtpreise aus dem örtlichen Supermarkt darstellt oder Preise von Kryptowährungen auf irgendeiner beliebigen Börse. Entsprechend nennen wir sie auch sehr generisch `PriceTable`:
+Hierzu erstellen wir eine möglichst generische `PriceTable`-Komponente, die selbst keinerlei Kenntnis davon hat ob sie nun die aktuellen Joghurtpreise aus dem örtlichen Supermarkt darstellt oder Preise von Kryptowährungen auf irgendeiner beliebigen Börse. Entsprechend nennen wir sie auch sehr generisch `PriceTable`:
 
 ```jsx
 const PriceTable = ({ isLoading, items, loadData }) => {
@@ -127,9 +128,9 @@ const PriceTable = ({ isLoading, items, loadData }) => {
 };
 ```
 
-Die Komponente kennt drei Props: `isLoading`, um ihr mitzuteilen, dass die Daten die sie einmal darstellen soll aktuell geladen werden, `items`, was ein Array aus „Artikeln“ mit Preisen repräsentiert und `loadData`, eine Funktion um erneut einen API-Request zu starten um die neuen Daten zu beziehen.
+Die Komponente kennt drei Props: `isLoading`, um ihr mitzuteilen, dass die Daten die sie einmal darstellen soll aktuell noch geladen werden, `items`, was ein Array aus „Artikeln“ mit Preisen repräsentiert und `loadData`, eine Funktion um erneut einen API-Request zu starten um die neuen Daten zu beziehen.
 
-Beide Komponenten funktionieren vollkommen unabhängig voneinander. Die PriceTable kann nicht nur Crypto-Preise anzeigen, die withCryptoPrices-Komponente muss ihre Daten nicht zwangsweise in einer PriceTable darstellen. Wir haben hier also zwei vollständig gekapselte und wiederverwendbare Komponenten erstellt!
+Beide Komponenten funktionieren vollkommen unabhängig voneinander. Die `PriceTable` kann nicht nur Crypto-Preise anzeigen, die `withCryptoPrices`-Komponente muss ihre Daten nicht zwangsweise in einer `PriceTable` darstellen. Wir haben hier also zwei vollständig gekapselte und wiederverwendbare Komponenten erstellt!
 
 Doch wie bringen wir die beiden nun zusammen? Ganz einfach indem wir die `PriceTable`-Komponente als Parameter an die `withCryptoPrices`-Komponente übergeben. Aha! Und das sieht wie folgt aus:
 
@@ -137,7 +138,7 @@ Doch wie bringen wir die beiden nun zusammen? Ganz einfach indem wir die `PriceT
 const CryptoPriceTable = withCryptoPrices(PriceTable);
 ```
 
-That's it! Rendern wir nun eine Instanz der `CryptoPriceTable`, stößt die HOC beim `componentDidMount()` einen API-Request an und übergibt das Ergebnis dieses Requests an die ihr übergebene `PriceTable`-Komponente. Diese kümmert sich anschließend nur noch um die entsprechende Darstellung.
+Rendern wir nun eine Instanz der `CryptoPriceTable`, stößt die **Higher Order Component** beim `componentDidMount()` einen API-Request an und übergibt das Ergebnis dieses Requests an die ihr übergebene `PriceTable`-Komponente. Diese kümmert sich anschließend nur noch um die entsprechende Darstellung.
 
 ```jsx
 ReactDOM.render(
@@ -146,5 +147,74 @@ ReactDOM.render(
 );
 ```
 
+Dadurch ergeben sich großartige Möglichkeiten für uns. Erst einmal sind beide Komponenten unabhängig voneinander testbar. Mehr dazu gibt es im entsprechenden Kapitel, wo wir uns nochmal gezielt anschauen wie einfach man insbesondere Layout-Komponenten mittels Snapshot-Tests testen kann.
 
+Weiter haben wir nun eben die Möglichkeit auch andere Layout-Komponenten mit der `withCryptoPrices`-HOC zu „verbinden“. Um dieses mächtige Konzept einmal anhand eines Beispiels zu verdeutlichen, geben wir die Preise nun im CSV-Format aus. Unsere HOC bleibt dabei völlig unverändert. Unsere Layout-Komponente könnte wie folgt implementiert werden:
+
+```jsx
+const PriceCSV = ({ isLoading, items, loadData, separator=";" }) => {
+  if (isLoading) {
+    return <p>Loading prices. Please be patient.</p>;
+  }
+
+  if (!items || items.length === 0) {
+    return (
+      <p>
+        No data available. <button onClick={loadData}>Try again</button>
+      </p>
+    );
+  }
+  
+  return (
+    <pre>
+      {items.map(
+        ({ name, symbol, quotes }) =>
+          `${name}${separator}${symbol}${separator}${quotes.EUR.price}\n`
+      )}
+    </pre>
+  );
+}
+```
+
+Und damit haben wir auch schon unsere CSV-Layout-Komponente implementiert. Wieder schauen wir zuerst ob noch Daten geladen werden, anschließend schauen wir erneut ob `items` vorhanden sind. Hier könnte man anfangen darüber nachzudenken auch dies in einer weiteren HOC zu bündeln, denn HOCs lassen sich beliebig ineinander schachteln, sind es doch am Ende lediglich Funktionen die als Parameter an andere Funktionen weitergegeben werden.
+
+Zuletzt rendern wir den tatsächlichen Output: wir iterieren durch die Liste der `items`, picken uns über die **Object Destructuring** Syntax die für uns relevanten Eigenschaften `name`, `symbol` und `quotes` heraus und umschließen die einzelnen Zeilen mit einem `pre`-Element um den Zeilenumbruch am Ende der Zeile korrekt darzustellen. 
+
+Anders als bei der `PriceTable` haben wir hier allerdings noch eine weitere \(optionale\) Prop eingeführt: `separator` - um der Render-Komponente mitzuteilen welches Trennzeichen sie bei der Darstellung der Daten verwenden soll. Die Prop kann wie in JSX üblich bei der Verwendung der Komponente als simple Prop angegeben werden:
+
+```jsx
+const CryptoCSV = withCryptoPrices(PriceCSV);
+
+ReactDOM.render(
+  <CryptoCSV separator="," />, 
+  document.getElementById("root")
+);
+```
+
+Allerdings wird dafür eine Änderung an unserer ursprünglichen `withCryptoPrices`-HOC notwendig. Momentan werden lediglich die fest definierten Props `isLoading`, `items` und `loadData` an die Kind-Komponente \(`WrappedComponent`\)  übergeben:
+
+```jsx
+return (
+  <WrappedComponent
+    isLoading={isLoading}
+    items={items}
+    loadData={this.loadData}
+  />
+);
+```
+
+Damit die in `<CryptoCSV separator="," />` angegebene separator-Prop auch korrekt an die `PriceCSV`-Komponente übergeben wird, müssen wir unserer HOC mitteilen, dass sie auch alle weiteren Props an die `WrappedComponent` übergibt. Je nach Einsatzzweck können weitere erlaubte Props entweder explizit übergeben werden oder aber, es werden einfach **sämtliche** weiteren Props übergeben:
+
+```jsx
+return (
+  <WrappedComponent
+    {...this.props}
+    isLoading={isLoading}
+    items={items}
+    loadData={this.loadData}
+  />
+);
+```
+
+Entscheidend ist hier Zeile 3: mittels `{...this.props}`. Über die Spread-Syntax leiten wir hier sämtliche Props an die Kind-Komponente weiter.
 
