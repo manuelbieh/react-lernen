@@ -203,7 +203,7 @@ return (
 );
 ```
 
-Damit die in `<CryptoCSV separator="," />` angegebene separator-Prop auch korrekt an die `PriceCSV`-Komponente übergeben wird, müssen wir unserer HOC mitteilen, dass sie auch alle weiteren Props an die `WrappedComponent` übergibt. Je nach Einsatzzweck können weitere erlaubte Props entweder explizit übergeben werden oder aber, es werden einfach **sämtliche** weiteren Props übergeben:
+Damit die in `<CryptoCSV separator="," />` angegebene `separator`-Prop auch korrekt an die `PriceCSV`-Komponente übergeben wird, müssen wir unserer **HOC** mitteilen, dass sie auch alle weiteren Props an die `WrappedComponent` übergibt. Je nach Einsatzzweck können weitere erlaubte Props entweder explizit übergeben werden oder aber, es werden einfach **sämtliche** weiteren Props übergeben:
 
 ```jsx
 return (
