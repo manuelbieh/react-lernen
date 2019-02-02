@@ -18,7 +18,7 @@
 * [Erweiterte Konzepte](erweiterte-konzepte/README.md)
   * [Typechecking mit PropTypes, Flow und TypeScript](erweiterte-konzepte/type-checking.md)
   * [Higher Order Components](erweiterte-konzepte/higher-order-components.md)
-  * [Render Props und Functions as a Child](erweiterte-konzepte/render-props-und-functions-as-a-child.md)
+  * [Functions as a Child und Render Props](erweiterte-konzepte/render-props-und-functions-as-a-child.md)
   * [Context API](erweiterte-konzepte/context-api.md)
   * [Error Boundaries](erweiterte-konzepte/error-boundaries.md)
   * [Portals](erweiterte-konzepte/portals.md)
