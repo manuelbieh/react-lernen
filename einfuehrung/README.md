@@ -1,22 +1,24 @@
 # Einführung
 
-## Was ist React eigentlich und was ist es nicht?
+## Was ist React und was ist es nicht?
 
-Zitieren wir hier an erster Stelle mal die React-Dokumentation, denn die bringen es sehr prägnant auf den Punkt:
+Zitieren wir an erster Stelle die React-Dokumentation, die es sehr prägnant auf den Punkt bringt:
 
 > \[React is\] a library for building user interfaces.
 
-Auch wenn die Erklärung sehr kurz ist kann man aus ihr alle essentiellen Dinge ableiten die wichtig sind für die Arbeit mit React und um zu verstehen worum es sich dreht. React ist erst einmal nur eine Library, kein vollständiges Framework mit unzähligen Funktionen mit dem ihr ohne weitere Abhängigkeiten komplexe Web-Anwendungen entwickeln könnt. Und da kommen wir auch schon zum zweiten Teil des Satzes: for building user interfaces.
+Auch wenn die Erklärung sehr kurz ist, kann man aus ihr alle essentiellen Dinge ableiten, die für die Arbeit mit React wichtig sind und um zu verstehen, worum es sich dreht. React ist vorrangig eine Library. Es ist kein vollständiges Framework mit unzähligen Funktionen, mit dem ihr ohne weitere Abhängigkeiten komplexe Web-Anwendungen entwickeln könnt. Und da kommen wir auch schon zum zweiten Teil des Satzes: for building user interfaces.
 
-React ist also erst einmal lediglich eine **Library** die es euch einfach macht **Benutzerinterfaces** zu entwickeln. Keine Services oder Methoden um API-Calls zu machen, keine built-in Models oder ORM. Nur User Interfaces. Sozusagen nur der View-Layer eurer Anwendung. That’s it! In diesem Zusammenhang liest man gelegentlich, dass React das „V“ in **MVC** \(_Model-View-Controller_\) oder **MVVM** \(_Model-View-ViewModel_\) darstellt. Das trifft es in meinen Augen ganz gut.
+React ist also eine **Bibliothek** mit Werkzeugen, die es euch einfach machen, **Benutzeroberflächen** zu entwickeln. Keine Services oder Methoden, um API-Calls zu machen, keine built-in Models oder ORM; nur User Interfaces - der View-Layer eurer Anwendung. That’s it! In diesem Zusammenhang liest man gelegentlich, dass React das „V“ in **MVC** \(_Model-View-Controller_\) oder **MVVM** \(_Model-View-ViewModel_\) darstellt. Das trifft es in meinen Augen ganz gut.
 
-React bietet einen **deklarativen** Weg um den **Zustand** \(_State_\) eines User Interfaces zu beschreiben. Vereinfacht gesagt bedeutet das, ihr beschreibt mit eurem Code im Grunde explizit wie euer User Interface aussehen soll, abhängig davon in welchem State eine Komponente sich befindet. Einfaches Beispiel zur Veranschaulichung dieses Prinzips: ist ein Benutzer eingeloggt, zeige das Dashboard, ist er es nicht, zeige das Login-Formular.
+React bietet einen **deklarativen** Weg, um den **Zustand** \(_State_\) eines User Interfaces zu beschreiben. Vereinfacht gesagt bedeutet das, ihr beschreibt mit eurem Code explizit wie euer User Interface aussehen soll, abhängig davon, in welchem Zustand sich eine Komponente befindet. Einfaches Beispiel zur Veranschaulichung dieses Prinzips: ist ein Benutzer eingeloggt, zeige das Dashboard, ist er es nicht, zeige das Login-Formular.
 
-Die Logik selbst befindet sich dabei komplett im JavaScript-Teil der Anwendung \(dort, wo sie also immer hingehören sollte\) und nicht in den Templates selbst, wie das bei den allermeisten anderen Web-Frameworks die Regel ist. Klingt erst einmal kompliziert, wird aber im weiteren Verlauf immer deutlicher was damit eigentlich gemeint ist.
+Die Logik selbst befindet sich dabei komplett im JavaScript-Teil der Anwendung \(dort, wo sie also immer hingehören sollte\) und nicht in den Templates selbst, wie das bei den allermeisten anderen Web-Frameworks die Regel ist. Das klingt erst einmal kompliziert. Es wird aber im weiteren Verlauf immer deutlicher, was damit eigentlich gemeint ist.
 
-React arbeitet dabei komponentenbasiert, d.h. man entwickelt gekapselte funktionale Komponenten die beliebig zusammengestellt \(composed\) und wiederverwendet werden können. Erweiterung von Komponenten ist zwar möglich, jedoch sehr unüblich in der React-Welt. Hier wird auch von offizieller Seite das Composition Model propagiert, bei dem mehrere Komponenten zu einem „Gesamtbild“ zusammengefügt werden statt mit Inheritance, also Vererbung zu arbeiten.
+React arbeitet dabei komponentenbasiert, d.h. man entwickelt gekapselte funktionale Komponenten, die beliebig zusammengestellt \(composed\) und wiederverwendet werden können. Erweiterung von Komponenten ist zwar möglich, jedoch in der React-Welt sehr unüblich. Hier wird auch von offizieller Seite das Composition Model propagiert, bei dem mehrere Komponenten zu einem „Gesamtbild“ zusammengefügt werden, statt mit Inheritance - also Vererbung - zu arbeiten.
 
-Bedeutet das jetzt also, dass ich keine komplexen Web-Anwendungen mit React entwickeln kann? Nein. Absolut nicht. React besitzt ein sehr großes, sehr aktives und zum großen Teil auch sehr hochqualitatives Ecosystem an Libraries, die wiederum auf React basieren, es erweitern oder ergänzen und so zu einem mächtigen Werkzeug werden lassen, das sich hinter großen Frameworks wie Ember oder Angular nicht verstecken braucht. Im Gegenteil. Ist man erst einmal in die Welt des React-Ökosystems eingetaucht und hat sich einen Überblick verschafft, hat man ganz schnell eine Reihe an wirklich guten Tools und Libraries gefunden mit denen man professionelle, super individuelle und hochkomplexe Anwendungen entwickeln kann.
+_Bedeutet das jetzt also, dass ich keine komplexen Web-Anwendungen mit React entwickeln kann?_
+
+Nein. Absolut nicht. React besitzt ein sehr großes, sehr aktives und zum großen Teil auch sehr hochqualitatives Ökosystem an Libraries. Diese basieren wiederum auf React, erweitern es oder ergänzen es und lassen es so zu einem mächtigen Werkzeug werden, das sich hinter großen Frameworks wie Ember oder Angular nicht verstecken muss. Im Gegenteil: Ist man erst einmal in die Welt des React-Ökosystems eingetaucht und hat sich einen Überblick verschafft, hat man ganz schnell eine Reihe an wirklich guten Tools und Libraries gefunden, mit denen man professionelle, individuelle und hochkomplexe Anwendungen entwickeln kann.
 
 ## Wann sollte ich React benutzen und wann nicht?
 
