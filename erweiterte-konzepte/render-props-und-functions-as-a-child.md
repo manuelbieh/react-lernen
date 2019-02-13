@@ -196,7 +196,7 @@ Dabei ist es auch möglich beliebig viele solcher Props in einer Komponente zu h
 
 ### Render Props in Verbindung mit Higher Order Components
 
-Zum Abschluss noch ein kleiner Trick: solltet ihr tatsächlich einmal eine **Higher Order Component** benötigen und ihr habt bereits eine **FaaC-** oder **Render Prop**-Komponente, könnt ihr auch in der HOC verwenden:
+Zum Abschluss noch ein kleiner Trick: solltet ihr tatsächlich einmal eine **Higher Order Component** benötigen und ihr habt bereits eine **FaaC-** oder **Render Prop**-Komponente, könnt ihr diese auch zu einer HOC machen:
 
 ```jsx
 function withCryptoPrices(WrappedComponent) {
@@ -213,6 +213,4 @@ function withCryptoPrices(WrappedComponent) {
   };
 }
 ```
-
-
 

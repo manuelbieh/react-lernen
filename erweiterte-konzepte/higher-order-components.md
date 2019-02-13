@@ -218,3 +218,9 @@ return (
 
 Entscheidend ist hier Zeile 3: mittels `{...this.props}`. Über die Spread-Syntax leiten wir hier sämtliche Props an die Kind-Komponente weiter.
 
+{% hint style="info" %}
+**Higher Order Components** sind ein schönes Mittel um Logik zu „zentralisieren“ und seine Anwendung somit übersichtlicher zu strukturieren. Logik kann dabei sehr unkompliziert aus den Komponenten entfernt werden, die nur für das Rendering, also die Darstellungslogik sorgen sollten. Obwohl sie ein sehr zentrales Konzept in React waren und noch immer sind, sind sie gleichzeitig ein sehr altes Konzept. 
+
+Zwar werden **Higher Order Components** noch immer häufig verwendet und gegen ihre Verwendung ist nichts einzuwenden. Allerdings gibt es mittlerweile neuere Konzepte und seit den neuesten Updates vor allem neue Wege um eine ähnliche Funktionalität in vielen Fällen in noch übersichtlicher Form zu erreichen. Zwei davon sind **Functions as a Child** und die neue **Context API**, die in Version 16.3.0 ihren Weg in React gefunden hat. Diese werden in den folgenden Kapiteln beschrieben.
+{% endhint %}
+
