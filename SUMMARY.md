@@ -22,6 +22,6 @@
   * [Context API](erweiterte-konzepte/context-api.md)
   * [Error Boundaries](erweiterte-konzepte/error-boundaries.md)
   * [Portals](erweiterte-konzepte/portals.md)
-* [Die Praxis](die-praxis.md)
+* [Hooks](hooks.md)
 * [Das Ecosystem](das-ecosystem.md)
 
