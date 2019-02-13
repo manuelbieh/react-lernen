@@ -486,7 +486,7 @@ Immer dann wird die `componentWillUnmount()`-Methode einer Komponente aufgerufen
 
 Event Listener. Gutes Stichwort. Darum kümmern wir uns im nächsten Kapitel, denn in den meisten Fällen ist der Einsatz von `addEventListener()` in React nicht mehr nötig, da React ein eigenes Event-System mitbringt um für bessere Übersicht zu sorgen.
 
-### Diagram
+### Diagramm der Lifecycle-Methoden
 
 ![Diagram der verschiedenen Lifecycle-Methods in ihren jeweiligen Phasen \(CC0 Dan Abramov\)](../.gitbook/assets/lifecycle-methods-2.png)
 
