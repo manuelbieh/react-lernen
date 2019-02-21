@@ -2,18 +2,18 @@
 
 Die **Context API** wurde in React sehr lange Zeit eher stiefmütterlich behandelt und wurde erst einmal nur prototypisch implementiert und als experimentell bezeichnet ehe sie in React **16.3.** in grundlegend überarbeiteter Form offizieller Teil von React wurde. 
 
-Sie wurde dafür konzipiert, um Daten innerhalb einer Komponenten-Hierarchie in einer Anwendung an sog. _Konsumenten_ zu verteilen ohne dabei Props an jede einzelne Komponente explizit übergeben zu müssen. Dies kann in einigen Fällen sehr mühsam sein wenn es sich um Daten handelt die von vielen Komponenten innerhalb des Baumes gemeinsam immer wieder verwendet werden. Dazu gehören bspw. Sprach-Einstellungen oder ein globales Style-Schema \(„Theme“\).
+Sie wurde dafür konzipiert, um Daten innerhalb einer Komponenten-Hierarchie an sog. _Konsumenten_ zu verteilen ohne dabei Props an jede einzelne Komponente explizit übergeben zu müssen. Dies kann in einigen Fällen sehr mühsam sein wenn es sich um Daten handelt die von vielen Komponenten innerhalb des Baumes gemeinsam immer wieder verwendet werden. Dazu gehören bspw. Sprach-Einstellungen oder ein globales Style-Schema \(„Theme“\).
 
-In solchen Fällen bietet sich die **Context API** an, die jeweils einem **Context** _**Provider**_ und beliebig vielen **Context** _**Consumern**_ besteht. Der **Provider** dient hier als eine Art zentrale Instanz für die jeweiligen Datenstruktur, der **Consumer** kann dann die entsprechenden Daten _konsumieren_, die vom Provider bereitgestellt werden. Sozusagen eine semi-globale Dateninstanz die nur für einen bestimmten Baum innerhalb der Komponenten-Hierarchie gilt.
+In solchen Fällen bietet sich die **Context API** an, die jeweils aus einem **Context** _**Provider**_ und beliebig vielen **Context** _**Consumern**_ besteht. Der **Provider** dient hier als eine Art zentrale Instanz für die jeweilige Datenstruktur, der **Consumer** kann dann die entsprechenden Daten _konsumieren_, die vom Provider bereitgestellt werden. Sozusagen eine „semi-globale“ Dateninstanz, die nur für einen bestimmten Baum innerhalb der Komponenten-Hierarchie gilt.
 
-Die Datenstruktur kann dabei durchaus auch sehr komplex sein und ist nicht bspw. auch einfache Datentypen wie Strings oder Arrays beschränkt. Eine Anwendung kann dabei auch beliebig viele Kontexte besitzen \(bspw. einen für die vom Benutzer eingestellte Sprache, einen für das Style-Schema, etc.\) und auch ein Provider selbst kann mit wechselnden Werten mehrfach verwendet werden. Aber eins nach dem anderen.
+Die Datenstruktur kann dabei durchaus auch sehr komplex sein und ist nicht bspw. auch einfache Datentypen wie Strings oder Arrays beschränkt. Eine Anwendung kann dabei auch beliebig viele Contexts besitzen \(bspw. einen für die vom Benutzer eingestellte Sprache, einen für das Style-Schema, etc.\) und auch ein Provider selbst kann mit wechselnden Werten mehrfach verwendet werden. Aber eins nach dem anderen.
 
 ### API
 
 Zur Erstellung eines neuen **Contexts** stellt React die Methode `createContext` bereit:
 
 ```jsx
-const ExampleContext = React.createContext(defaultValue);
+const LanguageContext = React.createContext(defaultValue);
 ```
 
 Mit lediglich dieser einen Zeile haben wir bereits einen neuen **Context** erstellt. Der **Context** besteht nun aus einer **Provider-** und eine **Consumer-**Komponente: `LanguageContext.Provider` sowie `LanguageContext.Consumer`.
@@ -110,5 +110,7 @@ Obwohl wir keinerlei **Props** an die `DisplaySelectedLanguage`-Komponente über
 <p>Die ausgewählte Sprache ist en</p>
 ```
 
+Ändert sich der `value` einer Provider-Komponente werden alle Consumer-Komponenten die sich innerhalb dieses Providers befinden neu gerendert!
 
+[https://codesandbox.io/s/3y0o26v1vp](https://codesandbox.io/s/3y0o26v1vp)
 

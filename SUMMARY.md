@@ -16,12 +16,12 @@
   * [Formulare](die-grundlagen/formulare.md)
   * [Listen, Refs, Fragments und Conditional Rendering](die-grundlagen/listen-refs-fragments-und-conditional-rendering.md)
 * [Erweiterte Konzepte](erweiterte-konzepte/README.md)
-  * [Typechecking mit PropTypes, Flow und TypeScript](erweiterte-konzepte/type-checking.md)
   * [Higher Order Components](erweiterte-konzepte/higher-order-components.md)
   * [Functions as a Child und Render Props](erweiterte-konzepte/render-props-und-functions-as-a-child.md)
   * [Context API](erweiterte-konzepte/context-api.md)
   * [Error Boundaries](erweiterte-konzepte/error-boundaries.md)
   * [Portals](erweiterte-konzepte/portals.md)
+  * [Typechecking mit PropTypes, Flow und TypeScript](erweiterte-konzepte/type-checking.md)
 * [Hooks](hooks.md)
 * [Das Ecosystem](das-ecosystem.md)
 
