@@ -112,5 +112,96 @@ Obwohl wir keinerlei **Props** an die `DisplaySelectedLanguage`-Komponente über
 
 Ändert sich der `value` einer Provider-Komponente werden alle Consumer-Komponenten die sich innerhalb dieses Providers befinden neu gerendert!
 
-[https://codesandbox.io/s/3y0o26v1vp](https://codesandbox.io/s/3y0o26v1vp)
+```jsx
+import React from "react";
+import ReactDOM from "react-dom";
+
+const translationStore = {
+  de: {
+    greeting: "Guten Tag!",
+    headline: "Heute lernen wir, wie Context funktioniert.",
+  },
+  en: {
+    greeting: "Guten day!",
+    headline: "Today we learn how context works.",
+  },
+};
+
+const defaultLanguage = "de";
+
+const defaultLanguageContextValue = {
+  availableLanguages: Object.keys(translationStore),
+  changeLanguage: () => {},
+  language: defaultLanguage,
+  translations: translationStore[defaultLanguage],
+};
+
+const LanguageContext = React.createContext(defaultLanguageContextValue);
+
+class Localized extends React.Component {
+  changeLanguage = (newLanguage) => {
+    this.setState((state) => ({
+      translations: translationStore[newLanguage],
+      language: newLanguage,
+    }));
+  };
+
+  state = {
+    ...defaultLanguageContextValue,
+    changeLanguage: this.changeLanguage,
+  };
+
+  render() {
+    return (
+      <LanguageContext.Provider value={this.state}>
+        {this.props.children}
+      </LanguageContext.Provider>
+    );
+  }
+}
+
+const Greeting = () => (
+  <LanguageContext.Consumer>
+    {(contextValue) => contextValue.translations.greeting}
+  </LanguageContext.Consumer>
+);
+const Headline = () => (
+  <LanguageContext.Consumer>
+      {(contextValue) => contextValue.translations.headline}
+  </LanguageContext.Consumer>
+);
+
+const LanguageSelector = () => {
+  return (
+    <LanguageContext.Consumer>
+      {(contextValue) => (
+        <select
+          onChange={(event) => {
+            contextValue.changeLanguage(event.target.value);
+          }}
+        >
+          {contextValue.availableLanguages.map((language) => (
+            <option value={language}>{language}</option>
+          ))}
+        </select>
+      )}
+    </LanguageContext.Consumer>
+  );
+};
+
+function App() {
+  return (
+    <Localized>
+      <LanguageSelector />
+      <Greeting />
+      <Headline />
+    </Localized>
+  );
+}
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App />, rootElement);
+```
+
+
 
