@@ -122,7 +122,7 @@ const translationStore = {
     headline: "Heute lernen wir, wie Context funktioniert.",
   },
   en: {
-    greeting: "Guten day!",
+    greeting: "Good day!",
     headline: "Today we learn how context works.",
   },
 };
