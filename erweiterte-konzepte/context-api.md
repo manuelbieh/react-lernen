@@ -258,5 +258,63 @@ Die `Headline` und `Greeting` Komponenten aus dem vorherigen Beispiel können wi
 
 Hier macht uns React aber einen Strich durch die Rechnung, da `key` ein reservierter Name in JSX ist und zur Identifizierung von Elementen dient wenn diese Elemente in einem Array verwendet werden. Die genauen Gründe dazu sind im Kapitel über „Listen, Refs, Fragments und Conditional Rendering“ in „Die Grundlagen“ nachzulesen, dort konkret im Abschnitt „Listen“.
 
-![Unsere kleine Context App im Browser](../.gitbook/assets/image%20%281%29.png)
+### Verwendung mehrerer Contexts
+
+Es ist kein Problem auch mehrere Context-Provider innerhalb einer Komponenten-Hierarchie zu haben. Das Verschachteln von mehreren Provider-Komponenten ist also kein Problem. Selbst Provider vom selben Context-Typen können ineinander verschachtelt werden. Dabei wird den Consumer-Komponenten stets der Context-Value des nächst höheren Providers übergeben:
+
+```jsx
+<MyContext.Provider value="1">
+  <MyContext.Provider value="2">
+    <MyContext.Consumer>
+      {(value) => <p>Der Wert ist {value}</p>}
+    </MyContext.Consumer>
+  </MyContext.Provider>
+</MyContext.Provider>
+```
+
+Das obige Beispiel wäre also problemlos möglich. Die Ausgabe wäre hier:
+
+```markup
+<p>Der Wert ist 2</p>
+```
+
+Die **Consumer-Komponente** bezieht ihre daten hier nach aus dem nächsthöheren **Context-Provider**, dieser hat im obigen Beispiel den Wert "2". 
+
+Ergibt das Verschachteln von gleichen **Context-Providern** meist relativ wenig Sinn so ist es dennoch keine unübliche oder gar schlechte Praktik verschiedene **Context-Provider** ineinander zu verschachteln. So kann eine Anwendung sehr einfach aus einem Theme-Provider, einem Language-Provider und einem Account-Provider bestehen. Letzterer würde sich dann bspw. um das Daten-Handling des eingeloggten Benutzers kümmern, ggf. Access Tokens oder benutzerspezifische Einstellungen verwalten.
+
+### Abkürzung: contextType
+
+Bei der Verwendung von Klassen-Komponenten können wir uns eines Tricks bedienen und auf die Verwendung einer Consumer-Komponente verzichten die unseren Komponenten-Baum weiter aufbläht. 
+
+Der `contextType` ist hier das Stichwort. Dieser kann einer Klassen-Komponente in Form einer gleichnamigen statischen Eigenschaft zugewiesen werden, anschließend kann dann innerhalb der Komponente mittels `this.context` auf den Wert des jeweiligen Contexts zugegriffen werden. Als Wert bekommt die `contextType`-Eigenschaft einen Context zugewiesen, der zuvor mittels `React.createContext()` erzeugt wurde.
+
+Allerdings ist es nur möglich jeder Klasse lediglich **einen einzigen Context-Typen** zuzuweisen. Möchten wir auf den Wert zweier oder mehrerer Contexts müssen wir unser JSX wieder in Consumer-Komponenten wrappen. Bei der Verwendung der _Public Class Fields Syntax_ aus ES2015+ reicht es dazu eine statische Klassen-Eigenschaft `contextType` zu definieren und dieser einen Context zuzuweisen. 
+
+Als Beispiel, angewendet auf die Translated-Komponente von weiter oben, sähe das dann etwa so aus:
+
+```jsx
+class Translated extends React.Component {
+  static contextType = LanguageContext;
+  render() {
+    return this.context.translations[this.props.translationKey];
+  }
+}
+```
+
+Wir weisen der statischen `contextType`-Eigenschaft der Komponente \(die nun eine Klassen-Komponente und keine Function-Component mehr ist\) als Wert unseren `LanguageContext` zu und schon haben wir in `this.context` den Wert des Contexts zur Verfügung.
+
+Ohne die Verwendung der Public Class Fields Syntax \(die ich einige Kapitel vorher allerdings dringend empfohlen habe, da sie uns das Leben an einigen Stellen einfacher macht\) sähe der gleiche Code dann folgendermaßen aus:
+
+```jsx
+class Translated extends React.Component {
+  render() {
+    return this.context.translations[this.props.translationKey];
+  }
+}
+Translated.contextType = LanguageContext;
+```
+
+Wir würden den `contextType` also außerhalb der Komponente definieren und nicht mehr innerhalb. Im Grunde genommen ist das aber letztendlich Geschmackssache und hat sonst keine Implikationen oder Nachteile. Es ist allein eine andere Syntax-Variante, die erst in späteren ECMAScript-Versionen oder eben durch Transpiling mittels Babel möglich ist. Möglich gemacht wird sie durch das Babel-Plugin `@babel/plugin-proposal-class-properties`.
+
+
 
