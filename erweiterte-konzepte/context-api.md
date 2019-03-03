@@ -316,5 +316,45 @@ Translated.contextType = LanguageContext;
 
 Wir würden den `contextType` also außerhalb der Komponente definieren und nicht mehr innerhalb. Im Grunde genommen ist das aber letztendlich Geschmackssache und hat sonst keine Implikationen oder Nachteile. Es ist allein eine andere Syntax-Variante, die erst in späteren ECMAScript-Versionen oder eben durch Transpiling mittels Babel möglich ist. Möglich gemacht wird sie durch das Babel-Plugin `@babel/plugin-proposal-class-properties`.
 
+### Performance Fallstrick
 
+React optimiert **Context** unter der Haube massiv um unnötiges Re-Rendering von Komponenten oder gar  ganzen Komponenten-Hierarchien bestmöglich zu vermeiden. Zu diesem Zweck wird bei jedem Rendering der alte Context-Wert des Providers mit dem neuen Wert verglichen und **Consumer-Komponenten** anschließend nur dann neu gerendert wenn sich der Wert ihres **Context-Providers** geändert hat.
+
+Was in der Theorie ausnahmsweise mal relativ einfach klingt, bringt aber einen kleinen Stolperstein mit sich. Und zwar betrifft das Consumer-Provider, deren Value innerhalb der `render()`-Methode einer Komponente stets neu on-the-fly erzeugt werden. Daher empfiehlt es sich normalerweise den Context-Wert außerhalb der render\(\)-Methode zu erzeugen und eine _Referenz zum Wert_ statt eines _stets neu erzeugten Werts_ zu übergeben.
+
+Um dies zu verdeutlichen hier vorab ein Negativ-Beispiel:
+
+```jsx
+class App extends React.Component {
+  state = {
+    color: 'red',
+  };
+
+  render() {
+    <Provider value={{color: this.state.color}}>
+      <MoreComponents />
+    </Provider>
+  }
+}
+```
+
+In diesem Fall erzeugen wir bei jedem neuen Aufruf der render\(\)-Methode ein neues Objekt `{color: this.state.color}` welches wird als Wert für den Context-Provider benutzen. Da React lediglich überprüft ob die Referenz zum entsprechenden `value` im aktuellen `render()`-Aufruf der aus dem vorherigen `render()`-Aufruf entspricht, dies hier jedoch niemals der Fall ist, da ja ein neues Objekt an Ort und Stelle erzeugt wird, werden hier sämtliche Consumer-Komponenten neu gerendert.
+
+Das obige Beispiel lässt sich jedoch sehr einfach so umschreiben, dass die Performance-Optimierungen von React hier greifen:
+
+```jsx
+class App extends React.Component {
+  state = {
+    color: 'red',
+  };
+
+  render() {
+    <Provider value={this.state}>
+      <MoreComponents />
+    </Provider>
+  }
+}
+```
+
+Im zweiten Beispiel übergeben wir lediglich eine _Referenz_ zum `state`-Objekt der Komponente. Da diese auch beim Re-Rendering der Komponente erhalten bleibt, löst dieses Vorgehen kein Re-Rendering aus, solange sich der Inhalt des States der Komponente nicht ändert!
 
