@@ -27,14 +27,14 @@ In diesen Situationen greift eine **Error Boundary** _nicht_, da es entweder nic
 
 ### Eine Error Boundary implementieren
 
-Für die Implementierung einer Error Boundary gibt es zwei einfache Regeln: 
+Für die Implementierung einer **Error Boundary** gibt es zwei einfache Regeln: 
 
-1. nur Klassen-Komponenten können zu einer Error Boundary werden
-2. eine Klasse muss entweder die statische Methode getDerivedStateFromError\(\) oder die Klassen-Methode componentDidCatch\(\) implementieren oder auch gleich beide Methoden
+1. nur Klassen-Komponenten können zu einer **Error Boundary** werden
+2. eine Klasse muss entweder die statische Methode `getDerivedStateFromError()` oder die Klassen-Methode `componentDidCatch()` implementieren oder auch gleich beide Methoden
 
 Eine **Error Boundary** ist also aus technischer Sicht lediglich eine Komponente die eine der beiden o.g. Methoden oder gleich beide implementiert. Ansonsten gelten für sie genau die gleichen Regeln wie für andere Klassen-Komponenten auch.
 
-Sehen wir uns also eine einfache Implementierung einer Error Boundary einmal an:
+Sehen wir uns also eine einfache Implementierung einer **Error Boundary** einmal an:
 
 ```jsx
 class ErrorBoundary extends React.Component {
@@ -63,7 +63,7 @@ class ErrorBoundary extends React.Component {
 }
 ```
 
-Wir definieren hier also zuerst einmal eine neue Komponente. Diese heißt in diesem Fall `ErrorBoundary`, das ist jedoch kein vorgeschriebener Name der zwingend notwendig ist. Der Name einer **Error Boundary** Komponente kann hier grundsätzlich genauso frei gewählt werden wie bei jeder anderen Komponente auch, er muss lediglich den Regeln für Komponentennamen entsprechen. Also im Wesentlichen mit einem Großbuchstaben anfangen und ein gültiger JavaScript-Funktionsname sein. 
+Wir definieren hier also zuerst einmal eine neue Komponente. Diese heißt hier `ErrorBoundary`, das ist jedoch kein vorgeschriebener Name der zwingend notwendig ist. Der Name einer **Error Boundary** Komponente kann hier grundsätzlich genauso frei gewählt werden wie bei jeder anderen Komponente auch, er muss lediglich den Regeln für Komponentennamen entsprechen. Also im Wesentlichen mit einem Großbuchstaben anfangen und ein gültiger JavaScript-Funktionsname sein. 
 
 Ich empfehle dennoch der besseren Übersicht halber bereits im Namen der Komponente erkennbar zu machen, dass es sich um eine Komponente handelt, die insbesondere zur Fehlerbehandlung dient. Also bspw. Namen wie `AppErrorBoundary` oder `DataTableErrorFallback`. So wird auch dem neuen Kollegen schnell klar welchen Zweck die entsprechende Komponente erfüllt.
 
