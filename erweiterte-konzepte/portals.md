@@ -100,7 +100,7 @@ Der `<body>` unseres HTML-Dokuments ist dann folgender:
 </body>
 ```
 
-Das Portal wird also in die `#portal` Node gerendert statt in die `#root` Node, in der sich die Komponente befindet. Dabei ein Portal immer dann gerendert wenn die Komponente gemounted wird und folglich auch wieder aus dem DOM entfernt wenn die Komponente, die das Portal enthält aus dem Komponenten-Baum entfernt wird.
+Das Portal wird also in die `#portal` Node gerendert statt in die `#root` Node, in der sich die Komponente befindet. Dabei wird ein Portal immer dann gerendert wenn die Komponente _gemounted_ wird und folglich auch wieder aus dem DOM _entfernt_ wenn die Komponente, die das Portal enthält aus dem Komponenten-Baum entfernt wird.
 
 ### Ein Portal im Zusammenspiel mit seiner Eltern-Komponente
 
@@ -169,5 +169,7 @@ ReactDOM.render(<App />, document.getElementById('root'));
 
 ```
 
-Ein besonderer Augenmerk gilt hier der `this.closeModal` Methode. Diese wird als Methode der App-Komponente definiert, wird aber innerhalb der `ModalPortal`-Komponente beim Klick auf den „Modal schließen“-Button im Kontext der `App`-Komponente aufgerufen. Sie kann also problemlos den `modalIsOpen` State der Komponente verändern. Und das, obwohl die Komponente sich gar nicht innerhalb `<div id="root>` befindet, wie der Rest unserer kleinen App. Dies ist möglich, da es sich eben um ein Portal handelt, das sich aus React-Sicht im selben Komponenten-Baum wie die App selbst befindet.
+Ein besonderer Augenmerk gilt hier der `this.closeModal` Methode. Diese wird als Methode der App-Komponente definiert, wird aber innerhalb der `ModalPortal`-Komponente beim Klick auf den „Modal schließen“-Button im Kontext der `App`-Komponente aufgerufen. 
+
+Sie kann also problemlos den `modalIsOpen` State der Komponente verändern. Und das, obwohl die Komponente sich gar nicht innerhalb `<div id="root>` befindet, wie der Rest unserer kleinen App. Dies ist möglich, da es sich eben um ein Portal handelt, deren Inhalt sich **aus React-Sicht** im selben Komponenten-Baum wie die App selbst befindet, nicht jedoch **aus HTML-Sicht**.
 

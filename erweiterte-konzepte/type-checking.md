@@ -138,6 +138,10 @@ Beim **Deployment in Production** lohnt es sich das **Babel-Plugin-Transform-Rea
 
 Das Plugin findet ihr unter:   
 https://github.com/oliviertassinari/babel-plugin-transform-react-remove-prop-types
+
+Installieren könnt ihr es auf der Kommandzeile mittels:  
+`npm install --save-dev babel-plugin-transform-react-remove-prop-types` bzw.  
+`yarn add --dev babel-plugin-transform-react-remove-prop-types`
 {% endhint %}
 
 ## Flow
@@ -256,7 +260,7 @@ const EventOverview = (props: PropsT) => ([…]);
 bzw. in destrukturierter Form:
 
 ```jsx
-const EventOverview = ({ date, description, ticketUrl, title }: PropsT) => ([…]);
+const EventOverview = ({ date, description, ticketUrl, title }: PropsT) => (/*…*/);
 ```
 
 oder als Inline-Definition:
@@ -316,8 +320,6 @@ import * as React from 'react';
 ```
 
 Dies führt dazu, dass gleichzeitig auch die von React mitgelieferten **Type Definitions** mit importiert wurden. Dies ist notwendig, wenn wir bspw. ein React-Element aus einer Funktion zurückgeben und dieses typisieren wollen.
-
-\[TODO: Weiter ausführen, mehr Beispiele\]
 
 ## TypeScript
 

@@ -230,9 +230,10 @@ Zuerst rufen wir besagte `e.persist()`-Methode auf. Anschließend können wir au
 ### Fazit
 
 {% hint style="info" %}
-* Zum Definieren von Events möglichst **immer** die Event-Props im JSX verwenden: `onChange`, `onMouseOver`, `onTouchStart`, `onKeyDown`, `onAnimationStart` usw.
-* Event-Handler müssen an die Klassen-Instanz gebunden werden. Der eleganteste Weg hierfür sind **Public Class Properties** und **Arrow Functions**
+* Zum Definieren von Events möglichst **immer** die Event-Props im JSX verwenden: `onChange`, `onMouseOver`, `onTouchStart`, `onKeyDown`, `onAnimationStart` usw. auch wenn es anfangs gewöhnungsbedürftig wirken sollte.
+* Event-Handler müssen explizit an die Klassen-Instanz gebunden werden wenn auf andere Klassen-Methoden wie bspw. `this.setState()` zugegriffen wird. Der eleganteste Weg hierfür sind **Public Class Properties** und **Arrow Functions.**
 * Eigene Events über die `addEventListener()`-API zu definieren sollte möglichst vermieden werden. Lässt es sich einmal nicht vermeiden, unbedingt daran denken diese Events beim Unmounting der Komponente mittels `removeEventListener()` zu entfernen!
-* `SyntheticEvent`-Objekte werden nullified. Vorsicht bei der Verwendung in Callback-Funktionen außerhalb des jeweiligen Event-Handlers!
+* `SyntheticEvent`-Objekte werden „nullified“. Vorsicht bei der Verwendung in Callback-Funktionen außerhalb des jeweiligen Event-Handlers! Hier ist es gut möglich, dass das Event-Objekt beim Aufruf des Callbacks mittlerweile nicht mehr existiert.
+* Mittels `event.persist()` kann erzwungen werden, dass das das Event-Objekt nicht durch React auf `null` gesetzt wird.
 {% endhint %}
 
