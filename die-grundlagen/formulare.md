@@ -246,9 +246,13 @@ Radiobuttons sind eine Art Hybrid-Element. Sie gelten wie Checkboxen ebenfalls a
 
 Fangen wir mit dem einfachen Fall an: einfache `<select>`-Auswahllisten ändern ebenfalls wie Textfelder ihren Wert, lösen damit ein Re-Rendering aus und zeigen den ausgewählten Wert im neu gezeichneten User Interface an. Eine Ausnahme stellen hier mehrfache Auswahllisten dar.
 
-Mehrfache Auswahllisten erwarten anders als Textfelder oder einfache Auswahllisten keinen String als Wert, sondern ein **Array aus Strings**. Diesen müssen wir uns allerdings selbst zusammenbasteln, da `e.target.value` bei Mehrfach-Auswahllisten nur einen einzigen Wert enthält, selbst bei der Auswahl mehrerer Optionen. Hier hilft uns `e.target.selectedOptions` weiter. Diese Eigenschaft ist ein Objekt vom Typ `HTMLCollection`, mit den `<option>`-Elementen die momentan ausgewählt sind. Dieses Objekt können wir mit der statischen Array-Methode `Array.from()` aus ES2015 ziemlich einfach in ein Array umwandeln. Indem wir mittels `Array.map()` über dieses iterieren, können wir außerdem ein neues Array erzeugen, das alle für uns relevanten Werte enthält: `Array.from(selectedOptions).map((option) => option.value);`
+Mehrfache Auswahllisten erwarten anders als Textfelder oder einfache Auswahllisten keinen String als Wert, sondern ein **Array aus Strings**. Diesen müssen wir uns allerdings selbst zusammenbasteln, da `e.target.value` bei Mehrfach-Auswahllisten nur einen einzigen Wert enthält, selbst bei der Auswahl mehrerer Optionen. Hier hilft uns `e.target.selectedOptions` weiter. Diese Eigenschaft ist ein Objekt vom Typ `HTMLCollection`, mit den `<option>`-Elementen die momentan ausgewählt sind. Dieses Objekt können wir mit der statischen Array-Methode `Array.from()` aus ES2015 ziemlich einfach in ein Array umwandeln. Indem wir mittels `Array.map()` über dieses iterieren, können wir außerdem ein neues Array erzeugen, das alle für uns relevanten Werte enthält: 
 
-Das so erzeugte, neue Array schreiben wir dann als neuen Wert in unseren State. Zuvor schauen wir jedoch erst einmal mittels e.target.multiple ob es sich überhaupt um ein `<select>` mit Mehrfachauswahl handelt, da nur dieses ein Array als `value` erwartet.
+```jsx
+Array.from(selectedOptions).map((option) => option.value);
+```
+
+Das so erzeugte, neue Array schreiben wir dann als neuen Wert in unseren State. Zuvor schauen wir jedoch erst einmal mittels `e.target.multiple` ob es sich überhaupt um ein `<select>` mit Mehrfachauswahl handelt, da nur dieses ein Array als `value` erwartet.
 
 Alternativ wäre es natürlich auch möglich einfachen Auswahllisten die `changeValue`-Methode als Event-Handler zu übergeben und nur Mehrfach-Auswahllisten die `changeSelect`-Methode. Dann könnten wir uns in selbiger den Check sparen ob es sich um ein `multiple` Select handelt. Es auf die obigen Weise zu lösen hat aber den Vorteil, dass später der Typ von mehrfach auf einfach geändert werden könnte ohne dass man zusätzlich noch den Event-Handler ändern muss. Aber das bleibt am Ende natürlich euch selbst überlassen.
 
@@ -260,7 +264,7 @@ Ihr könnt die gespeicherten Werte auch verschachteln, was sich anbietet wenn ih
 
 ## Fazit
 
-{% hint style="success" %}
+{% hint style="info" %}
 Formulare in React können in \(von React\) kontrollierter oder unkontrollierter Form auftreten.
 
 **Unkontrollierte Komponenten** reichen für simple Formulare oftmals aus, allerdings empfiehlt es sich, Formular-Komponenten von React kontrollieren zu lassen um eine **Single Source of Truth** zu haben. Dazu muss das `value` bzw. `checked`-Attribut von React verwaltet werden. Auf Entwicklerseite muss dann manuell auf Änderungen reagiert werden.
