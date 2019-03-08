@@ -22,7 +22,7 @@
   * [Refs](erweiterte-konzepte/refs.md)
   * [Error Boundaries](erweiterte-konzepte/error-boundaries.md)
   * [Portals](erweiterte-konzepte/portals.md)
+  * [Code Splitting](erweiterte-konzepte/code-splitting.md)
   * [Typechecking mit PropTypes, Flow und TypeScript](erweiterte-konzepte/type-checking.md)
 * [Hooks](hooks.md)
-* [Das Ecosystem](das-ecosystem.md)
 

@@ -50,17 +50,23 @@ Und damit haben wir bereits die erste einfache React-Komponente implementiert! S
 
 Sieht für’s Erste einmal gar nicht so kompliziert aus, oder? Gehen wir den Code einmal Schritt für Schritt durch. Die relevanten Stellen im Code habe ich fett hervorgehoben.
 
-> `class HelloWorld`
+```jsx
+class HelloWorld 
+```
 
 Hier geben wir dem Kind seinen Namen. Unsere Komponente hat in dem Fall den Namen **HelloWorld**. Bei der Namensgebung sind der Fantasie grundsätzlich keine Grenzen gesetzt, doch Achtung: React-Komponenten müssen stets mit einem Großbuchstaben beginnen! So wäre helloWorld also kein gültiger Name für eine Komponente, HELLOWORLD hingegen schon \(wenn auch sehr unüblich\). 
 
 Die gängige Art der Benennung von Komponenten folgt der **UpperCamelCase**-Form. Auch längere, selbsterklärende Namen sind nicht unüblich. So wäre also ein Name wie **UserNotificationView** für eine Komponente keineswegs exotisch.
 
-> `extends React.Component`
+```jsx
+extends React.Component
+```
 
 Hier erweitern wir schließlich die React interne Klasse `React.Component` wodurch unsere Klasse erst einmal zu einer Komponente wird die wir in React nutzen können. Neben der `React.Component` gibt es außerdem auch die `React.PureComponent` als Komponenten-Klasse, sowie eine zweite Form, die sogenannte _Stateless Functional Component_. Diese ist lediglich eine JavaScript-Funktion, die einem bestimmten Muster folgt. Beide werden im weiteren Verlauf noch ausführlich beleuchtet und sind an dieser Stelle zum Grundverständnis erst einmal weniger wichtig.
 
-> `render()`
+```jsx
+render()
+```
 
 Unsere Komponente besteht lediglich aus dem einzigen zwingenden Bestandteil einer Komponente, nämlich der `render()`-Methode. Mittels dieser wird React mitgeteilt wie die entsprechende Komponente dargestellt \(sprich: „gerendert“\) werden soll. Eine Komponente hat zwingend einen `return`-Wert. Dieser kann entweder ein explizites `null` sein, um bewusst nichts anzuzeigen \(jedoch nicht `undefined`!\), ein React-Element oder ab Version 16 auch ein Array. 
 
@@ -72,7 +78,9 @@ Auch wenn man in der Gestaltung seiner JavaScript-Klassen natürlich vollkommen 
 
 ![Fehlermeldung bei fehlerhafter render\(\)-Methode](../.gitbook/assets/invalid-react-element.png)
 
-> `React.createElement()`
+```jsx
+React.createElement()
+```
 
 Wie erwähnt gibt die `render()`-Methode einer React-**Komponente** in den meisten Fällen ein React-**Element** zurück. React-Elemente sind sozusagen die kleinsten aber dennoch gleichzeitig auch die wesentlichen Bausteine in einer React-Anwendung und beschreiben, was der Benutzer letztendlich auf seinem Bildschirm sieht. Neben `React.cloneElement()` und `React.isValidElement()` ist `React.createElement()` zudem eine von lediglich 3 Top-Level API-Methoden \(sieht man von mittlerweile veralteten \(_deprecated_\) Methoden einmal ab\).
 
@@ -90,17 +98,23 @@ Bei der täglichen Arbeit wird man `React.createElement()` jedoch für gewöhnli
 
 JSX sieht auf den ersten Blick aus wie HTML bzw. XML/XHTML, jedoch mit deutlich erweitertem Funktionsumfang und der Möglichkeit JavaScript-Ausdrücke darin zu verwenden. JSX ist eine Abstraktion um die Art, wie man React-Elemente erstellt, für den Entwickler **deutlich** zu vereinfachen. So würde unser obiges Beispiel:
 
-`React.createElement('div', {id: 'hello-world'}, 'Hello World');`
+```jsx
+React.createElement('div', {id: 'hello-world'}, 'Hello World');
+```
 
 würde in JSX ganz einfach wie folgt geschrieben werden:
 
-`<div id="hello-world">Hello World</div>`
+```jsx
+<div id="hello-world">Hello World</div>
+```
 
 Was für viele Einsteiger in React erst einmal sehr befremdlich wirkt, ich habe in diesem Zusammenhang mal den schönen Begriff **JSX-Schock** gelesen, stellt sich aber nach etwas Rumspielerei jedoch sehr schnell als unglaublich praktisch heraus und ist meines Erachtens einer der wesentlichen Gründe warum React letztendlich so viel an Beliebtheit in so kurzer Zeit gewonnen hat.
 
 Zurück zum Wesentlichen: unsere Komponente bekommt hier also über den `return`-Wert der `render()`-Methode mitgeteilt, dass sie ein Element vom typ `div` mit der id `hello-world` und dem Child-Element \(in dem Fall ein Textknoten\) mit dem Inhalt `Hallo Welt` darstellen soll.
 
-> `ReactDOM.render(Element, Container)`
+```jsx
+ReactDOM.render(Element, Container)
+```
 
 Zu guter Letzt kommt mit `ReactDOM` die zweite Library ins Spiel. **ReactDOM** ist zuständig für das Zusammenspiel von React mit dem DOM \(_Document Object Model_\), also oberflächlich ausgedrückt: dem **Web-Browser**. Wie auch schon React selbst besitzt ReactDOM nur sehr wenige Top-Level API-Methoden. Wir konzentrieren uns vorerst mal auf die `render()`-Methode, die sozusagen das Herzstück von ReactDOM im Browser ist.
 
