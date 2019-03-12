@@ -23,6 +23,7 @@
   * [Error Boundaries](erweiterte-konzepte/error-boundaries.md)
   * [Portals](erweiterte-konzepte/portals.md)
   * [Code Splitting](erweiterte-konzepte/code-splitting.md)
+  * [Server Side Rendering](erweiterte-konzepte/server-side-rendering.md)
   * [Typechecking mit PropTypes, Flow und TypeScript](erweiterte-konzepte/type-checking.md)
 * [Hooks](hooks.md)
 
