@@ -4,11 +4,11 @@ Wer ein Projekt mit React entwickelt nutzt in den allermeisten Fällen auch eine
 
 Um dem Problem der großen Bundles zu begegnen gibt es das sog. **Code Splitting**. Beim Code Splitting wird die Anwendung in mehrere kleinere Bundles aufgesplittet die allesamt für sich allein gesehen lauffähig sind und weitere Bundles nachladen, sollten diese später benötigt werden. So ist die Aufteilung in ein Bundle mit den meist benutzten Abhängigkeiten \(bspw. React, React DOM, ...\) und jeweils ein Bundle pro Route eine recht gängige Methode beim **Code Splitting**.
 
-Die einfachste Methode dazu ist die Verwendung der **Dynamic Import** Syntax. Diese ist momentan ein Proposal beim **TC39**, befindet sich also momentan im Standardisierungsprozess. Dank Webpack und Babel ist es aber auch heute schon möglich die Verwendung zu benutzen. Notwendig ist hierfür das Babel Plugin `@babel/plugin-syntax-dynamic-import`. Create React App und andere Tools wie next.js oder Gatsby bringen von Haus aus Unterstützung für dynamische Imports mit und müssen nicht speziell für die Verwendung von Code Splitting konfiguriert werden.
+Die einfachste Methode dazu ist die Verwendung der **Dynamic Import Syntax**. Diese ist momentan ein Proposal beim **TC39**, befindet sich also momentan im Standardisierungsprozess. Dank Webpack und Babel ist es aber auch heute schon möglich die Verwendung zu benutzen. Notwendig ist hierfür das Babel Plugin `@babel/plugin-syntax-dynamic-import`. **Create React App** und andere Tools wie **next.js** oder **Gatsby** bringen von Haus aus Unterstützung für dynamische Imports mit und müssen nicht speziell für die Verwendung von **Code Splitting** konfiguriert werden.
 
 ### Verwendung dynamischer Imports
 
-Im Kapitel zu ES2015+ wurde die Import-Syntax bereits angesprochen. Die Dynamic Import Syntax ist eine Erweiterung dieser und erlaubt es innerhalb einer Anwendung Imports dynamisch nachzuladen, daher der Name. Dabei funktioniert ein dynamischer Import nicht anders als ein Promise:
+Im Kapitel zu ES2015+ wurde die Import-Syntax bereits angesprochen. Die **Dynamic Import Syntax** ist eine Erweiterung dieser und erlaubt es innerhalb einer Anwendung Imports dynamisch nachzuladen, daher der Name. Dabei funktioniert ein dynamischer Import nicht anders als ein Promise:
 
 ```jsx
 // greeter.js
@@ -22,11 +22,11 @@ import('./greeter').then((greeter) => {
 });
 ```
 
-Findet Webpack einen dynamischen Import nutzt Webpack an dieser Stelle automatisch seine Code-Splitting Funktion und lagert die entsprechende Datei beim Erstellen des Bundles in ein eigenes kleines Bundle aus dass es dann selbstständig lädt sobald dieses in der Anwendung benötigt wird. Dieses Verhalten wird allgemein als **Lazy Loading** bezeichnet.
+Findet Webpack einen dynamischen Import nutzt es an dieser Stelle automatisch seine Code-Splitting Funktion und lagert die entsprechende Datei beim Erstellen des Bundles in einen eigenen sog. _Chunk_ aus, also sozusagen ein Teilstück, den es dann selbstständig lädt sobald dieser in der Anwendung benötigt wird. Dieses Verhalten wird allgemein als **Lazy Loading** bezeichnet, also etwa „Verzögertes Laden“.
 
-### React.lazy\(\)
+### Verzögertes Laden von Komponenten mit React.lazy\(\)
 
-Und damit wären wir auch schon beim nächsten Thema: Lazy Loading mit React. Um die Entwickler-Erfahrung beim **Lazy Loading** möglichst angenehm zu gestalten, bietet React seit Version **16.6.** eine hauseigene Methode um Komponenten dynamisch nachzuladen. Diese wird kombiniert mit der **Dynamic Import Syntax** und erlaubt es dem Entwickler bestimmte React-Komponenten erst zur Laufzeit der Anwendung zu laden und so die Größe der Bundles weiter zu verkleinern. 
+Und damit wären wir auch schon beim nächsten Thema: **Lazy Loading mit React**. Um die Entwickler-Erfahrung beim **Lazy Loading** möglichst angenehm zu gestalten, bietet React seit Version **16.6.** eine hauseigene Methode um Komponenten dynamisch nachzuladen. Diese wird kombiniert mit der **Dynamic Import Syntax** und erlaubt es dem Entwickler bestimmte React-Komponenten erst zur Laufzeit der Anwendung zu laden und so die Größe der Bundles weiter zu verkleinern. 
 
 Ein via `React.lazy()` geladener Import kann in React als gewöhnliche Komponente verwendet werden. Ihr können Props übergeben werden wie auch Refs. Sie kann eigene Kind-Elemente beinhalten oder in sich geschlossen sein. Die Methode erwartet eine Funktion als Parameter, die einen dynamischen Import zurückgibt. Dieser Import muss eine Komponente importieren, die einen Default Export hat, die wiederum eine React-Komponente sein muss:
 
@@ -55,11 +55,11 @@ const App = () => (
 ReactDOM.render(<App />, document.getElementById("root"));
 ```
 
-In komplexen Komponenten und insbesondere bei wachsenden Anwendungen kann man so sehr schön die Größe des JavaScript Bundles optimieren und relevante Dateien erst dann vom Server laden wenn diese wirklich benötigt werden. Während die Datei vom Server geladen bis sie schließlich ausgeführt wurde wird an der Stelle der Komponente der Hinweis `<div>Anwendung wird geladen</div>` angezeigt. Dafür sorgt eine weitere Neuerung, die in Version 16.6. den Weg in React fand:
+In komplexen Komponenten und insbesondere bei wachsenden Anwendungen kann man so sehr schön die Größe des JavaScript-Bundles optimieren und relevante Dateien erst dann vom Server laden wenn diese wirklich benötigt werden. Während die Datei vom Server geladen bis sie schließlich ausgeführt wurde wird an der Stelle der Komponente der Hinweis `<div>Anwendung wird geladen</div>` angezeigt. Dafür sorgt eine weitere Neuerung, die in Version **16.6.** den Weg in React fand:
 
-### Suspense
+### Darstellung von Platzhaltern mit React.Suspense
 
-Diese Komponente hieß in ihrer ursprünglichen Version einmal **Placeholder** \(dt. _Platzhalter_\) und das beschreibt ziemlich genau was sie macht: sie agiert als Platzhalter für Komponenten die noch nicht geladen wurden und rendert eine Alternative. Dies kann wie im obigen Beispiel bspw. eine Nachricht sein, dass Teile der Anwendung geladen werden oder auch eine ganz klassische Lade-Animation. Der Platzhalter wird dabei als `fallback`-Prop angegeben und muss zwingend definiert werden. Als gültiger Wert der Prop kann jedes beliebige valide React-Element verwendet werden. Dazu gehören auch Strings. `<Suspense fallback="Wird geladen">[…]</Suspense>` wäre demnach also ebenfalls ein valider Platzhalter.
+Die `Suspense`-Komponente auf dem React-Objekt hieß in ihrer ursprünglichen Version einmal **Placeholder** \(dt. _Platzhalter_\) und das beschreibt ziemlich genau was sie macht: sie agiert als Platzhalter für Komponenten die noch nicht geladen wurden und rendert eine Alternative. Dies kann wie im obigen Beispiel bspw. eine Nachricht sein, dass Teile der Anwendung geladen werden oder auch eine ganz klassische Lade-Animation. Der Platzhalter wird dabei als `fallback`-Prop angegeben und muss zwingend definiert werden. Als gültiger Wert der Prop kann jedes beliebige valide React-Element verwendet werden. Dazu gehören auch Strings. `<Suspense fallback="Wird geladen">[…]</Suspense>` wäre demnach also ebenfalls ein valider Platzhalter.
 
 Solange die zu ladende Komponente noch nicht vollständig geladen wurde, werden dann sämtliche Kind-Elemente des `Suspense`-Elements durch den festgelegten Platzhalter ersetzt und erst wenn die Komponente vollständig geladen wurde durch den eigentlichen Inhalt ersetzt. Dabei können beliebig viele via `React.lazy()` geladene Komponenten innerhalb eines `Suspense`-Elements verwendet werden. Der `fallback`-Platzhalter wird dann so lange angezeigt bis **sämtliche** Komponenten vollständig geladen sind und angezeigt werden können!
 
@@ -95,13 +95,13 @@ Sollte dies passieren **bevor** die `ImageToolbar` geladen wurde, wird sie berei
 
 Ist die `ImageCanvas`-Komponente erst geladen **nachdem** die `ImageToolbar`-Komponente geladen wurde wird das innere `Suspense`-Element aufgelöst, jedoch verhindert das äußere Suspense-Element die anzeige der Toolbar und zeigt diese erst an sobald auch die `ImageCanvas` geladen ist. Dann jedoch ohne weitere Verzögerung.
 
-Unser UI kennt also drei mögliche Darstellungen:
+Unser User Interface kennt also drei mögliche Darstellungen:
 
-* ImageCanvas und ImageToolbar wurden erfolgreich geladen und werden beide dargestellt
-* ImageCanvas wurde noch nicht geladen und es erscheint nur die „Anwendung wird geladen“ Nachricht, unabhängig vom Lade-Status der ImageToolbar
-* ImageCanvas wude geladen, ImageToolbar jedoch noch nicht. Dann wäre die ImageCanvas bereits sichtbar, anstelle der Toolbar stünde jedoch der Hinweis „Bearbeitungsfunktionen werden geladen“
+* `ImageCanvas` und `ImageToolbar` wurden erfolgreich geladen und werden beide dargestellt
+* `ImageCanvas` wurde noch nicht geladen und es erscheint nur die „Anwendung wird geladen“ Nachricht, unabhängig vom Lade-Status der `ImageToolbar`
+* `ImageCanvas` wude geladen, `ImageToolbar` jedoch noch nicht. Dann würde die `ImageCanvas` bereits angezeigt werden, anstelle der Toolbar stünde jedoch der Hinweis „Bearbeitungsfunktionen werden geladen“ bis diese auch tatsächlich geladen wurden.
 
-Wir schließen somit also bewusst aus, dass ein Benutzer zwar bereits die Bearbeitungsfunktionen für ein Bild sieht, nicht jedoch die Zeichenfläche auf der das zu bearbeitende Bild angezeigt wird. Eine kluge Verschachtelung von `Suspense` gibt uns also alle Flexibilität die nötig ist um sehr fein granular festzulegen wann welche Teile der Anwendung bereits angezeigt werden sollen und wo wir vorübergehend einen Platzhalter anzeigen wollen.
+Wir schließen somit also bewusst aus, dass ein Benutzer zwar bereits die Bearbeitungsfunktionen für ein Bild sieht, nicht jedoch die Zeichenfläche auf der das zu bearbeitende Bild angezeigt wird. Eine kluge Verschachtelung von `Suspense` gibt uns so alle Flexibilität die nötig ist um sehr fein granular festzulegen wann welche Teile der Anwendung bereits angezeigt werden sollen und wo wir vorübergehend einen Platzhalter anzeigen wollen.
 
 Momentan wird **Suspense** als Platzhalter offiziell nur für das Laden von Komponenten mittels `React.lazy()` unterstützt. In Zukunft soll auch das asynchrone Laden von Daten verschiedenster Art \(wie z.B. API Abfragen\) durch **Suspense** unterstützt werden.
 
