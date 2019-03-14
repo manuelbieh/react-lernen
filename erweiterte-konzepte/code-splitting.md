@@ -105,5 +105,7 @@ Wir schließen somit also bewusst aus, dass ein Benutzer zwar bereits die Bearbe
 
 Momentan wird **Suspense** als Platzhalter offiziell nur für das Laden von Komponenten mittels `React.lazy()` unterstützt. In Zukunft soll auch das asynchrone Laden von Daten verschiedenster Art \(wie z.B. API Abfragen\) durch **Suspense** unterstützt werden.
 
-**Vorsicht:** momentan werden **Lazy** und **Suspense** nur bei der Verwendung in clientseitigen Anwendungen unterstützt. Unterstützung für serverseitiges Rendering gibt es für dieses Feature aktuell noch nicht und befindet sich noch in Arbeit.
+{% hint style="warning" %}
+**Vorsicht:** momentan werden **Lazy** und **Suspense** nur bei der Verwendung in **clientseitigen** Anwendungen unterstützt. Unterstützung für **serverseitiges** Rendering gibt es für dieses Feature aktuell noch nicht und befindet sich derzeit in Arbeit.
+{% endhint %}
 

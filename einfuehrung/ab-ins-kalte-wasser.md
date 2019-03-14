@@ -13,8 +13,8 @@ Nun hatten wir bereits das „Was“, das „Wann“ und das „Wo“. Kommen wi
 </head>
 <body>
 <div id="app"></div>
-<script crossorigin src="https://unpkg.com/react@16.3.0/umd/react.development.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@16.3.0/umd/react-dom.development.js"></script>
+<script crossorigin src="https://unpkg.com/react@16.8.4/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@16.8.4/umd/react-dom.development.js"></script>
 <script>
 // Platzhalter für unsere erste Komponente
 </script>
