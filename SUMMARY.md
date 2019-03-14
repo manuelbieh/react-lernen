@@ -4,7 +4,7 @@
 * [Vorwort](vorwort.md)
 * [Über den Autor](ueber-den-autor.md)
 * [Einführung](einfuehrung/README.md)
-  * [Allgemeines zu React](einfuehrung/einfuehrung.md)
+  * [Allgemeines](einfuehrung/einfuehrung.md)
   * [Ab ins kalte Wasser](einfuehrung/ab-ins-kalte-wasser.md)
   * [Tools und Setup](einfuehrung/tools-und-setup.md)
 * [Die Grundlagen](die-grundlagen/README.md)
@@ -27,6 +27,7 @@
   * [Server Side Rendering](erweiterte-konzepte/server-side-rendering.md)
   * [Typechecking mit PropTypes, Flow und TypeScript](erweiterte-konzepte/type-checking.md)
 * [Hooks](hooks/README.md)
-  * [Einführung](hooks/einfuehrung.md)
+  * [Was sind Hooks](hooks/einfuehrung.md)
+  * [Verwendung von Hooks](hooks/hooks-in-aller-kuerze.md)
   * [Grundsätze und Regeln von Hooks](hooks/grundsaetze-und-regeln-von-hooks.md)
 

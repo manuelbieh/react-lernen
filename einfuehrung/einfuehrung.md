@@ -1,4 +1,4 @@
-# Allgemeines zu React
+# Allgemeines
 
 ## Was ist React eigentlich und was ist es nicht?
 

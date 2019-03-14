@@ -30,7 +30,7 @@ Anschließend muss die `.eslintrc` wie folgt angepasst werden:
 }
 ```
 
-Für diejenigen unter euch die Create React App nutzen habe eine gute Nachricht: ihr braucht nichts weiter tun, die beiden Regeln kommen standardmäßig in den aktuellen Versionen von Create React App automatisch mit in euer Setup!
+Für diejenigen unter euch die **Create React App** nutzen habe eine gute Nachricht: ihr braucht nichts weiter tun, die beiden Regeln kommen standardmäßig in den aktuellen Versionen von Create React App automatisch mit in euer Setup!
 
 ### Die Regeln von Hooks
 
