@@ -27,7 +27,9 @@
   * [Server Side Rendering](erweiterte-konzepte/server-side-rendering.md)
   * [Typechecking mit PropTypes, Flow und TypeScript](erweiterte-konzepte/type-checking.md)
 * [Hooks](hooks/README.md)
-  * [Was sind Hooks](hooks/einfuehrung.md)
+  * [Einführung in Hooks](hooks/einfuehrung.md)
   * [Verwendung von Hooks](hooks/hooks-in-aller-kuerze.md)
   * [Grundsätze und Regeln von Hooks](hooks/grundsaetze-und-regeln-von-hooks.md)
+  * [Eigene Hooks implementieren](hooks/eigene-hooks-implementieren.md)
+  * [Hooks API](hooks/hooks-api.md)
 
