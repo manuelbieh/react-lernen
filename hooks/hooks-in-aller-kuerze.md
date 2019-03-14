@@ -82,7 +82,7 @@ So können wir in der Komponente bequem direkt `useState()` nutzen statt jedesma
 
 ### Seiteneffekte mit useEffect\(\)
 
-Der `useEffect()`-**Hook** erhält seinen Namen daher, da dieser dazu vorgesehen ist ihn für **Side Effects** zu benutzen. Also Seiteneffekte wie dem Laden von Daten via API, dem Registrieren von globalen Events oder der Manipulation von DOM-Elementen. Der Hook bildet also die Funktionalität der `componentDidMount()`, `componentDidUpdate()` und `componentWillUnmount()`-Lifecycle Methoden ab.
+Der `useEffect()`-**Hook** erhält seinen Namen daher, da dieser dazu vorgesehen ist ihn für **Side Effects** zu benutzen. Also Seiteneffekte wie dem Laden von Daten via API, dem Registrieren von globalen Events oder der Manipulation von DOM-Elementen. Der Hook bildet die Funktionalität der `componentDidMount()`, `componentDidUpdate()` und `componentWillUnmount()`-Lifecycle Methoden ab.
 
 Ja, richtig gelesen: statt der genannten _drei_ Methoden gibt es nun nur noch _einen einzigen_ **Hook**, der an die vergleichbare Stelle der Methoden aus Klassen-Komponenten tritt. Der Trick dabei ist die genaue Verwendung ganz bestimmter Funktionsparameter und Rückgabewerte, wie sie für den `useEffect()`-Hook vorgesehen sind.
 
@@ -110,7 +110,8 @@ const Counter = () => {
   const [ value, setValue ] = useState(0);
   
   useEffect(() => {
-    // document.title wird bei jeder Änderung (didMount/didUpdate) gesetzt
+    // `document.title` wird bei jeder Änderung (didMount/didUpdate) gesetzt.
+    // Vorausgesetzt der `value` hat sich gendert
     document.title = `Der Button wurde ${value} mal geklickt`;
 
     // Hier geben wir unsere „Aufräum-Funktion“ zurück die vor jedem Update
@@ -136,7 +137,95 @@ const Counter = () => {
 ReactDOM.render(<Counter />, document.getElementById('root'));
 ```
 
-Da der Hook sich stets _innerhalb_ der Funktion befindet hat er, ähnlich wie die Lifecycle-Methoden in Klassen-Komponenten, den vollen Zugriff auf die Props und den State der Komponente.
+Da der **Hook** sich stets _innerhalb_ der Funktion befindet hat er, ähnlich wie die Lifecycle-Methoden in Klassen-Komponenten, den vollen Zugriff auf die **Props** und den **State** der Komponente. Wobei der State in der **Function Component** selbst natürlich wiederum nur ein Hook ist, nämlich der `useState()`-Hook.
 
+Durch die Verwendung des `useEffect()`-**Hooks** können wir hier die Komplexität verringern, da die Komponente nicht viele, zum Teil sehr ähnliche Dinge an mehreren Stellen innerhalb der Komponente ausführen muss, sondern sich alle für die Komponente relevanten Lifecycle-Events in nur einer einzigen Funktion, eben dem **Hook**, abspielen.
 
+Zum Vergleich dazu möchte ich einmal ein Äquivalent zeigen wie der oben gezeigte `useEffect()`-**Hook** mit einer Klassen-Komponente implementiert werden würde.
+
+```jsx
+import React from "react";
+import ReactDOM from "react-dom";
+
+const defaultTitle = "React mit Hooks";
+
+class Counter extends React.Component {
+  state = {
+    value: 0,
+  };
+
+  componentDidMount() {
+    document.title = `Der Button wurde ${this.state.value} mal geklickt`;
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.value !== this.state.value) {
+      document.title = `Der Button wurde ${this.state.value} mal geklickt`;
+    }
+  }
+
+  componentWillUnmount() {
+    document.title = defaultTitle;
+  }
+
+  render() {
+    return (
+      <div>
+        <p>Zählerwert: {this.state.value}</p>
+        <button
+          onClick={() => {
+            this.setState(state => ({ value: state.value + 1 }));
+          }}
+        >
+          +1
+        </button>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<Counter />, document.getElementById("root"));
+```
+
+Hier kann natürlich darüber diskutiert werden, dass man den Aufruf um den `document.title` zu ändern in eine eigene Klassen-Methode wie etwa `setDocumentTitle()` auslagert, das sind allerdings Details die an der höheren Komplexität der Klassen-Komponente im direkten Vergleich mit **Hooks** nicht wirklich etwas ändern. 
+
+Auch dann müsste noch immer zweimal die gleiche \(nun abstrahierte\) Funktion an zwei verschiedenen Stellen \(nämlich `componentDidMount()` und `componentDidUpdate()`\) aufgerufen werden. Zusätzlich hätten wir eine weitere Klassen-Methode, die die Klasse nur noch weiter aufbläht und so die Duplikation nur zu Lasten einer Abstraktion auflöst.
+
+### Zugriff auf Context mit useContext\(\)
+
+Der dritte Basic Hook im Bunde ist `useContext()`. Mit ihm wird es ein Kinderspiel Daten aus einem Context-Provider zu konsumieren, ohne dass dazu umständlich eine Provider-Komponente mit einer Function as a Child verwendet werden muss. 
+
+Dazu erhält der `useContext()`-Hook einen mittels `React.createContext()` erzeugten Context übergeben und gibt dann den Wert des in der Komponenten-Hierarchie nächsthöheren Providers zurück. Wird Wert des Contexts im Provider geändert, löst der `useContext()`-Hook ein Rerendering aus mit den aktualisierten Daten aus dem Provider. Damit ist über die Funktionsweise auch schon alles gesagt. 
+
+Der Hook ist tatsächlich eher simpler Natur:
+
+```jsx
+import React, { useContext } from "react";
+import ReactDOM from "react-dom";
+
+const AccountContext = React.createContext({});
+
+const ContextExample = () => {
+  const accountData = useContext(AccountContext);
+
+  return (
+    <div>
+      <p>Name: {accountData.name}</p>
+      <p>Rolle: {accountData.role}</p>
+    </div>
+  );
+};
+
+const App = () => (
+  <AccountContext.Provider value={{ name: "Manuel", role: "admin" }}>
+    <ContextExample />
+  </AccountContext.Provider>
+);
+
+ReactDOM.render(<App />, document.getElementById("root"));
+```
+
+Hier sehen wir, wie die `ContextExample`-Komponente Daten \(in diesem Beispiel pseudo Account-Daten\) aus dem `AccountContext`-Provider verwendet, ohne dass dafür alles von einer `AccountContext.Consumer`-Komponente umschlossen sein muss. Dies spart nicht nur einige Zeilen Code in der Komponente selbst sondern führt auch in der Debug-Ansicht zu einem deutlich übersichtlicheren Baum, da die Verschachtelungstiefe flacher ist.
+
+Diese Vereinfachung ist aber völlig optional und wer mag kann auch weiterhin die bekannte Consumer-Komponente für den Zugriff auf Daten aus einem Context-Provider verwenden.
 
