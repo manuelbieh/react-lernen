@@ -138,9 +138,9 @@ const RepoInfo = () => {
 ReactDOM.render(<RepoInfo />, document.getElementById("root"));
 ```
 
-An dieser Stelle können wir nun basierend auf der `RepoInfo`-Komponente hergehen und weitere Funktionalität implementieren. Statt eines festen GitHub-Accounts wollen wir den Benutzer vielleicht einen Account suchen lassen. Dazu legen wir einen neuen State an in den wir den vom Benutzer eingegebenen Account schreiben und geben diesen State an unseren **Custom Hook** weiter.
+An dieser Stelle können wir nun basierend auf der `RepoInfo`-Komponente hergehen und weitere Funktionalität implementieren. Statt eines festen GitHub-Accounts wollen wir den Benutzer vielleicht einen Account suchen lassen. Dazu legen wir uns mit dem `useState()`-Hook einen neuen **State** an, in den wir den vom Benutzer eingegebenen Account schreiben und geben diesen State an unseren **Custom Hook** weiter.
 
-Der **useEffect\(\)**-Hook hat als **Dependency** den Account-Namen und wird somit immer dann ausgeführt wenn ein neuer Account-Name übergeben wird. D.h. mit jeder Änderung im Suchfeld findet ein neuer API Request statt der uns die Daten zum eingegebenen Account besorgt:
+Da der `useEffect()`-Hook als **Dependency** den Account-Namen hat wird dieser immer dann ausgeführt wenn ein neuer Account-Name übergeben wird. Das bedeutet, dass mit jeder Änderung im Suchfeld ein neuer API Request initiiert wird, der uns die Daten zum eingegebenen Account besorgt:
 
 ```jsx
 // RepoLookup.js
@@ -169,4 +169,8 @@ const RepoLookup = () => {
 
 ReactDOM.render(<RepoLookup />, document.getElementById("root"));
 ```
+
+Kurze Info am Rande: die Public API von GitHub erlaubt nur max. 60 API Requests pro Stunde. Wer hier also ernsthaft rumprobieren will kann sich einen API Token erstellen und diesen per `access_token=xyz` an die URL dranhängen. Der Token kann hier erstellt werden: [https://github.com/settings/tokens](https://github.com/settings/tokens).
+
+
 
