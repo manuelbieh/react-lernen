@@ -81,7 +81,92 @@ Während die einfache Erstellung wiederverwendbarer Komponenten auf Darstellungs
 
 ### Mit Daten aus Hooks arbeiten
 
+Datenübergabe in **Custom Hooks** ist keine Einbahnstraße. In unserem ersten eigenen Hook haben wir gesehen wie wir Daten \(in diesem Fall eine Farbe\) an den **Custom Hook** übergeben. Nämlich als einfachen Funktionsparameter. Der Hook kann aber ebenso Daten zurückgeben mit denen dann in der Komponente gearbeitet werden kann. In welcher Form Daten aus dem **Hook** zurückgegeben werden ist dabei völlig dem Entwickler überlassen. Vom einfachen String über einen Tupel wie beim internen `useState()`-**Hook** bis hin zu ganzen React-Komponenten oder Elementen oder auch einem Mix aus allem sind der eigenen Fantasie hier keine Grenzen gesetzt.
 
+Nehmen wir an wir wollen auf die Daten einer API zugreifen. Auf welche genauen Daten zugegriffen wird wollen wir parametrisierbar machen. Der Hook soll dafür sorgen uns die Daten zu besorgen – egal in welcher Komponente wir ihn verwenden – und dann an die Komponente die die Daten benötigt zurückgeben. In einem realen Beispiel könnten das z.B. Benutzerdaten von GitHub sein. Dies soll unser nächster eigener Hook werden: `useGitHubUserData`. 
 
+Wir übergeben dem Hook einen GitHub-Benutzernamen und bekommen ein Objekt mit allen relevanten Informationen zu dem Benutzer zurück. Der Hook kümmert sich darum die Daten über die GitHub API zu besorgen und anschließend an die Komponente zurück zu übergeben:
 
+```jsx
+// useGitHubAccountData.js
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+const useGitHubAccountData = (account) => {
+  const [accountData, setAccountData] = useState({});
+
+  useEffect(
+    () => {
+      if (!account) {
+        return;
+      }
+
+      axios.get(`https://api.github.com/users/${account}`).then((response) => {
+        setAccountData(response.data);
+      });
+    },
+    [account]
+  );
+
+  return accountData;
+};
+
+export default useGitHubAccountData;
+```
+
+Auch hier nutzen wir wieder die bereits bekannten Hooks `useEffect()` und `useState()`. Den State \(konkret `accountData`\) nutzen wir um darin die GitHub-Benutzerdaten zu verwalten. Den Effekt führen wir immer dann aus \(und nur dann\) wenn sich der übergebene Benutzername ändert. Zum übergebenen Benutzernamen holen wir uns dann über die GitHub API die Benutzerdaten ab, warten den Response ab und schreiben die Daten aus dem Response per `setAccountData()` in den State. Am Ende des Hooks wird dann der `accountData` State zurückgegeben an die Komponente die den Hook aufgerufen hat.
+
+Die Daten stehen nun in der Komponente zur Verfügung und können in dieser beliebig verwendet werden:
+
+```jsx
+// RepoInfo.js
+import React from "react";
+import ReactDOM from "react-dom";
+import useGitHubAccountData from "./useGitHubAccountData";
+
+const RepoInfo = () => {
+  const accountData = useGitHubAccountData("manuelbieh");
+
+  return (
+    <p>
+      Der GitHub-Benutzer {accountData.name} besitzt {accountData.public_repos}{" "}
+      öffentliche Repositories.
+    </p>
+  );
+};
+
+ReactDOM.render(<RepoInfo />, document.getElementById("root"));
+```
+
+An dieser Stelle können wir nun basierend auf der `RepoInfo`-Komponente hergehen und weitere Funktionalität implementieren. Statt eines festen GitHub-Accounts wollen wir den Benutzer vielleicht einen Account suchen lassen. Dazu legen wir einen neuen State an in den wir den vom Benutzer eingegebenen Account schreiben und geben diesen State an unseren **Custom Hook** weiter.
+
+Der **useEffect\(\)**-Hook hat als **Dependency** den Account-Namen und wird somit immer dann ausgeführt wenn ein neuer Account-Name übergeben wird. D.h. mit jeder Änderung im Suchfeld findet ein neuer API Request statt der uns die Daten zum eingegebenen Account besorgt:
+
+```jsx
+// RepoLookup.js
+import React, { useState } from "react";
+import ReactDOM from "react-dom";
+import useGitHubAccountData from "./useGitHubAccountData";
+
+const RepoLookup = () => {
+  const [account, setAccount] = useState("");
+  const accountData = useGitHubAccountData(account);
+
+  return (
+    <div>
+      <input value={account} onChange={(e) => setAccount(e.target.value)} />
+      {!account ? (
+        <p>Bitte einen GitHub-Benutzernamen eingeben</p>
+      ) : (
+        <p>
+          Der GitHub-Benutzer {accountData.name} ({accountData.login}) besitzt{" "}
+          {accountData.public_repos} öffentliche Repositories.
+        </p>
+      )}
+    </div>
+  );
+};
+
+ReactDOM.render(<RepoLookup />, document.getElementById("root"));
+```
 

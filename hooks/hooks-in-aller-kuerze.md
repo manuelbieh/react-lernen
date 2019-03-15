@@ -33,7 +33,7 @@ ReactDOM.render(<Counter />, document.getElementById('root'));
 
 Hier implementieren wir beispielhaft einen Zähler, der mitzählt, wie oft wir den **+1**-Button gedrückt haben. Zugegeben, nicht gerade kreativ, demonstriert aber sehr gut, wie uns Hooks das Leben an dieser Stelle einfacher machen. Wir zeigen den aktuellen Wert an indem wir `this.state.value` auslesen und haben darunter einen Button, mit dem wir den Wert erhöhen können. Dazu rufen wir `this.setState()` auf und setzen den neuen `value` auf den vorherigen Wert den wir um 1 erhöhen.
 
-Schauen wir uns die identische Funktionalität noch einmal an, diesmal in einer Function Component mit dem neuen `useState()`-Hook:
+Schauen wir uns die identische Funktionalität noch einmal an, diesmal in einer **Function Component** mit dem neuen `useState()`-Hook:
 
 ```jsx
 import React from 'react';
@@ -79,6 +79,30 @@ import React, { useEffect, useState } from 'react';
 
 So können wir in der Komponente bequem direkt `useState()` nutzen statt jedesmal `React.useState()` schreiben zu müssen.
 {% endhint %}
+
+Komponenten sind dabei nicht auf nur einen Hook je Typ beschränkt und so kann es jede Art von Hook auch mehrmals in einer Komponente geben. Möchten wir bspw. zwei Counter hochzählen müssen wir die Zählerwerte nicht in einem Zähler-Objekt verwalten sondern können auch mehrere States erzeugen:
+
+```jsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+const Counter = () => {
+  const [ firstValue, setFirstValue ] = React.useState(0);
+  const [ secondValue, setSecondValue ] = React.useState(0);
+  return (
+    <div>
+      <p>Zählerwert 1: {firstValue}</p>
+      <p>Zählerwert 2: {secondValue}</p>
+      <button onClick={() => setFirstValue(firstValue + 1)}>+1</button>
+      <button onClick={() => setSecondValue(secondValue + 1)}>+1</button>
+    </div>
+  );
+}
+
+ReactDOM.render(<Counter />, document.getElementById('root'));
+```
+
+Für die Arbeit mit komplexen States erfahren wir im weiteren Verlauf dieses Buchs noch mehr über die Verwendung des `useReducer()`-Hooks. Dieser wurde eingeführt um die Verwaltung komplexer States zu vereinfachen.
 
 ### Seiteneffekte mit useEffect\(\)
 
