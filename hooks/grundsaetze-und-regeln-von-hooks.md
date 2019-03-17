@@ -96,5 +96,5 @@ useEffect(() => {
 }, [title])
 ```
 
-Wer sich brav das ESLint Plugin installiert und die Regeln aktiviert hat hier nichts zu befürchten. ESLint zeigt im Fall einer Missachtung dieser Regeln dann eine Warnung an und weist den Entwickler auf seinen Fehler hin.
+Wer das ESLint Plugin installiert und die Regeln aktiviert hat hier nichts zu befürchten. ESLint zeigt im Fall einer Missachtung dieser Regeln dann eine Warnung an und weist den Entwickler auf seinen Fehler hin.
 

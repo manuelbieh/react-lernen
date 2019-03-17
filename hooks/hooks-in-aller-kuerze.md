@@ -110,15 +110,15 @@ Der `useEffect()`-**Hook** erhält seinen Namen daher, da dieser dazu vorgesehen
 
 Ja, richtig gelesen: statt der genannten _drei_ Methoden gibt es nun nur noch _einen einzigen_ **Hook**, der an die vergleichbare Stelle der Methoden aus Klassen-Komponenten tritt. Der Trick dabei ist die genaue Verwendung ganz bestimmter Funktionsparameter und Rückgabewerte, wie sie für den `useEffect()`-Hook vorgesehen sind.
 
-Zur Benutzung des Hooks wird der `useEffect()`-Funktion selbst eine Funktion als ersten Parameter übergeben. Diese Funktion, nennen wir sie der Einfachheit halber **„Update-Funktion“**, wird von React grundsätzlich erst einmal **nach** jedem Rendering der Komponente ausgeführt und tritt damit an die Stelle von `componentDidUpdate()` in Klassen-Komponenten.
+Zur Benutzung des Hooks wird der `useEffect()`-Funktion selbst eine Funktion als ersten Parameter übergeben. Diese Funktion, nennen wir sie der Einfachheit halber **„Effekt-Funktion“**, wird von React grundsätzlich erst einmal **nach** jedem Rendering der Komponente ausgeführt und tritt damit an die Stelle von `componentDidUpdate()` in Klassen-Komponenten.
 
-Da diese Update-Funktion nach **jedem** Rendering der Komponente aufgerufen wird, wird sie eben auch nach dem **ersten** Rendering aufgerufen, was an dieser Stelle gleichgesetzt werden kann mit der `componentDidMount()` Lifecycle-Methode aus den Klassen-Komponenten. 
+Da diese **Effekt-Funktion** nach **jedem** Rendering der Komponente aufgerufen wird, wird sie eben auch nach dem **ersten** Rendering aufgerufen, was an dieser Stelle gleichgesetzt werden kann mit der `componentDidMount()` Lifecycle-Methode aus den Klassen-Komponenten. 
 
-Darüber hinaus kann die _Update_-Funktion optional selbst wiederum eine Funktion zurückgeben. Nennen wir  sie **„Aufräum-Funktion“**. Diese _Aufräum_-Funktion wird beim **Unmounting** der Komponente aufgerufen, womit wir bei der nächsten Lifecycle-Methode wären, nämlich `componentWillUnmount()`. 
+Darüber hinaus kann die _Effekt_-Funktion optional selbst wiederum eine Funktion zurückgeben. Nennen wir  sie **„Aufräum-Funktion“**. Diese _Aufräum_-Funktion wird beim **Unmounting** der Komponente aufgerufen, womit wir bei der nächsten Lifecycle-Methode wären, nämlich `componentWillUnmount()`. 
 
-Doch Vorsicht: hier haben wir gleichzeitig auch die erste Abweichung in der Funktionsweise verglichen mit Klassen-Komponenten. Und so wird unsere _Aufräum_-Funktion nicht nur beim **Unmounting** der Komponente aufgerufen sondern auch **vor jeder erneuten Ausführung** der _Update_-Funktion. 
+Doch Vorsicht: hier haben wir gleichzeitig auch die erste Abweichung in der Funktionsweise verglichen mit Klassen-Komponenten. Und so wird unsere _Aufräum_-Funktion nicht nur beim **Unmounting** der Komponente aufgerufen sondern auch **vor jeder erneuten Ausführung** der _Effekt_-Funktion. 
 
-Dieses Verhalten kann aktiv gesteuert werden, indem dem `useEffect()`-Hook als zweiten Parameter ein Array mit sog. **Dependencies** übergeben wird. Dabei handelt es sich um Werte von denen die Ausführung der _Update_-Funktion abhängt. Wird ein **Dependency-Array** übergeben wird der Hook nur einmal initial ausgeführt und dann erst wieder, wenn sich mind. einer der Werte im **Dependency-Array** geändert hat.
+Dieses Verhalten kann aktiv gesteuert werden, indem dem `useEffect()`-Hook als zweiten Parameter ein Array mit sog. **Dependencies** übergeben wird. Dabei handelt es sich um Werte von denen die Ausführung der **Effekt-Funktion** abhängt. Wird ein **Dependency-Array** übergeben wird der Hook nur einmal initial ausgeführt und dann erst wieder, wenn sich mind. einer der Werte im **Dependency-Array** geändert hat.
 
 Möchte man hingegen gezielt ein `componentDidMount()` simulieren kann ein leeres Array als zweiter Parameter übergeben werden. React führt die Effekt-Funktion dann nur beim ersten Rendern aus und ruft dann erst beim **Unmounting** wieder eine eventuell definierte Aufräum-Funktion auf.
 
