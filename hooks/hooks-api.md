@@ -164,5 +164,129 @@ Zu diesem Zweck wurde der `useLayoutEffect()`-Hook eingeführt. Er funktioniert 
 
 Der `useLayoutEffect()`-Hook kann also aus dem DOM lesen und diesen ebenfalls synchron modifizieren, **bevor** der Browser die Änderungen in seiner Paint-Phase darstellt.
 
+### Asynchrone Effekt-Funktionen
+
+Auch wenn **Effekt-Funktionen** verzögert ausgeführt werden, dürfen sie selbst nicht asynchron sein bzw. keine Promises zurückgeben. Andernfalls bekommen wir eine Fehlermeldung in der uns React auf diesen Umstand hinweist:
+
+{% hint style="danger" %}
+Warning: An Effect function must not return anything besides a function, which is used for clean-up.
+
+It looks like you wrote useEffect\(async \(\) =&gt; ...\) or returned a Promise. Instead, you may write an async function separately and then call it from inside the effect \[…\]
+
+In the future, React will provide a more idiomatic solution for data fetching that doesn't involve writing effects manually.
+{% endhint %}
+
+Im obigen Beispiel hätte der **inkorrekte** `useEffect()`-Hook etwa so ausgesehen:
+
+```javascript
+useEffect(async () => {
+  const response = await fetch('https://api.github.com/users/manuelbieh');
+  const accountData = await response.json();
+  setGitHubAccount(accountData);
+
+  fetchGitHubAccount("manuelbieh");
+}, []);
+```
+
+Dies ist **nicht erlaubt**, da die Effekt-Funktion mit dem `async` Schlüsselwort als _asynchron_ deklariert wird. Wie also lösen wir das Problem? Nun, die Lösung ist in diesem Fall relativ simpel: wir verschieben den asynchrone Teil der Funktion in eine eigenen, asynchronen Funktion **innerhalb der Effekt-Funktion** und rufen diese Funktion dann lediglich auf:
+
+```jsx
+import React, { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
+
+const App = (props) => {
+  const [gitHubAccount, setGitHubAccount] = useState();
+
+  useEffect(() => {
+    const fetchGitHubAccount = async () => {
+      const response = await fetch(`https://api.github.com/users/${props.username}`);
+      const accountData = await response.json();
+      setGitHubAccount(accountData);
+    };
+
+    fetchGitHubAccount();
+  }, [props.username]);
+
+  if (!gitHubAccount) {
+    return null;
+  }
+
+  return (
+    <p>
+      {gitHubAccount.name} has {gitHubAccount.public_repos} public repos
+    </p>
+  );
+};
+
+ReactDOM.render(
+  <App username="manuelbieh" />, 
+  document.getElementById("root")
+);
+```
+
+In diesem Fall ist nicht mehr die Effekt-Funktion selbst asynchron, sondern die asynchrone Funktionalität wird an die asynchrone Funktion `fetchGitHubAccount()` ausgelagert, die wir **innerhalb** des `useEffect()`-Hooks definieren. 
+
+Die asynchrone Funktion muss dabei nicht zwingend **in** der Effekt-Funktion erzeugt werden. Die Effekt-Funktion selbst darf nur eben nicht selbst asynchron sein.
+
+## useContext
+
+```javascript
+const myContextValue = useContext(MyContext);
+```
+
+Dieser Hook erwartet als einzigen Parameter einen Context-Typen der mittels `React.createContext()` erstellt wurde und gibt dann den Wert des in der Komponenten-Hierarchie nächsthöheren Context-Providers des entsprechenden Typs zurück.
+
+Der `useContext()`-Hook verhält sich dabei wie eine Context Consumer-Komponente und verursacht ein Rerendering der **Function Component** sobald der Wert des Contexts im jeweiligen Provider-Element geändert wurde. 
+
+Die Verwendung des Hooks ist optional und so ist es auch weiterhin möglich Context-Consumer im **JSX** der **Function Component** zu verwenden. Allerdings ist der Hook die deutlich übersichtlichere Variante, da dieser keine neue Hierarchie-Ebene im Komponentenbaum erzeugt.
+
+## useReducer
+
+```javascript
+const [state, dispatch] = useReducer(reducerFunc, initialState, initFunc)
+```
+
+Der `useReducer()`-Hook ist eine Alternative zu `useState()`, die es erlaubt auch komplexeren States zu managen. Der Hook ist angelehnt an die Flux Architektur, bei der, kurz gesagt, eine **Reducer-**Funktion einen **neuen State erzeugt**, indem sie den **letzten State** und eine sog. **Action** übergeben bekommt. 
+
+Die **Reducer**-Funktion wird durch den Aufruf einer **Dispatch**-Funktion aufgerufen, die eine **Action** übergeben bekommt. Die **Action** selbst ist dabei ein Objekt, das zwingend eine `type` Eigenschaft hat und oftmals \(optional\) eine `payload`-Eigenschaft besitzt. Aus dieser **Action** und dem **letzten State** erzeugt die **Reducer**-Funktion dann einen **neuen State**. Die **Reducer**-Funktion hat also die Form `(oldState, action) => newState`.
+
+Schauen wir uns auch hierzu einmal ein simples Beispiel an und entwickeln zu diesem Zweck eine einfache `Counter`-Komponente, mit der wir über zwei Buttons \(`+` und `-`\) einen Wert rauf- und runterzählen können:
+
+```jsx
+import React, { useReducer } from "react";
+import ReactDOM from "react-dom";
+
+const initialState = {
+  count: 0,
+};
+
+const reducerFunction = (state, action) => {
+  switch (action.type) {
+    case "INCREMENT":
+      return { count: state.count + 1 };
+    case "DECREMENT":
+      return { count: state.count - 1 };
+    default:
+      return state;
+  }
+};
+
+const Counter = () => {
+  const [state, dispatch] = useReducer(reducerFunction, initialState);
+
+  return (
+    <div>
+      <h1>{state.count}</h1>
+      <button onClick={() => dispatch({ type: "INCREMENT" })}>+</button>
+      <button onClick={() => dispatch({ type: "DECREMENT" })}>-</button>
+    </div>
+  );
+};
+
+ReactDOM.render(<Counter />, document.getElementById("root"));
+```
+
+
+
 
 
