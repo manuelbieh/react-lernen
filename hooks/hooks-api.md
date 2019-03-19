@@ -246,9 +246,9 @@ Die Verwendung des Hooks ist optional und so ist es auch weiterhin möglich Cont
 const [state, dispatch] = useReducer(reducerFunc, initialState, initFunc)
 ```
 
-Der `useReducer()`-Hook ist eine Alternative zu `useState()`, die es erlaubt auch komplexeren States zu managen. Der Hook ist angelehnt an die Flux Architektur, bei der, kurz gesagt, eine **Reducer-**Funktion einen **neuen State erzeugt**, indem sie den **letzten State** und eine sog. **Action** übergeben bekommt. 
+Der `useReducer()`-Hook ist eine Alternative zu `useState()`, die es erlaubt auch komplexeren States zu managen. Der Hook ist angelehnt an die Flux-Architektur, bei der, kurz gesagt, eine **Reducer-**Funktion einen **neuen State erzeugt**, indem sie den **letzten State** und eine sog. **Action** übergeben bekommt. 
 
-Die **Reducer**-Funktion wird durch den Aufruf einer **Dispatch**-Funktion aufgerufen, die eine **Action** übergeben bekommt. Die **Action** selbst ist dabei ein Objekt, das zwingend eine `type` Eigenschaft hat und oftmals \(optional\) eine `payload`-Eigenschaft besitzt. Aus dieser **Action** und dem **letzten State** erzeugt die **Reducer**-Funktion dann einen **neuen State**. Die **Reducer**-Funktion hat also die Form `(oldState, action) => newState`.
+Die **Reducer**-Funktion wird durch den Aufruf einer **Dispatch**-Funktion aufgerufen, die wiederum eine **Action** übergeben bekommt. Die **Action** selbst ist dabei ein Objekt, das zwingend eine `type` Eigenschaft und oftmals \(optional\) eine `payload`-Eigenschaft besitzt. Aus dieser **Action** und dem **letzten State** erzeugt die **Reducer**-Funktion dann den **neuen State**. Die **Reducer**-Funktion hat also die Form `(oldState, action) => newState`.
 
 Schauen wir uns auch hierzu einmal ein simples Beispiel an und entwickeln zu diesem Zweck eine einfache `Counter`-Komponente, mit der wir über zwei Buttons \(`+` und `-`\) einen Wert rauf- und runterzählen können:
 
@@ -267,7 +267,7 @@ const reducerFunction = (state, action) => {
     case "DECREMENT":
       return { count: state.count - 1 };
     default:
-      return state;
+      throw new Error('Unbekannte Action');
   }
 };
 
@@ -294,9 +294,241 @@ Möchten wir nun den State verändern, rufen wir in der Komponente die `dispatch
 
 Wird eine Action _dispatched_ und wird dabei ein neuer State erzeugt, löst React ein Rerendering aus und der neu erzeugte State steht in der von der Reducer-Funktion zurückgegebenen `state` Variablen zur Verfügung. Wird hingegen der gleiche State von der **Reducer**-Funktion zurückgegeben wird **kein** Rerendering ausgelöst!
 
+### Der dritte Parameter
 
+Neben der `reducer`-Funktion und dem `initialState`, die jeweils zwingend angegeben werden müssen, kann der `useReducer()`-Hook aber noch einen dritten, optionalen Parameter erhalten, nämlich eine `init`-Funktion zum Errechnen des initialen States. Die Funktion kann verwendet werden um bspw. den initialen Wert des **Reducers** in einer externen Funktion außerhalb des Reducers zu berechnen.
 
+Wird eine solche `init`-Funktion übergeben, wird diese vom Hook beim **ersten** Aufruf aufgerufen und der `initialState` wird ihr als **initiales Argument** übergeben. Dies kann insbesondere dann sinnvoll sein wenn der **initiale State** auf den **Props** einer Komponente basiert. Diese können dann im zweiten Parameter an die `init`-Funktion weitergereicht werden, die darauf basierend den initialen State des Reducers erzeugen kann:
 
+```jsx
+import React, { useReducer } from "react";
+import ReactDOM from "react-dom";
+
+const reducerFunction = (state, action) => {
+  switch (action.type) {
+    case "INCREMENT":
+      return { count: state.count + 1 };
+    case "DECREMENT":
+      return { count: state.count - 1 };
+    default:
+      throw new Error("Unbekannte Action");
+  }
+};
+
+const initFunction = (initValue) => {
+  return { count: initValue };
+};
+
+const Counter = (props) => {
+  const [state, dispatch] = useReducer(
+    reducerFunction, props.startValue, initFunction
+  );
+
+  return (
+    <div>
+      <h1>{state.count}</h1>
+      <button onClick={() => dispatch({ type: "INCREMENT" })}>+</button>
+      <button onClick={() => dispatch({ type: "DECREMENT" })}>-</button>
+    </div>
+  );
+};
+
+ReactDOM.render(<Counter startValue={3} />, document.getElementById("root"));
+```
+
+In diesem Beispiel erweitern wir den `useReducer()`-Hook um den dritten, optionalen Parameter: der **Init-**Funktion. Aus dem `initialState` im ersten Beispiel wird ein Argument für die **Init-**Funktion. Der Wert für dieses Funktions-Argument wird der Komponente hier als `startValue` über die Props übergeben.
+
+### Reducer in der Praxis
+
+Das Prinzip von **Reducern** dürfte einem großen Teil der React-Community wohl erstmals durch den Aufstieg von **Redux** nahe gebracht worden sein. **Redux** ist ein Paket um globalen State komfortabel managen zu können und wurde in der Vergangenheit häufig verwendet wenn das Handling von lokalen States in React zu unübersichtlich wurde oder über über zu viele Komponenten hinweg durch sog. „Props Drilling“ \(also dem Weiterreichen von Props über mehrere Hierarchie-Ebenen hinweg\) zu umständlich wurde. 
+
+**Redux** \(und daher der Name\) besteht in seinem Kern darin, Reducer-Funktionen zu verwalten und deren State und Dispatch-Funktion in den Komponenten verfügbar zu machen, die den globalen State lesen oder verändern sollen. Mit dem `useReducer()`-Hook bekommt React nun eine eigene Funktion um komplexes State-Management mittels Reducer-Funktionen zu bewerkstelligen.
+
+Ein typischer Anwendungsfall für Reducer ist dabei die Status-Verwaltung bei API Requests. Als Best Practice hat sich hier bspw. herauskristallisiert drei verschiedene Actions je API Request zu definieren: 
+
+* eine Action wenn der Request gestartet wird, die die Anwendung davon in Kenntnis setzt, dass Daten geladen werden,
+* eine Action wenn der Request fehlgeschlagen ist, der den Lade-Status zurück setzt und den State darüber in Kenntnis setzt, dass ein Fehler aufgetreten ist \(und ggf. auch welcher\),
+* eine Action wenn der Request erfolgreich war, der die von der API erhaltenen Daten in den State schreibt
+
+Werfen wir hierzu einen Blick auf ein solches Beispiel und laden wieder unsere Account-Daten via GitHub-API:
+
+```jsx
+import React, { useEffect, useReducer } from "react";
+import ReactDOM from "react-dom";
+
+const initialState = {
+  data: null,
+  isLoading: false,
+  isError: false,
+  lastUpdated: null,
+};
+
+const accountReducer = (state, action) => {
+  switch (action.type) {
+    case "REQUEST_START":
+      return {
+        ...state,
+        isLoading: true,
+      };
+    case "REQUEST_SUCCESS":
+      return {
+        ...state,
+        data: action.payload,
+        isLoading: false,
+        isError: false,
+        lastUpdated: action.meta.lastUpdated,
+      };
+    case "REQUEST_ERROR":
+      return {
+        ...state,
+        isLoading: false,
+        isError: true,
+      };
+  }
+};
+
+const RepoInfo = (props) => {
+  const [state, dispatch] = useReducer(accountReducer, initialState);
+
+  useEffect(() => {
+    const fetchGitHubAccount = async (username) => {
+      try {
+        dispatch({
+          type: "REQUEST_START",
+        });
+        const response = await fetch(
+          `https://api.github.com/users/${username}`
+        );
+
+        const accountData = await response.json();
+        dispatch({
+          type: "REQUEST_SUCCESS",
+          payload: accountData,
+          meta: {
+            lastUpdated: new Date(),
+          },
+        });
+      } catch (err) {
+        dispatch({
+          type: "REQUEST_ERROR",
+          error: true,
+        });
+      }
+    };
+
+    fetchGitHubAccount(props.username);
+  }, [props.username]);
+
+  if (state.isError) {
+    return <p>Ein Fehler ist aufgetreten.</p>;
+  }
+
+  if (state.isLoading) {
+    return <p>Daten werden geladen.</p>;
+  }
+
+  if (!state.data) {
+    return <p>Es wurde kein GitHub-Account geladen</p>;
+  }
+
+  return (
+    <p>
+      {state.data.name} hat {state.data.public_repos} öffentliche Repos
+    </p>
+  );
+};
+
+ReactDOM.render(
+  <RepoInfo username="manuelbieh" />,
+  document.getElementById("root")
+);
+```
+
+Wir benutzen wieder den `useReducer()`-Hook und übergeben ihm die `accountReducer`-Funktion. In dieser Funktion reagieren wir auf die drei **Actions** vom **Typ** `REQUEST_START`, `REQUEST_SUCCESS` und `REQUEST_ERROR`. 
+
+Der `initialState` besteht aus einem Objekt mit einer leeren `data`-Eigenschaft, den beiden Flags `isFetching` und `isError`, die unserer Komponente später mitteilen ob Daten geladen werden oder ob ein Fehler aufgetreten ist, sowie einer `lastUpdated`-Eigenschaft, in der wir den Zeitpunkt des letzten erfolgreichen Requests speichern. Diese können wir später nutzen um etwa Requests nur einmal pro Minute auszuführen oder dem Benutzer zu signalisieren, dass er Daten sieht, die schon für längere Zeit nicht aktualisiert wurden.
+
+Wir nutzen außerdem einen `useEffect()`-Hook um das Laden der Daten zu veranlassen sobald sich der in den **Props** übergebene GitHub-Benutzername ändert. Ist dies der Fall, wird zu aller erst die `REQUEST_START` **Action** dispatched. Der **Reducer** erzeugt daraufhin den folgenden neuen State:
+
+```diff
+{
+  data: null,
+- isLoading: false,
++ isLoading: true,
+  isError: false,
+  lastUpdated: null,
+}
+```
+
+Dadurch greift in unserer Komponente weiter unten nun folgende Bedingung:
+
+```jsx
+if (state.isLoading) {
+  return <p>Daten werden geladen.</p>;
+}
+```
+
+Und signalisiert dem Benutzer, dass momentan Daten geladen werden. 
+
+Als nächstes können zwei Fälle eintreten: entweder der Request schlägt fehl oder wir beziehen erfolgreich Daten von der API.
+
+Schlägt der Request fehl, dann würde die `REQUEST_ERROR` **Action** dispatched. Unser State würde sich daraufhin wie folgt verändern:
+
+```diff
+{
+  data: null,
+- isLoading: true,
++ isLoading: false,
+- isError: false,
++ isError: true,
+  lastUpdated: null,
+};
+```
+
+Da kein Request mehr durchgeführt wird, wird die `isLoading` Flag von `true` wieder auf `false` zurückgesetzt um dem Benutzer nicht fälschlicherweise zu signalisieren, dass wir noch Daten laden würden. Da ein Fehler aufgetreten ist, setzen wir gleichzeitig `isError` von `false` auf `true`. Statt der Lade-Nachricht greift nun folgende Bedingung und setzt den Benutzer vom aufgetretenen Fehler in Kenntnis:
+
+```jsx
+if (state.isError) {
+  return <p>Ein Fehler ist aufgetreten.</p>;
+}
+```
+
+An dieser Stelle wäre es durchaus ratsam dem Benutzer mitzuteilen was falsch gelaufen ist und wie er den Fehler ggf. beheben kann. Vielleicht existiert der übergebene Benutzername nicht und man könnte ihm die Chance geben diesen zu korrigieren oder die API ist gerade nicht erreichbar, dann könnte man dem Benutzer die Möglichkeit geben den Request zu einem späteren Zeitpunkt noch einmal zu wiederholen.
+
+Für den Fall dass alles geklappt hat und wir korrekt Daten von der API beziehen konnten wird die `REQUEST_SUCCESS` Action dispatched. Diese enthält neben der `payload`, die den geladenen Daten entspricht auch eine `meta`-Eigenschaft, mit der wir den Zeitpunkt des Requests mitgeben.
+
+Der **neue State** der vom **Reducer** erzeugt wird unterscheidet sich dann folgendermaßen vom letzten State:
+
+```diff
+{
+- data: null,
++ data: {
++   "login": "manuelbieh",
++   "name": "Manuel Bieh",
++   "public_repos": 59,
++   [...]
++ },
+- isLoading: true,
++ isLoading: false,
+  isError: false,
+- lastUpdated: null,
++ lastUpdated: "2019-03-19T02:29:10.756Z",
+}
+```
+
+Unsere `data`-Eigenschaft enthält nun die Daten, die wir von der API bekommen haben. Der `isLoading`-Status wird wiede auf `false` zurückgesetzt, die `lastUpdated`-Eigenschaft setzen wir auf den Zeitpunkt wann wir auch die Daten in den State geschrieben haben. In unserer Komponente sollte nun die gewünschte Ausgabe erzeugt werden:
+
+```jsx
+return (
+  <p>
+    {state.data.name} hat {state.data.public_repos} öffentliche Repos
+  </p>
+);
+```
+
+Damit haben wir neben dem ersten komplexeren Reducer auch zugleich ein erstes Zusammenspiel der beiden **Hooks** `useEffect()` und `useReducer()` in einem praxisnahen Beispiel implementiert!
+
+## useCallback
 
 
 
