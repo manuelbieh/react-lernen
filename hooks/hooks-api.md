@@ -528,7 +528,17 @@ return (
 
 Damit haben wir neben dem ersten komplexeren Reducer auch zugleich ein erstes Zusammenspiel der beiden **Hooks** `useEffect()` und `useReducer()` in einem praxisnahen Beispiel implementiert!
 
+Übrigens: genau wie beim `useState()`-Hook löst auch der `useReducer()`-Hook kein erneutes Rerendering aus wenn die Reducer-Funktion den gleichen State wie vorher zurückgibt!
+
 ## useCallback
 
+```javascript
+const memoizedCallback = useCallback(() => {
+  doSomething(a, b);
+}, [a, b]);
+```
 
+Der `useCallback()`-Hook dient zur Optimierung hinsichtlich der Performance einer Anwendung. Er erwartet eine Funktion und erzeugt eine **eindeutige Identität** dieser Funktion die so lange Bestand hat, bis sich die **Dependencies** des Hooks ändern.
+
+Dies ist dazu gedacht um eine immer gleiche Referenz zu einer Funktion an Komponenten zu übergeben die entweder `PureComponents`, eine eigene `shouldComponentUpdate()`-Methode implementieren oder die mittels `React.memo()` umschlossen werden.
 

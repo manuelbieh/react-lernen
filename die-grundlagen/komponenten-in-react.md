@@ -6,11 +6,11 @@ Eine erste einfache **HelloWorld**-Komponente haben wir schon beim [Sprung ins k
 
 Das Prinzip von **Komponenten** ist einfach erklärt: eine **Komponente** erlaubt es komplexe User Interfaces in einzelne kleine Stücke zu unterteilen. Diese sind im Idealfall wiederverwendbar, isoliert und in sich geschlossen. Sie verarbeiten beliebigen Input von außen in Form von sogenannter **Props** \(engl. für „Properties“, also Eigenschaften\) und beschreiben letztendlich anhand ihrer `render()`-Funktion was auf dem Bildschirm erscheint.
 
-Komponenten können grob in zwei verschiedenen Varianten auftreten: in Form einer einfachen Funktion \(engl. **Function Component**\), sowie **Class Components**, die eine gewöhnliche ES2015-Klasse repräsentieren. Bis zur Einführung der React Hooks war es in Function Components nicht möglich einen lokalen State zu verwalten, weswegen man hin und wieder noch auf den Begriff **Stateless Functional Component** stößt.
+Komponenten können grob in zwei verschiedenen Varianten auftreten: in Form einer einfachen Funktion \(engl. **Function Component**\), sowie **Class Components**, die eine gewöhnliche ES2015-Klasse repräsentieren. Bis zur Einführung der React **Hooks** war es in **Function Components** nicht möglich einen lokalen State zu verwalten, weswegen man in diesem Buch hin und wieder möglicherweise noch auf den Begriff **Stateless Functional Component** stößen könnte. \(Ich arbeite bereits daran alle betreffenden Stellen entsprechend umzuschreiben ;\)\)
 
 ### Function Components
 
-Die deutlich einfachste Art um in React eine Komponente zu definieren ist sicherlich die funktionale Komponente, die, wie der Name es bereits andeutet, tatsächlich lediglich eine einfache JavaScript-Funktion ist:
+Die deutlich einfachste Art um in React eine Komponente zu definieren ist sicherlich die **Function Component**, die, wie der Name es bereits andeutet, tatsächlich lediglich eine gewöhnliche JavaScript-Funktion ist:
 
 ```jsx
 function Hello(props) {
@@ -43,6 +43,119 @@ Beginnt der Name einer Komponente mit einem Kleinbuchstaben, behandelt React die
 {% endhint %}
 
 Wie wir innerhalb der **Komponenten** jeweils mit dem **State** arbeiten, diesen modifizieren und uns zu eigen machen ist sehr komplex, weswegen dem Thema ein eigenes Kapitel gewidmet ist. Dieses folgt direkt im Anschluss an dieses hier und ich würde empfehlen erst dieses Kapitel zu beenden um die Funktionsweise von Komponenten zu verstehen, bevor wir hier tiefer einsteigen.
+
+### Sonderfall PureComponent
+
+Eine Sonderform der **Class Component** stellt die **Pure Component** dar. Diese erbt von `React.PureComponent` und funktioniert vom Grundsatz her wie die gewöhnliche Class Component, die von `React.Component` abgeleitet wird. Mit dem Unterschied, dass React diese Art der Komponente nur dann neu rendert wenn sich ihre **Props** oder ihr **State** im Vergleich zur vorherigen Render-Phase geändert haben.
+
+Die Klasse führt dazu einen oberflächlichen \(_„shallow“_\) Vergleich durch, schaut also lediglich ob die Referenzen noch identisch zum vorherigen Rendering sind und **nicht**, ob sich die Werte selbst geändert haben. Dies bedeutet, dass eine PureComponent ggf. auch dann neu rendert wenn die Werte zwar identisch sind, sich die Referenzen jedoch geändert haben, etwa weil eine neue Arrow-Function erzeugt wurde.
+
+Am besten lässt sich dies an einem kurzen Beispiel erklären:
+
+```jsx
+const logFunction = (message) => console.log(message);
+
+class App extends React.Component {
+  render() {
+    return <MyComponent logger={changeHandler} />;
+  }
+}
+```
+
+Hier definieren wir eine Funktion `logFunction` außerhalb der Klasse. Die fiktive `MyComponent`-Komponente bekommt als `logger`-Prop hier die **Referenz** zur `logFunction` übergeben. Die **Identität** der Referenz bleibt hier bei jedem erneuten Rendering bestehen und eine PureComponent würde nicht erneut gerendert sofern sich ihr eigener State nicht geändert hat, da die Props hier in der Rendering-Phase die selben sind wie in der vorherigen.
+
+Im folgenden Beispiel hingegen, würde auch die PureComponent neu gerendert:
+
+```jsx
+class App extends React.Component {
+  render() {
+    return <MyComponent logger={(message) => console.log(message)} />;
+  }
+}
+```
+
+Zwar übergeben wir auch hier stets eine immer gleiche Funktion an die `MyComponent`, allerdings erzeugen wir für den Interpreter bei jedem neuen Rendering auch eine neue Funktion. Dadurch geht der Bezug zur alten Funktion verloren und die _Shallow-Comparison_, also der oberflächliche Vergleich zwischen den vorherigen und den neuen Props schlägt fehl, ist also unterschiedlich und löst damit ein Rerendering aus.
+
+Dies gilt gleichermaßen auch für Objekte und Arrays:
+
+```jsx
+<MyComponent
+  logConfig={{ logLevel: 'info' }}
+  logEntries={['Nachricht 1', 'Nachricht 2']} />  
+```
+
+Hier würde ein Rendering ausgelöst, weil auch das `logConfig`-Objekt bzw. das `logEntries`-Array bei jedem erneuten Rendering an Ort und Stelle neu erzeugt werden würde.
+
+### „Pure“ Function Components
+
+**Class Components** leiten von den Klassen `Component` oder `PureComponent` ab und wir bestimmen durch die Auswahl von welcher Klassen wir ableiten, ob die Komponente mit jeder Änderung einer sich in der Hierarchie höher befindlichen Komponente neu gerendert werden soll. Diese Möglichkeit haben wir bei einfachen Funktionen nicht. Seit **React 16.6.0** bietet React jedoch durch die neue Wrapper-Funktion `React.memo()` auch in **Function Components** die Möglichkeit der Rerendering-Optimierung. Dazu wird diese einfach um die entsprechende Funktion gelegt:
+
+```jsx
+const MyComponent = React.memo((props) => {
+  return <p>Ich werde nur neu gerendert wenn sich meine Props ändern</p>;
+});
+```
+
+Die **Function Component** verhält sich dann so wie eine vergleichbare **Class Component**, die von der `React.PureComponent` Klasse abgeleitet wird.
+
+Wer neugierig geworden ist, kann sich für das einfachere Verständnis auch mit der folgenden Demo etwas austoben:
+
+```jsx
+import React from "react";
+import ReactDOM from "react-dom";
+
+class ClassComponent extends React.Component {
+  render() {
+    return <p>Class Component: {new Date().toISOString()}</p>;
+  }
+}
+
+class PureClassComponent extends React.PureComponent {
+  render() {
+    return <p>Pure Class Component: {new Date().toISOString()}</p>;
+  }
+}
+
+const FunctionComponent = () => {
+  return <p>Function Component: {new Date().toISOString()}</p>;
+};
+
+const MemoizedFunctionComponent = React.memo(() => {
+  return <p>Memoized Function Component: {new Date().toISOString()}</p>;
+});
+
+class App extends React.Component {
+  state = {
+    lastRender: new Date().toISOString(),
+  };
+
+  componentDidMount() {
+    this.interval = setInterval(() => {
+      this.setState({ lastRender: new Date().toISOString() });
+    }, 200);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  render() {
+    return (
+      <div>
+        <p>App: {this.state.lastRender}</p>
+        <ClassComponent />
+        <PureClassComponent />
+        <FunctionComponent />
+        <MemoizedFunctionComponent />
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<App />, document.getElementById("root"));
+```
+
+Hier löst die `App`-Komponente alle 0,2 Sekunden automatisch ein Rerendering aus, ohne das dabei jedoch **Props** an ihre Kind-Komponenten übergeben werden. Preisfrage: welche beiden Komponenten werden dabei jeweils mit neu gerendert und welche beiden nicht?
 
 ## Component Composition – mehrere Komponenten in einer
 
@@ -82,17 +195,74 @@ Die Komponente `<MyApp>` gibt hier ein `<div>` zurück, das zweimal die Hello-Ko
 
 Wichtig: eine Komponente darf stets nur ein einzelnes Root-Element zurückgeben! Dies kann sein:
 
-* ein einzelnes React-Element: `<Hello name="Manuel" />` 
-* Auch in verschachtelter Form, solange es nur ein einzelnes Element auf äußerer Ebene gibt: `<Parent><Child /></Parent>` 
-* ein DOM-Element \(auch dieses darf wiederum verschachtelt sein und andere Elemente beinhalten\): `<div>…</div>` 
-* Oder selbstschließend: `<img src="logo.jpg" alt="Bild: Logo" />` 
-* `null` \(aber niemals `undefined`!\)
+* ein einzelnes React-Element:
 
-Seit React 16 dürfen das außerdem auch sein:
+```jsx
+<Hello name="Manuel />
+```
 
-* ein Array welches wiederum gültige return-Werte \(s.o.\) beinhaltet: `[<div key="1">Hallo</div>, <Hello key="2" name="Manuel" />]` 
-* ein String: `'Hallo Welt'` 
-* Ein sogenanntes „Fragment“ – eine Art spezielle „Komponente“, das selbst nicht im gerenderten Output auftaucht und als Container dienen kann, falls man andererseits gegen die Regel verstoßen würde nur ein Root-Element aus der Funktion zurückzugeben oder invalides HTML erzeugen würde: `<React.Fragment><li>1</li><li>2</li><li>3</li></React.Fragment>`
+* Auch in verschachtelter Form, solange es nur ein einzelnes Element auf äußerer Ebene gibt:
+
+```jsx
+<Parent><Child /></Parent>
+```
+
+* ein DOM-Element \(auch dieses darf wiederum verschachtelt sein und andere Elemente beinhalten\):
+
+```jsx
+<div>…</div>
+```
+
+* … oder selbstschließend:
+
+```jsx
+<img src="logo.jpg" alt="Bild: Logo" />
+```
+
+* Oder auch
+
+```javascript
+null
+```
+
+… jedoch **nicht** `undefined`!
+
+Seit **React 16.0.0** dürfen das außerdem auch sein:
+
+* ein Array welches wiederum gültige return-Werte \(s.o.\) beinhaltet:
+
+```jsx
+[
+  <div key="1">Hallo</div>, 
+  <Hello key="2" name="Manuel" />
+]
+```
+
+* ein simpler String:
+
+```javascript
+'Hallo Welt'
+```
+
+* oder ein sogenanntes „Fragment“ – eine Art spezielle „Komponente“, das selbst nicht im gerenderten Output auftaucht und als Container dienen kann, falls man andererseits gegen die Regel verstoßen würde nur ein Root-Element aus der Funktion zurückzugeben oder invalides HTML erzeugen würde:
+
+```jsx
+<React.Fragment>
+  <li>1</li>
+  <li>2</li>
+  <li>3</li>
+</React.Fragment>
+```
+
+Beim Transpiling mit Babel ab Version 7 kann außerdem die Fragment-Kurzform benutzt werden die aus einem leeren öffnenden und schließenden Element besteht:
+
+```jsx
+<>
+  <li>1</li>
+  <li>2</li>
+  <li>3</li>
+</>
+```
 
 Komponenten können dabei beliebig zusammengesetzt \(_„composed“_\) werden. So bietet es sich oftmals an große und komplexe Komponenten in einzelne, kleinere und übersichtlichere Komponenten zu unterteilen um diese leichter verständlich und optimalerweise sogar auch wiederverwendbar zu machen. Dies ist oftmals ein lebender Prozess bei dem man ab einem gewissen Punkt bemerkt, dass eine Unterteilung in mehrere einzelne Komponenten möglicherweise sinnvoll wäre.
 

@@ -1367,8 +1367,6 @@ Abhilfe schaffen sollen hier später einmal die **Package Name Maps**, ein Propo
 
 ## Fazit
 
-{% hint style="success" %}
-
 ES2015 und die nachfolgenden Versionen bieten eine Menge nützliche neue Funktionen die es bisher in JavaScript nicht gab. Viele davon sind bei der Arbeit mit React nahezu nicht wegzudenken. Zu den wichtigsten Neuerungen gehören die hier beschriebenen:
 
 * Variablendeklarationen mit `let` und `const`
