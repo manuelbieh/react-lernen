@@ -154,7 +154,11 @@ useEffect(
 
 Beim Erstellen eines solchen **Dependency Arrays** sollte man genau darauf achten, dass sämtliche Werte die innerhalb der Funktion verwendet werden und die sich im Laufe der Lebenszeit der Komponente ändern können auch dort auflistet. Soll die Effekt-Funktion nur einmalig ausgeführt werden, also einen ähnlichen Zweck erfüllen wie `componentDidMount()` in Klassen-Komponenten wird ein leeres Array \(d.h. `[]`\) übergeben.
 
-Um die Arbeit bei der Erstellung von **Dependency Arrays** zu erleichtern oder gar zu automatisieren gibt es im `eslint-plugin-react-hooks` die `exhaustive-deps` die bei entsprechender Editor-Konfiguration \(z.B. _Format on Save_\) die in der Effekt-Funktion benutzten Abhängigkeiten automatisch dort einträgt oder zumindest warnt, sollten Unstimmigkeiten gefunden werden.
+{% hint style="info" %}
+Um die Arbeit bei der Erstellung von **Dependency Arrays** zu erleichtern oder gar zu automatisieren gibt es im `eslint-plugin-react-hooks` die `exhaustive-deps` Regel, die bei entsprechender Editor-Konfiguration \(z.B. _Format on Save_\) die in der Effekt-Funktion benutzten Abhängigkeiten automatisch in das **Dependency Array** einträgt oder zumindest warnt, sollten Unstimmigkeiten gefunden werden.
+
+Aktiviert werden kann sie durch den Eintrag `"exhaustive-deps": "warn"` im `rules` Block der ESLint-Konfiguration.
+{% endhint %}
 
 ### Zeitliche Abfolge
 
@@ -533,12 +537,81 @@ Damit haben wir neben dem ersten komplexeren Reducer auch zugleich ein erstes Zu
 ## useCallback
 
 ```javascript
-const memoizedCallback = useCallback(() => {
-  doSomething(a, b);
-}, [a, b]);
+const memoizedFunction = useCallback(callbackFunction, dependencyArray);
 ```
 
 Der `useCallback()`-Hook dient zur Optimierung hinsichtlich der Performance einer Anwendung. Er erwartet eine Funktion und erzeugt eine **eindeutige Identität** dieser Funktion die so lange Bestand hat, bis sich die **Dependencies** des Hooks ändern.
 
 Dies ist dazu gedacht um eine immer gleiche Referenz zu einer Funktion an Komponenten zu übergeben die entweder `PureComponents`, eine eigene `shouldComponentUpdate()`-Methode implementieren oder die mittels `React.memo()` umschlossen werden.
+
+Der `useCallback()`-Hook erwartet eine Funktion als erstes Argument und einen Dependency Array \(wie beim `useEffect()`-Hook\) und gibt im Gegenzug dafür eine „stabile“ Referenz zur hereingereichten Funktion zurück. Stabil heißt in dem Fall dass sie sich nur dann ändert wenn sich die **Dependencies** des Hooks verändert haben. Bis zu diesem Zeitpunkt ist eine via `useCallback()` erzeugte Referenz für `PureComponents` oder Komponenten mit `React.memo()` die selbe.
+
+Was erst einmal kompliziert klingen mag, lässt sich wie so häufig am Besten anhand eines Beispiels erklären:
+
+```jsx
+import React, { useState, useCallback } from "react";
+import ReactDOM from "react-dom";
+
+const FancyInput = React.memo(({ name, onChange }) => {
+  console.log("Rendering FancyInput");
+  return (
+    <input type="text" name={name} onChange={onChange} />
+  );
+});
+
+const Form = () => {
+  const [values, setValues] = useState({});
+
+  const changeHandler = (e) => {
+    const { name, value } = e.target;
+
+    setValues((state) => {
+      return {
+        ...state,
+        [name]: value,
+      };
+    });
+  };
+
+  return (
+    <>
+      <pre>{JSON.stringify(values, null, 2)}</pre>
+      <FancyInput name="example" onChange={changeHandler} />
+    </>
+  );
+};
+
+ReactDOM.render(<Form />, document.getElementById("root"));
+```
+
+Hier sehen wir die zwei Komponenten `Form` und `FancyInput`. Die `Form`-Komponente rendert eine `FancyInput`-Komponente und übergibt ihr neben dem `name`-Attribut auch eine `onChange`-Funktion. Diese ändert bei jeder Änderung im Eingabefeld den State der `Form`-Komponente und löst somit ein Rendering aus. 
+
+Die `changeHandler`-Funktion selbst wird **in der Form-Komponente erstellt**, und zwar mit jedem neuen Rendering erneut. D.h. **die Referenz zur Funktion ändert sich**, da wir mit jedem neuen Rendering eine neue Funktion erzeugen. In Deutschland kann man dazu wohl sagen: wir übergeben zwar die **gleiche**, nicht jedoch die **selbe** Funktion.
+
+Dadurch greift die Optimierung von `React.memo()` die wir um die `FancyInput`-Komponente gelegt haben **nicht**. Kurz zur Auffrischung: `React.memo()` prüft **vor** dem Rendering einer Komponente ob sich deren **Props** ggü. des letzten Renderings geändert haben und löst ein Rerendering aus, falls diese Bedingung erfüllt ist. Da wir die `changeHandler`-Funktion bei jedem Rendering der `Form`-Komponente neu erstellen, ist diese Bedingung **immer** wahr und die `FancyInput`-Komponente wird entsprechend bei jedem Rendering der `Form`-Komponente ebenfalls neu gerendert.
+
+Hier kommt nun `useCallback` ins Spiel. Wrappen wir unsere `changeHandler`-Funktion in diesem Hook, erzeugt React eine Funktion mit einer **eindeutigen** und **stabilen** Referenz und gibt uns diese zurück, damit wir diese sicher an die `FancyInput`-Komponente weitergeben können, ohne jedesmal ein Rerendering auszulösen:
+
+```jsx
+const changeHandler = useCallback((e) => {
+  const { name, value } = e.target;
+
+  setValues((state) => {
+    return {
+      ...state,
+      [name]: value,
+    };
+  });
+}, []);
+```
+
+Hier nutzen wir nun die Optimierungsmöglichkeiten von `React.memo()` \(oder in Klassen-Komponenten `PureComponent`\) und lösen nicht mehr ungewollt ein Rerendering der jeweiligen Kind-Komponenten aus.
+
+Beruht die Funktion auf Werten die sich während der Lebensdauer der Komponente ändern können, können diese wie auch schon beim `useEffect()`-Hook in einem **Dependency Array** als zweiter Parameter von `useCallback()` angegeben werden. React erstellt dann eine neue Funktion mit neuer Referenz, sobald sich eine Dependency ändert.
+
+{% hint style="info" %}
+Wie auch schon beim `useEffect()`-Hook hilft die `exhaustive-deps` Regel des `eslint-plugin-react-hooks` bei der korrekten Erstellung des **Dependency Arrays**.
+{% endhint %}
+
+
 

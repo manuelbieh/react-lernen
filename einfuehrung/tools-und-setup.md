@@ -6,7 +6,7 @@ Um störungsfrei und komfortabel mit React arbeiten zu können sollten einige Be
 
 ### Node.js und npm
 
-Node werden die meisten möglicherweise als „serverseitiges JavaScript“ kennen, das ist allerdings nicht die ganze Wahrheit. In erster Linie ist Node einmal eine JavaScript Laufzeitumgebung, die sich eben hervorragend für Netzwerkanwendungen eignet, also klassische Webserver. Darüber hinaus bringt Node auch ein Tool zur Paketverwaltung mit, nämlich **npm**, mit dem sich spielend einfach neue JavaScript-Libraries auf dem eigenen Rechner installieren lassen. Außerdem lassen sich auch eigene Commandline-Scripts damit schreiben und ausführen, was sich später noch als sehr praktisch erweisen wird.
+Node werden die meisten möglicherweise als „serverseitiges JavaScript“ kennen, das ist allerdings nicht die ganze Wahrheit. In erster Linie ist **Node** einmal eine **JavaScript-Laufzeitumgebung**, die sich eben hervorragend für Netzwerkanwendungen eignet, also klassische Webserver. Darüber hinaus bringt **Node** auch ein Tool zur Paketverwaltung mit, nämlich **npm**, mit dem sich spielend einfach neue JavaScript-Libraries auf dem eigenen Rechner installieren lassen. Außerdem lassen sich auch eigene Kommandozeilen-Scripts damit schreiben und ausführen, was sich später noch als sehr praktisch erweisen wird.
 
 Statt Node direkt zu installieren, empfehle ich [**nvm**](https://github.com/creationix/nvm) \(Node Version Manager\) für Mac und Linux bzw. [**nvm-windows**](https://github.com/coreybutler/nvm-windows) für Windows. Nvm hat den Vorteil, dass es einerseits keine Admin-Rechte benötigt um Packages global zu installieren und man andererseits mit einem simplen Befehl auf der Kommandozeile \(`nvm install [version]`\) die auf dem System installierte Version aktualisieren kann. Für einer Liste aller verfügbaren Version kannst du ganz einfach `nvm ls-remote` \(Mac/Linux\) bzw. `nvm list available` \(Windows\) benutzen. Ich empfehle im weiteren Verlaufe dieses Buch die aktuelle LTS \(Long Term Support\) Version zu benutzen. LTS Versionen sind stabile Versionen die auch längere Zeit Updates erhalten.
 
@@ -56,11 +56,23 @@ Webpack ist ebenfalls eins der zentralen Tools im React-Ecosystem ohne das ein e
 
 Wow. Klingt unfassbar kompliziert, passiert aber nach einigen wenigen Beispielen nahezu intuitiv von ganz allein und hat man sich erst einmal daran gewöhnt, wird man sich fragen wie man jemals ohne Module-Bundler arbeiten konnte.
 
-Neben dem Module-Bundling selbst kann Webpack auch beigebracht werden Dateien mit JSX durch Babel in JavaScript zu transpilieren, Bilder, Stylesheets oder andere Assets in einen build-Ordner zu kopieren der später auf einen Server deployed wird und viele andere Dinge. Wie eine solche Konfiguration aussehen kann beleuchten wir später noch einmal genau, weshalb das Webpack Kommandozeilen-Tool auch an dieser Stelle noch nicht installiert werden muss.
+Neben dem Module-Bundling selbst kann **Webpack** auch beigebracht werden Dateien mit JSX durch Babel in JavaScript zu transpilieren, Bilder, Stylesheets oder andere Assets in einen build-Ordner zu kopieren der später auf einen Server deployed wird und viele andere Dinge. Wie eine solche Konfiguration aussehen kann beleuchten wir später noch einmal genau, weshalb das Webpack Kommandozeilen-Tool auch an dieser Stelle noch nicht installiert werden muss.
+
+### ESLint
+
+ESLint ist ein sehr praktisches Tool zur statischen Code-Analyse. Es soll in erster Linie dazu dienen um Fehler im Programmcode zu erkennen, kann aber auch dazu genutzt werden um bspw. konsistente Regeln beim Codestil durchzusetzen oder dem Entwickler Hinweise für Optimierungsmöglichkeiten während des Entwickelns zu geben. ESLint bezeichnet sich selbst als „pluggable linting utility“, verspricht also besonderen Wert auf Erweiterbarkeit zu legen. Und so gibt es in der Tat allerhand nützliche Plugins für diverse Tools, Laufzeitumgebungen und Frameworks.
+
+Im professionellen Umfeld aber auch in den meisten Open Source Projekten ist eine ESLint-Konfiguration mittlerweile üblich und nicht mehr wegzudenken. In React-Projekten haben sich insbesondere die ESLint-Plugins `eslint-plugin-react`, `eslint-plugin-babel` und `eslint-plugin-react-hooks` als solide Basis erwiesen.
+
+Bei der Einrichtung entsprechender IDE-Plugins erscheinen dann deutlich sichtbare Warnungen an den Stellen, wo mit dem Code augenscheinlich etwas nicht gemäß den definierten Regeln abläuft:
+
+![Eine Warnung &#xFC;ber eine nicht verwendete Variable und ein fehlendes Semikolon in VSCode](../.gitbook/assets/eslint-example.png)
 
 ### IDE-/Editor-Plugins
 
-Alle Bekannten Editoren und IDEs wie bspw. Webstorm, Atom, Visual Studio Code oder Sublime \(aber auch so ziemlich jeder andere moderne Editor oder IDE\) bietet Plugins oder inzwischen sogar bereits native Funktionen für die bessere Unterstützung für React und JSX. Hier rate ich dringend zur Installation dieser Plugins, da diese in der Regel für deutlich besseres Syntax-Highlighting sorgen, teilweise Code-Vervollständigung und andere Nettigkeiten bieten. In Atom ist das [language-babel](https://atom.io/packages/language-babel), in VS Code gibt es hier u.a. [Babel ES6/ES7](https://marketplace.visualstudio.com/items?itemName=dzannotti.vscode-babel-coloring) und in Sublime lohnt sich in Blick auf [babel-sublime](https://github.com/babel/babel-sublime). Nutzt ihr Webstorm, habt ihr seit Version 10 sogar native Unterstützung für React-Syntaxhighlighting.
+Alle bekannten Editoren und IDEs wie bspw. Webstorm, Atom, Visual Studio Code oder Sublime \(aber auch so ziemlich jeder andere moderne Editor oder IDE\) bietet Plugins oder inzwischen sogar bereits nativ integrierte Funktionen für die bessere Unterstützung für **React** und **JSX**. Hier rate ich dringend zur Installation dieser Plugins, da diese in der Regel für deutlich besseres Syntax-Highlighting sorgen, teilweise Code-Vervollständigung und andere Nettigkeiten bieten. 
+
+In Atom ist das etwa [language-babel](https://atom.io/packages/language-babel), in VS Code gibt es hier u.a. [Babel ES6/ES7](https://marketplace.visualstudio.com/items?itemName=dzannotti.vscode-babel-coloring) und in Sublime lohnt sich in Blick auf [babel-sublime](https://github.com/babel/babel-sublime). Nutzt ihr Webstorm, habt ihr seit Version 10 native Unterstützung für React Syntax-Highlighting. Auch Plugins für das eben erwähnte ESLint sind überaus sinnvoll. Dazu am Besten im Plugin-Manager eurer IDE oder eures Editors einfach nach ESLint suchen und das Plugin mit den meisten Installationen auswählen. Dies ist für gewöhnlich jeweils das offizielle ESLint-Plugin.
 
 ### Browser-Plugins
 
