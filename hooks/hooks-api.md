@@ -743,3 +743,26 @@ Während `useEffect()` verzögert **nach** der **Layout-** und **Paint-**Phase d
 
 Dieses Verhalten entspricht dem von `componentDidMount()` und `componentDidUpdate()` in **Klassen-Komponenten**, dennoch wird aus Gründen der Performance empfohlen den `useEffect()`-Hook zu nutzen und nur dann auf `useLayoutEffect()` zurück zu greifen wenn ihr entweder genau wisst was ihr da tut \(und warum!\) oder wenn ihr bei der Migration einer **Klassen-Komponente** in eine **Function Component** Probleme habt, die auf den unterschiedlichen Zeitpunkt der Ausführung der Effekte zurückzuführen sind.
 
+Wird der `useLayoutEffect()`-Hook in Zusammenhang mit **Server Side Rendering** verwendet ist Vorsicht geboten: weder `useEffect()` noch `useLayoutEffect()` wird serverseitig ausgeführt. Während das beim `useEffect()`-Hook durch die verzögerte Ausführung nach den Layout- und Paint-Phasen kein Problem ist, kann es beim `useLayoutEffect()`-Hook jedoch zu einer Abweichung vom serverseitig gerenderten Markup zum initialen clientseitigen Rendering kommen.  React weist dann in einer Konsolen-Warnung darauf hin. In diesem Fall sollte dann der `useEffect()`-Hook verwendet werden oder aber die Komponente mit dem `useLayoutEffect()`-Hook erst nach der ersten Paint-Phase gemounted werden:
+
+```jsx
+import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
+
+const App = () => {
+  const [ mountLayoutComp, setMountLayoutComp ] = useState(false);
+
+  useEffect(() => {
+    setMountLayoutComp(true);
+  }, []);
+
+  return mountLayoutComp 
+    ? <ComponentWithLayoutEffect /> 
+    : null;
+};
+
+ReactDOM.render(<App />, document.getElementById('root'));
+```
+
+In diesem Fall wird die Komponente mit dem `useLayoutEffect()` erst dann registriert wenn die Komponente erstmals gemounted wurde. Dies passiert durch die Abfrage des entsprechenden `mountLayoutComp` States erst nach dem ersten Durchlauf der Paint-Phase.
+

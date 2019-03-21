@@ -192,9 +192,11 @@ Möchte man gewisse HTML-Attribute in JSX setzen, ist dafür also die JavaScript
 
 Dieses Muster zieht sich konsequent durch alle bekannten HTML-Attribute. Möchtest du ein HTML-Attribut in JSX setzen, musst du dafür die Schreibweise der entsprechenden JavaScript DOM Element-Eigenschaft verwenden. So wird aus `tabindex` eben `tabIndex`, `readonly` wird zu `readOnly`, `maxlength` wird zu `maxLength`, usw.
 
-Aber: Keine Angst! Im Development-Modus gibt React eine entsprechende Warnung aus, so dass es dir selten passieren sollte, dass du entsprechenden fehlerhaften Code nicht bemerkst:
+Aber: Keine Angst! Im Development-Modus gibt React eine entsprechende Warnung in der Browser Console aus, so dass es dir selten passieren sollte, dass du entsprechenden fehlerhaften Code nicht bemerkst:
 
-![Warnung in der Browser Console bei der Verwendung illegaler Props](https://lh6.googleusercontent.com/cgdej1K-RlV-97RDzKO2X_yQFhNNknM1rBge0--1I8ID59-IQTHWK9nfGNM0PdN44WTRKe4hPE-r3zZpgnQUstLHR-vCbegZn440oLLGCU7chWa6gkbfcMhQbwBB6swb1lL83jTM)
+{% hint style="danger" %}
+Warning: Invalid DOM property `class`. Did you mean `className`?
+{% endhint %}
 
 Wer es genau wissen will, hier die vollständige Liste unterstützter HTML-Attribute wie sie in der offiziellen React-Doku steht \(festhalten, wird lang\):
 

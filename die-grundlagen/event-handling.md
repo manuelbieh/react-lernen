@@ -67,7 +67,7 @@ Hier definieren wir also einen `onClick`-Event um den Zähler jeweils um `1` zu 
 
 {% hint style="danger" %}
 **TypeError**  
- Cannot read property 'setState' of undefined
+Cannot read property 'setState' of undefined
 {% endhint %}
 
 Und warum? **Scoping!** Da wir uns beim Klick auf den Button im Event-Handler `increase()` außerhalb der Komponenten-Instanz bewegen, können wir eben auch nicht auf `this.setState()` zugreifen. Dies ist kein fehlerhaftes Verhalten von React sondern das Standardverhalten von ES2015-Klassen. Um dieses Problem zu lösen gibt es nun verschiedene Möglichkeiten.
@@ -90,6 +90,9 @@ Eine andere, sauberere Möglichkeit eine Methode an eine Klassen-Instanz zu bind
 class Counter extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      counter: 0,
+    };
     this.increase = this.increase.bind(this);
   }
   // […]
@@ -107,10 +110,15 @@ Das ist dennoch schon mal besser als die erste Methode, auch wenn es mehr Schrei
 Aber wie binden wir jetzt unsere Methode indem wir **Class Properties** nutzen? Streng genommen: indem wir schummeln! Statt eine echte Klassen-Methode zu implementieren wie im Eingangsbeispiel, definieren wir eine **Public Class Property** die als Wert eine per **Arrow Function** an die jeweilige Klasse gebundene Function zugewiesen bekommt. Das sieht dann wie folgt aus:
 
 ```jsx
-increase = () => {
-  this.setState((state) => ({
+class Counter extends React.Component {
+  state = {
+    counter: 0,
+  };
+  increase = () => {
+    this.setState((state) => ({
       counter: state.counter + 1,
-  }));
+    }));
+  }
 }
 ```
 
