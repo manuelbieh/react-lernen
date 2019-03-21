@@ -128,7 +128,7 @@ const Clock = () => {
 ReactDOM.render(<Clock />, document.getElementById("root"));
 ```
 
-Im obigen Beispiel installieren wir einen Intervall beim Mounting der Komponente. Beim Unmounting der Komponente halten wir den Timer an, da wir sonst den State einer Komponente ändern würden, die sich nicht mehr im Seitenbaum befindet. Dies würde uns React mit einer Fehlermeldung quittieren, vor Memory Leaks warnen und uns darauf hinweisen, dass Subscriptions und andere asnychrone Tasks in der Cleanup-Funktion aufgeräut werden müssen:
+Im obigen Beispiel installieren wir einen Intervall beim **Mounting** der Komponente. Beim **Unmounting** der Komponente halten wir den Timer an, da wir sonst den State einer Komponente ändern würden, die sich nicht mehr im Seitenbaum befindet. Dies würde uns React mit einer Fehlermeldung quittieren, vor Memory Leaks warnen und uns darauf hinweisen, dass Subscriptions und andere asnychrone Tasks in der **Cleanup**-Funktion aufgeräut werden müssen:
 
 {% hint style="danger" %}
 Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function.
@@ -703,5 +703,43 @@ Dies bedeutet, dass React die Berechnung des Werts beim **ersten Rendering** aus
 
 **Doch Vorsicht:** all dies passiert auf Basis jeweils **eines** Aufrufs des `useMemo()`-Hooks. Rufe ich die selbe Funktion zweimal in zwei verschiedenen `useMemo()`-Hooks auf wird die Berechnung für jeden der beiden Hooks separat ausgeführt, selbst wenn beide die gleiche Funktion mit den gleichen Parametern nutzen. Der zweite Hook nutzt **nicht** das Ergebnis der ersten Berechnung!
 
+## useRef
 
+```javascript
+const ref = useRef(initialValue);
+```
+
+Der `useRef()`-Hook ist, wie der Name dies erahnen lässt, die Hooks-Variante um **Refs** zu erzeugen:
+
+```jsx
+import React, { useEffect, useRef } from "react";
+import ReactDOM from "react-dom";
+
+function App() {
+  const inputRef = useRef();
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
+
+  return <input ref={inputRef} />;
+}
+
+ReactDOM.render(<App />, document.getElementById("root"));
+```
+
+Doch dies ist nur die halbe Wahrheit, denn in **Function Components** dienen **Refs** noch einem weiteren Zweck: mit ihnen ist es möglich eine **veränderbare Referenz** zu erzeugen, die während der gesamten Lebensdauer einer Komponente \(d.h. bis sie unmounted wird\) Bestand hat. Sie erfüllt sozusagen darüber hinaus auch die Aufgaben von Instanzvariablen bei Klassen-Komponenten.
+
+Von der Funktionsweise her funktioniert `useRef()` so, dass es einen optionalen Initialwert bekommt, und ein Objekt mit einer `current`-Eigenschaft zurück gibt, auf die dann innerhalb der **Function Component** zugegriffen werden kann. Und mit Zugriff ist hier sowohl lesend als auch schreibend gemeint. Möchten wir bspw. Daten vorhalten deren Änderung kein Rerendering auslöst, deren Referenz aber dennoch erhalten bleiben zwischen zwei Renderings der Komponente, nutzen wir dafür den `useRef()`-Hook.
+
+## useLayoutEffect
+
+```javascript
+useLayoutEffect(effectFunction, dependenciesArray);
+```
+
+Den `useLayoutEffect()`-Hook hatte ich bei der Erklärung des `useEffect()`-Hooks schon einmal kurz angeteasert, er funktioniert grundsätzlich genau wie der `useEffect()`-Hook, unterscheidet sich jedoch durch den Zeitpunkt seiner Ausführung und seiner synchronen Natur vom `useEffect()`-Hook.
+
+Während `useEffect()` verzögert **nach** der **Layout-** und **Paint-**Phase des Browsers ausgeführt wird, werden Layout Effekte synchron **nach** der **Layout**- und **vor** der **Paint**-Phase ausgeführt. Das wiederum bedeutet, dass sie die Chance haben das aktuelle Layout aus dem DOM auszulesen und zu verändern **bevor** der Browser die Änderungen darstellt. 
+
+Dieses Verhalten entspricht dem von `componentDidMount()` und `componentDidUpdate()` in **Klassen-Komponenten**, dennoch wird aus Gründen der Performance empfohlen den `useEffect()`-Hook zu nutzen und nur dann auf `useLayoutEffect()` zurück zu greifen wenn ihr entweder genau wisst was ihr da tut \(und warum!\) oder wenn ihr bei der Migration einer **Klassen-Komponente** in eine **Function Component** Probleme habt, die auf den unterschiedlichen Zeitpunkt der Ausführung der Effekte zurückzuführen sind.
 
