@@ -613,5 +613,95 @@ Beruht die Funktion auf Werten die sich während der Lebensdauer der Komponente 
 Wie auch schon beim `useEffect()`-Hook hilft die `exhaustive-deps` Regel des `eslint-plugin-react-hooks` bei der korrekten Erstellung des **Dependency Arrays**.
 {% endhint %}
 
+## useMemo
+
+```javascript
+const memoizedValue = useMemo(valueGetterFunction, dependencyArray);
+```
+
+Der `useMemo()`-Hook ist der zweite **Hook** zur hardcore **Performance-Optimierung**, neben `useCallback()`. Dabei funktioniert `useMemo()` auch recht ähnlich. Allerdings mit dem entscheidenden Unterschied, dass hier nicht die hinein gegebene Funktion mit einer eindeutigen Identität versehen wird, sondern der Rückgabewert der aus der Funktion, die in den `useMemo()`-Hook hereingegeben wird.
+
+Zusammengefasst bedeutet das:
+
+```javascript
+useCallback(fn, deps);
+```
+
+entspricht:
+
+```javascript
+useMemo(() => fn, deps);
+```
+
+Während uns `useCallback()` also die **hereingegebene Funktion** in einer _memoized_ Version zurückgibt, gibt uns `useMemo()` den **Rückgabewert** der hereingegebenen Funktion als _memoized_ Version zurück. Benutzt werden kann `useMemo()` für Funktionen die sehr rechenintensive Aufgaben erfüllen und nicht bei jedem Rerendering erneut ausgeführt werden sollen. 
+
+Werfen wir einmal einen Blick auf eine nicht optimierte Komponente:
+
+```jsx
+import React, { useState, useMemo } from "react";
+import ReactDOM from "react-dom";
+
+const fibonacci = (num) =>
+  num <= 1 ? 1 : fibonacci(num - 1) + fibonacci(num - 2);
+
+const FibonacciNumber = ({ value }) => {
+  const result = fibonacci(value);
+  return (
+    <p>{value}: {result}</p>
+  );
+};
+
+const App = () => {
+  const [values, setValues] = useState([]);
+
+  const handleKeyUp = (e) => {
+    const { key, target } = e;
+    const { value } = target;
+    if (key === "Enter") {
+      if (value > 40 || value < 1) {
+        alert('Invalid value');
+        return;
+      }
+      setValues((values) => values.concat(target.value));
+    }
+  };
+
+  return (
+    <>
+      <input type="number" min={1} max={40} onKeyUp={handleKeyUp} />
+      {values.map((value, i) => (
+        <FibonacciNumber value={value} key={`${i}:${value}`} />
+      ))}
+    </>
+  );
+};
+
+ReactDOM.render(<App />, document.getElementById("root"));
+```
+
+Unsere kleine App besteht zunächst aus einem Eingabefeld für Nummern. Wird eine Nummer eingegeben und die **Enter**-Taste betätigt, wird diese Nummer in den `values`-State geschrieben. Dieser ist in diesem Fall ein Array, das all unsere eingegebenen Nummern vorhält. Die Komponente iteriert dann durch alle eingegebenen Nummern und rendert eine `FibonacciNumber`-Komponente, die den Wert \(also die jeweilige Nummer\) übergeben bekommt.
+
+Die `FibonacciNumber`-Komponente berechnet die entsprechende Fibonacci-Zahl zu dieser Nummer und stellt diese dar. Je nach Nummer und Rechenkraft kann das Berechnen der übergebenen Nummer schon mal eine gewisse Zeit in Anspruch nehmen. \(Auf meinem Rechner sind das bei der 40. Fibonacci-Zahl bspw. 2-3 Sekunden\).
+
+Diese Berechnung wird nun bei **jeder** Eingabe einer Nummer für **jede** bereits vorhandene Fibonacci-Nummer erneut ausgeführt. Gebe ich also 40 ein, warte die ca. 3 Sekunden bis mein Computer fertig gerechnet hat und gebe erneut 40 ein, warte ich nun schon zweimal 3 Sekunden, da der Wert in beiden Komponenten erneut berechnet wird.
+
+Nun kommt `useMemo()` ins Spiel. Durch eine vermeintlich simple Änderung der Zeile
+
+```javascript
+const result = fibonacci(value);
+```
+
+in diese:
+
+```javascript
+const result = useMemo(() => fibonacci(value), [value]);
+```
+
+… erzeugen wir einen _memoisierten_ Wert. 
+
+Dies bedeutet, dass React die Berechnung des Werts beim **ersten Rendering** ausführt, sich den Wert **merkt** und erst dann wieder neu berechnet, wenn sich der Wert der `value` Prop für genau diese Komponente geändert hat. Ändert sich der Wert bzw. genauer die **Dependencies** zwischen zwei Renderings nicht, nutzt React den Wert der letzten Berechnung, ohne jedoch die Berechnung erneut auszuführen.
+
+**Doch Vorsicht:** all dies passiert auf Basis jeweils **eines** Aufrufs des `useMemo()`-Hooks. Rufe ich die selbe Funktion zweimal in zwei verschiedenen `useMemo()`-Hooks auf wird die Berechnung für jeden der beiden Hooks separat ausgeführt, selbst wenn beide die gleiche Funktion mit den gleichen Parametern nutzen. Der zweite Hook nutzt **nicht** das Ergebnis der ersten Berechnung!
+
 
 
