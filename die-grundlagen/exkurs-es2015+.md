@@ -821,7 +821,7 @@ const UserPersona = (props) => {
     <div>
       <img src={props.image} alt="User Image" />
       {props.firstName} {props.lastName}<br />
-      <strong>{props.job}
+      <strong>{props.job}</strong>
     </div>
   );
 };
@@ -836,7 +836,7 @@ const UserPersona = (props) => {
     <div>
       <img src={image} alt="User Image" />
       {firstName} {lastName}<br />
-      <strong>{job}
+      <strong>{job}</strong>
     </div>
   );
 };
@@ -849,7 +849,7 @@ const UserPersona = ({ firstName, lastName, image, job }) => (
   <div>
     <img src={image} alt="User Image" />
     {firstName} {lastName}<br />
-    <strong>{job}
+    <strong>{job}</strong>
   </div>
 );
 ```
