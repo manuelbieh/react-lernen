@@ -766,3 +766,67 @@ ReactDOM.render(<App />, document.getElementById('root'));
 
 In diesem Fall wird die Komponente mit dem `useLayoutEffect()` erst dann registriert wenn die Komponente erstmals gemounted wurde. Dies passiert durch die Abfrage des entsprechenden `mountLayoutComp` States erst nach dem ersten Durchlauf der Paint-Phase.
 
+## useDebugValue
+
+```javascript
+useDebugValue(value);
+```
+
+Der `useDebugValue()`-Hook dient allein zur Verbesserung der Debugging-Erfahrung für Entwickler und hat keinen direkten Nutzen für den **Benutzer** einer Anwendung. Mit ihm ist es in **eigenen Hooks** möglich einen Wert innerhalb des **Hooks** mit einem Label zu versehen wenn dieser mit den **React-Devtools** inspiziert wird:
+
+```jsx
+import React, { useDebugValue, useEffect } from "react";
+
+const usePageTitle = (title) => {
+  useDebugValue(title);
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
+};
+
+export default usePageTitle;
+```
+
+Hier implementieren wir einen eigenen kleinen **Hook** um den Seitentitel im Browser zu ändern. In den **Devtools** erscheint dieser Wert nun wie folgt:
+
+![Unser DebugValue erscheint neben dem Namen des entsprechenden Hooks](../.gitbook/assets/usedebugvalue.png)
+
+### Verzögerte Formatierung des Debug Values
+
+Eben erwähnte ich, dass der `useDebugValue()`-Hook keinen direkten **Nutzen** für den Benutzer hat. Dies bedeutet allerdings nicht, dass er auch keinen direkten **Einfluss** auf die User Experience haben. Denn eine langsame Berechnung bei der Anzeige des Debug Values hat durchaus Einfluss auf die Rendering-Performance einer Anwendung.
+
+Aus disem Grund ist es möglich dem Hook als zweiten Parameter eine Formatierungsfunktion zu übergeben. Die Formatierung des Werts wird in diesem Fall dann erst ausgeführt wenn ein Wert auch tatsächlich in den Devtools inspiziert wird. Diese hat folgende Form:
+
+```javascript
+useDebugValue(value, (value) => formattedValue);
+```
+
+Der Hook bekommt also wie bisher als erstes Argument den **Debug Wert** übergeben. Als zweites Argument bekommt er eine Funktion, die anschließend die Formatierung ausführt. Diese wiederum bekommt vom **Hook** den **Wert** übergeben und es wird von ihr erwartet, dass sie den formatierten Wert zurückgibt. 
+
+Wer das einmal an einem zugegebenermaßen sehr abwegigen aber eindeutigen Beispiel selbst erleben möchte wie sich der Unterschied bemerkbar macht, der nimmt einmal die Fibonacci-Funktion aus dem `useMemo()`-Beispiel, lässt sich diese einmal mit und einmal ohne Formatierungsfunktion als Debug Wert anzeigen und beobachtet wie sich die Zeit bis die App angezeigt wird verändert:
+
+```jsx
+import React, { useDebugValue, useEffect } from "react";
+import ReactDOM from "react-dom";
+
+const fibonacci = (num) =>
+  num <= 1 ? 1 : fibonacci(num - 1) + fibonacci(num - 2);
+
+const useNumber = (number) => {
+  useDebugValue(number, (number) => fibonacci(number));
+  // ohne Formatierungsfunktion:
+  // useDebugValue(fibonacci(number));
+  useEffect(() => {});
+  return number;
+};
+
+function App() {
+  useNumber(41);
+  return <p>Debug Value Formatter Beispiel</p>;
+}
+
+ReactDOM.render(<App />, document.getElementById("root"));
+```
+
+Hier erhöht sich die initiale Ladezeit der App deutlich, was sich natürlich auch auf den Benutzer und die User Experience auswirkt.
+
