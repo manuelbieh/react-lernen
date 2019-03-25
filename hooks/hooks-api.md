@@ -830,3 +830,75 @@ ReactDOM.render(<App />, document.getElementById("root"));
 
 Hier erhöht sich die initiale Ladezeit der App deutlich, was sich natürlich auch auf den Benutzer und die User Experience auswirkt.
 
+## useImperativeHandle
+
+```javascript
+useImperativeHandle(ref, createHandle, [deps])
+```
+
+Um es Vorweg zu nehmen: dieser Hook hat mir einige graue Haare bereitet, denn es fiel mir wirklich schwer einen Anwendungsfall zu konstruieren, bei dem der Einsatz von `useImperativeHandle()` die Lösung darstellt. Als ich meinem Frust auf Twitter etwas Luft machen wollte, meldete sich dann auch noch Dan Abramov, Core-Entwickler im React-Team bei Facebook und bekräftigte mich darin, dass es ein Zeichen ist dass ich alles richtig machen würde, da der Hook bestenfalls gar nicht verwendet werden sollte und daher auch absichtlich einen langen Namen hat. Allerdings möchte ich in diesem Buch den Anspruch verfolgen, React eben auch zu verstehen und nicht nur zu wissen, dass es einen solchen Hook möglicherweise gibt.
+
+![Dan Abramov weist mich auf Twitter freundlich darauf hin, alles richtig zu machen](../.gitbook/assets/useimperativehandle.png)
+
+Nun habe ich mich tatsächlich lange mit diesem Hook beschäftigt und muss sagen: ja, wer den `useImperativeHandle()`-Hook nutzt, der sollte schauen ob das wirklich alles so sinnvoll ist und ob es nicht einen anderen Weg gibt, der die Verwendung genau dieses Hook nicht beinhaltet. Auch die offizielle Doku spricht an dieser Stelle davon den Hook zu verwenden, da er, wie der Name bereits erahnen lässt, für imperativen Code ausgelegt ist und damit dem in React vorherrschenden deklarativen Stil entgegensteht. Manchmal ist dies aber eben notwendig, insbesondere wenn mit Klassen und Objekten gearbeitet wird, was häufig auch bei externen Libraries der Fall ist.
+
+Hier daher ein mit Vorsicht zu genießendes Beispiel, die die Verwendung des **Hooks** illustriert. Im Beispiel erstellen wir eine eigene `FancyForm` Formular-Komponente. Diese gibt ihre **Kind-Elemente** aus und stellt einige Methoden bereit, die in der konsumierenden Eltern-Komponente aufgerufen werden können. So implementieren wir hier beispielhaft eine Methode `focusFirstInput` um das erste Eingabefeld innerhalb unseres `FancyForm`-Formulars fokussieren zu können. Außerdem erweitern wir das Formular um eine eigene Methode `getFormValues`, mit der wir die aktuell eingegebenen Daten als JSON zurückgegeben bekommen. Weiterhin ermöglichen wir das Formular programmatisch abzusenden und zurückzusetzen, indem wir der weitergeleiteten **ForwardRef** die Methoden `reset()` und `submit()` vom HTML `<form>`-Element als imperative Methode zuweisen:
+
+```jsx
+import React, { useImperativeHandle, useEffect, useRef } from "react";
+import ReactDOM from "react-dom";
+
+const FancyForm = React.forwardRef((props, forwardedRef) => {
+  const formRef = useRef();
+
+  useImperativeHandle(forwardedRef, () => ({
+    focusFirstInput: () => {
+      (formRef.current.querySelector("input") || {}).focus();
+    },
+    getFormValues: () => {
+      return Array.from(new FormData(formRef.current)).reduce(
+        (acc, [value, name]) => {
+          acc[name] = value;
+          return acc;
+        },
+        {}
+      );
+    },
+    reset: () => formRef.current.reset(),
+    submit: () => formRef.current.submit(),
+  }), []);
+
+  return <form ref={formRef}>{props.children}</form>;
+});
+
+const App = () => {
+  const formRef = useRef();
+
+  useEffect(() => {
+    formRef.current.focusFirstInput();
+  }, []);
+
+  const submit = (e) => {
+    e.preventDefault();
+    console.log(formRef.current.getFormValues());
+  };
+
+  return (
+    <FancyForm ref={formRef}>
+      <p>
+        <input type="text" name="name" placeholder="name" />
+      </p>
+      <p>
+        <input type="email" name="email" placeholder="email" />
+      </p>
+      <input type="submit" onClick={submit} />
+    </FancyForm>
+  );
+};
+
+ReactDOM.render(<App />, document.getElementById("root"));
+
+```
+
+
+
