@@ -32,5 +32,9 @@
   * [Grundsätze und Regeln von Hooks](hooks/grundsaetze-und-regeln-von-hooks.md)
   * [Eigene Hooks implementieren](hooks/eigene-hooks-implementieren.md)
   * [Hooks API](hooks/hooks-api.md)
-* [Ecosystem](ecosystem.md)
+* [Das Ecosystem](ecosystem/README.md)
+  * [Routing](ecosystem/routing.md)
+  * [State Management](ecosystem/state-management.md)
+  * [Mehrsprachigkeit](ecosystem/mehrsprachigkeit.md)
+  * [Informationsquellen](ecosystem/informationsquellen.md)
 

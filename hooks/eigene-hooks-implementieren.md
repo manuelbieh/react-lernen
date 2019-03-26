@@ -172,5 +172,3 @@ ReactDOM.render(<RepoLookup />, document.getElementById("root"));
 
 Kurze Info am Rande: die Public API von GitHub erlaubt nur max. 60 API Requests pro Stunde. Wer hier also ernsthaft rumprobieren will kann sich einen API Token erstellen und diesen per `access_token=xyz` an die URL dranhängen. Der Token kann hier erstellt werden: [https://github.com/settings/tokens](https://github.com/settings/tokens).
 
-
-
