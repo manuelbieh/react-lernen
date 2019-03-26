@@ -1,4 +1,4 @@
 # Mehrsprachigkeit
 
-react-i18next, react-intl
+react-i18next \(~4k ⭐ auf Github\). react-intl \(~10k ⭐ auf Github\)
 
