@@ -46,7 +46,7 @@ ReactDOM.render(
 
 Und damit haben wir bereits die erste einfache React-Komponente implementiert! Setzen wir diesen Code nun an die Stelle unseres Platzhalters aus dem vorangegangenen Code-Snippet. Sehen wir im Browser die folgende Ausgabe:
 
-![Unsere erste React-Komponente im Browser.](https://lh5.googleusercontent.com/ELTAFiAHh3_lN8ETxYyNxvdSHs9-ZRzdmEZG_43ecDI3tkbJWtqLoaELcyMkKIKQcxyVs0kiaw9WYG_Ms5y8iUUId2mIh5-PiAunsc7XwlQ5BVS51YHi4S3LUcY-Vocb7VbCFqJJ)
+![Unsere erste React-Komponente im Browser.](../.gitbook/assets/first-component.png)
 
 Sieht für’s Erste einmal gar nicht so kompliziert aus, oder? Gehen wir den Code einmal Schritt für Schritt durch. Die relevanten Stellen im Code habe ich fett hervorgehoben.
 

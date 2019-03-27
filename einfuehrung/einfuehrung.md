@@ -44,7 +44,7 @@ Dies bedeutet das nur neue Major-Releases \(`16.x.x` auf `17.x.x`\) Breaking Cha
 
 Vor dem Release von Major oder Minor Releases gibt es regelmäßig auch alpha, beta und rc \(Release Candidate\) Versionen, mit denen man vorab schon einen Blick auf kommende Features werfen kann. Diese sind aber jeweils mit Vorsicht zu genießen, da sich die Funktionsweise neuer Features bis zum endgültigen Release noch ändern könnten.
 
-![Beispiel f&#xFC;r eine Deprecation Warning](https://lh4.googleusercontent.com/Hr0ay3GzvzT9N28o2JJldO6pwPaj9hj2xyQh0F3L11-2HDuS3ftjaUOJ0xRpv7oYNobcPdrMBAGcXKUOBUBq_cLK1i__A0nFhzGB7sT0blghpGFQshzqJrQPaOg0hAyV7UgD8tu0)
+![Beispiel f&#xFC;r eine Deprecation Warning](../.gitbook/assets/deprecation-warning.png)
 
 Dies ist sicher dem Umstand geschuldet, dass eben auch bei Facebook sehr viele React-Komponenten im Einsatz sind und man dort nicht einfach mal eben tiefgreifende Änderungen vornehmen kann ohne Probleme zu verursachen. Die Gedanken und Begründungen der Entwickler lassen sich dabei jederzeit ausführlich im Github Issue-Tracker verfolgen, alle wichtigen Änderungen werden dabei in sog.[ Umbrella-Tickets](https://github.com/facebook/react/issues?utf8=%E2%9C%93&q=is%3Aissue%20is%3Aopen%20umbrella) zusammengefasst.  
 
