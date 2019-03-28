@@ -20,7 +20,3 @@ Erst einmal haben wir mit **Redux** ein Tool, das in Teilen angelehnt ist an die
 
 Nach diesem Prinzip funktioniert auch **Redux**, mit dem großen Unterschied jedoch, dass der State eben **global** verwaltet wird und alle Komponenten, egal wo im Seitenbaum sich diese befinden, auf **sämtliche Daten** zugreifen können.
 
-
-
-redux, immer, mobx, useReducer/useContext, graphql
-
