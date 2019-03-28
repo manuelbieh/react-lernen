@@ -36,7 +36,9 @@ const App = () => {
 ReactDOM.render(<App />, document.getElementById("root"));
 ```
 
-Jede Komponente innerhalb des `<Router></Router>`-Elements kann nun auf den Router Context zugreifen, darauf reagieren und ihn steuern. Verschiedene Routen legen wir durch die Verwendung der Route-Komponente an, die eine `path`-Prop enthalten sollte \(Ausnahme: 404 Fehler-Routen\) und wahlweise eine `render`-Prop oder eine `component`-Prop enthält. Der Unterschied liegt hier darin, dass der Wert der `render`-Prop eine **Funktion** sein muss die ein valides **React-Element** zurückgibt \(hier sei auch nochmal an das entsprechende Kapitel zu **Render-Props** erinnert\), während die `component`-Prop eine **Komponente** \(kein _Element!_\) erwartet. 
+### Routen definieren
+
+Jede Komponente innerhalb des `<Router></Router>`-Elements kann nun auf den **Router Context** zugreifen, darauf reagieren und ihn steuern. Verschiedene Routen legen wir durch die Verwendung der Route-Komponente an, die eine `path`-Prop enthalten sollte \(Ausnahme: 404 Fehler-Routen\) und wahlweise eine `render`-Prop oder eine `component`-Prop enthält. Der Unterschied liegt hier darin, dass der Wert der `render`-Prop eine **Funktion** sein muss die ein valides **React-Element** zurückgibt \(hier sei auch nochmal an das entsprechende Kapitel zu **Render-Props** erinnert\), während die `component`-Prop eine **Komponente** \(kein _Element!_\) erwartet. 
 
 Also sieht eine korrekte Verwendung beider Props z.B. so aus:
 
@@ -163,6 +165,10 @@ Denken wir an einen Benutzer-Account und stellen uns eine Sidebar vor. Vielleich
 
 Die `AccountSidebar`-Komponente würde nun auf jeder Unterseite innerhalb des Account-Bereichs angezeigt, solange eben die URL mit `/account` beginnt.
 
+### Weiterleitung bestimmer Routen steuern
+
+
+
 ### Matching einschränken via Prop
 
 Um das Matching zwischen dem `path` und der URL bewusst einzuschränken bietet uns React Router die `exact` Prop auf der `Route`-Komponente. Wird diese Boolean-Prop angegeben, wird eine Route nur noch dann gerendert wenn ihre `path`-Prop auch exakt mit der aktuellen URL übereinstimmt:
@@ -282,6 +288,14 @@ In einer Benutzerprofil-Komponente könnten wir nun etwa hergehen und einen API-
 
 **React Router** stellt dabei sicher dass in jeder mit dem Router verbundenen Komponente die `match` Eigenschaft immer existiert und diese auch immer eine `params`-Eigenschaft hat, die entweder die Parameter enthält \(falls vorhanden\) oder aber ein leeres Objekt ist. Es ist daher **sicher** auf `props.match.params` zuzugreifen, ohne befürchten zu müssen, dass eine dieser Eigenschaften `undefined` ist und somit einen Fehler wirft.
 
+Auch die `render`-Prop auf der `Route`-Komponente erhält alle Props des Routers übergeben:
+
+```jsx
+<Route path="/users/:userid" render={(props) => {
+  return <p>Benutzerprofil für die ID {props.match.params.userid}</p>;
+}} />
+```
+
 ### Navigation zwischen einzelnen Routen
 
 Haben wir erst einmal eine Anwendung in mehrere Routen unterteilt, wollen wir natürlich auch zwischen diesen URLs verlinken. Dies ginge natürlich mit dem HTML `<a href="...">...</a>` Element. Keine Frage. Allerdings lösen wir damit einen komplett neuen „harten“ Seitenaufruf im Browser aus, verlassen die aktuelle Seite **komplett** und rufen die neue Seite komplett neu auf. 
@@ -355,5 +369,25 @@ Die `action` Eigenschaft verrät uns durch welche Aktion ein Benutzer auf der ak
 
 ### Komponenten mit dem Router über die HOC verbinden
 
+Jede Komponente die als `component`-Prop innerhalb eines `<Router />`-Elements verwendet wird, bekommt die Router Props \(`history`, `location`, `match`\) automatisch vom übergeben. Doch manchmal möchten wir auch in Komponenten die nicht als direkte Route verwendet werden auf Router-Funktionalität zugreifen. Etwa, weil wir auf eine andere Seite weiterleiten möchten und dafür `history.push()` verwenden möchten.
 
+Zu diesem Zweck stellt **React Router** die `withRouter` Higher Order Component bereit. Komponenten die nicht direkt als Router-Komponente eingesetzt werden bekommen dann ebenfalls die drei Props des Routers übergeben:
+
+```jsx
+withRouter(MyComponent);
+```
+
+Doch die Komponente erfüllt noch einen anderen Zweck, der allerdings eher Workaround-Charakter hat und ab **React Router 5.0.0** behoben ist: sie hebt das sogenannte **„Update-Blocking“** auf.
+
+In einigen Fällen kann es vorkommen, dass Komponenten zur Optimierung der Performance als `PureComponent` implementiert oder von einem `React.memo()` optimiert werden und dementsprechend ein Rerendering unterbinden wenn sich weder die eigenen **Props** noch der **State** der jeweiligen Komponente ändern. Da die meisten Router-Komponenten wie bspw. `NavLink` auf die Daten des Routers durch den **React Context** zugreifen würde eine solche Komponente dann unter Umständen keine Kenntnis darüber erlangen, dass ein Kind-Element neu gerendert werden muss.
+
+Die Lösung für dieses Problem ist dann, die entsprechende Komponente in eine `withRouter()` HOC zu verpacken, die dann bei jeder Änderung im Routing die neuen Props mit der neuen Location an die jeweilige Komponente übergibt und in dieser somit ein Rerendering verursacht. Dies ist bspw. der Fall bei der Verwendung mit der State Management Library **Redux**. Wird eine Komponente über die `connect()` Funktion in Redux mit dem Redux-Store verbunden, unterbindet diese Komponente das Rerendering von Router spezifischen Teilen, außer es ändert sich gleichzeitig etwas im Store.
+
+In diesem Fall hilft es dann entsprechend die Komponente mit einem `withRouter()` Aufruf zu wrappen:
+
+```javascript
+withRouter(connect()(MyComponent));
+```
+
+Dies wurde mit der Verwendung der neuen **Context API** aus **React 16.3.0** im **React Router** ab Version **5.0.0** behoben und ist daher in erster Linie für Projekte relevant, in denen noch ältere Versionen zum Einsatz kommen.
 
