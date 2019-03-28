@@ -165,10 +165,6 @@ Denken wir an einen Benutzer-Account und stellen uns eine Sidebar vor. Vielleich
 
 Die `AccountSidebar`-Komponente würde nun auf jeder Unterseite innerhalb des Account-Bereichs angezeigt, solange eben die URL mit `/account` beginnt.
 
-### Weiterleitung bestimmer Routen steuern
-
-
-
 ### Matching einschränken via Prop
 
 Um das Matching zwischen dem `path` und der URL bewusst einzuschränken bietet uns React Router die `exact` Prop auf der `Route`-Komponente. Wird diese Boolean-Prop angegeben, wird eine Route nur noch dann gerendert wenn ihre `path`-Prop auch exakt mit der aktuellen URL übereinstimmt:
@@ -235,6 +231,46 @@ Die obige Route würde dann nur zutreffen wenn die URL `/products/asc` oder `/pr
 Möchte ich im ersten Beispiel, dass nur numerische Werte als `:userid` erlaubt sind, so kann ich dafür die Route definieren: `/users/:userid(\d*)` oder `/users/:userid([0-9]*)` und somit würde die URL `/users/123` die `UserProfile`-Komponente rendern, `/users/abc` hingegen nicht.
 
 Findet der **React Router** eine solche URL mit einem Parameter, extrahiert er dessen Wert und übergibt ihn in einer `match`-Prop an die gerenderte Komponente.
+
+### Weiterleitung bestimmter Routen steuern
+
+Neben der `Route`-Komponente, um auf bestimmte Routen zu reagieren, bietet React Router auch noch eine `Redirect`-Komponente. Diese enthält eine `to`-Prop mit der ein Ziel angegeben werden kann und sie ist dazu gedacht um deklarativ \(d.h. im **JSX**\) entscheiden zu können, wohin ein Benutzer in bestimmten Situationen umgeleitet wird. Wann immer eine `Redirect`-Komponente mit lediglich einer `to`-Prop gerendert wird, wird eine entsprechende Weiterleitung auf die in der `to`-Prop angegebene URL ausgeführt.
+
+Ein gängiger Anwendungsfall für eine `Redirect`-Komponente ist bspw. die Umleitung auf einen Login-Seite für eingeloggte Benutzer, wenn dieser noch nicht eingeloggt ist:
+
+```jsx
+<Route
+  exact
+  path="/"
+  render={() => {
+    return isLoggedIn ? <Dashboard /> : <Redirect to="/login" />;
+  }}
+/>
+```
+
+Hier nutzen wir die `render`-Prop der `Route`-Komponente, um in einer Funktion abzufragen ob ein Benutzer eingeloggt ist \(mittels `isLoggedIn`\) und zeigen auf der `/` URL entweder eine Dashboard-Komponente oder rendern eben einen Redirect zu `/login`, der den Benutzer dann eben auf eine Login-Seite weiterleiten würde.
+
+Eine zweite Variante Weiterleitungen zu definieren bietet sich uns durch die Verwendung der `Redirect`-Komponente innerhalb eines `<Switch/>`-Elements. Hier verhält sie sich so wie die `Route`-Komponente und greift nur dann wenn nicht bereits eine andere Route oder ein anderer Redirect mit der aktuellen URL übereingestimmt hat. 
+
+Wird die `Redirect`-Komponente in einem `<Switch/>`-Element benutzt \(und nur dann!\) kann sie auch eine `from`-Prop bekommen. Diese entspricht der `path`-Prop bei der `Route`-Komponente, sorgt also dafür, dass der Redirect nur durchgeführt wird wenn die aktuelle URL dem Wert der `from`-Prop entspricht:
+
+```jsx
+<Switch>
+  <Redirect from="/old" to="/new" />
+  <Route path="/new" component={NewComponent} />
+</Switch>
+```
+
+Die `Redirect`-Komponente verhält sich dabei was das Matching der URLs angeht genau wie die `Route`-Komponente. Sie unterstützt ebenfalls die `exact` Prop um ein exaktes Matching zu erzwingen und sie unterstützt auch die Umleitung an andere Routen mit Parameter:
+
+```jsx
+<Switch>
+  <Redirect from="/users/:userid" to="/users/profile/:userid" />
+  <Route path="/users/profile/:userid" component={UserProfile} />
+</Switch>
+```
+
+Beim Aufruf der URL `/old` \(erstes Beispiel\) bzw. `/users/123` \(zweites Beispiel\) wird der Benutzer dann auf die als `to`-Prop angegebene URL umgeleitet.
 
 ### Verwendung der Router Props
 
