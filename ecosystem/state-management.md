@@ -197,9 +197,88 @@ Dies geht bei entsprechender Benamung der **Action Creator** Funktionen deutlich
 
 ### Komplexe Reducer
 
-Die bisherigen Beispiele dienten darum mit dem Konzept von **Actions** und **Reducern** vertraut zu werden und um zu verstehen, wie **Actions** verwendet werden, um über den **Reducer** den **Store** zu mutieren. Typischerweise besteht der **State** in einer React-Anwendung aber aus deutlich komplexeren Daten und Objekten. Werfen wir also einen Blick auf einen Store, wie er realistisch in einer kleinen Anwendung aussehen könnte.
+Die bisherigen Beispiele dienten dazu mit dem Konzept von **Actions** und **Reducern** vertraut zu werden und um zu verstehen, wie **Actions** verwendet werden, um mit dem **Reducer** den **Store** zu mutieren. Typischerweise besteht der **State** in einer React-Anwendung aber aus deutlich komplexeren Daten und Objekten. Werfen wir also einen Blick auf einen Store, wie er realistisch in einer kleinen Anwendung aussehen könnte.
 
+Als Beispiel soll uns eine kleine Todo-App dienen, die sowohl eine Liste mit Todos verwaltet, als auch einen eingeloggten Benutzer beinhaltet. Unser State halt also die beiden Toplevel-Eigenschaften `todos` \(vom Typ Array\) und `user` \(vom Typ Objekt\). Dies bilden wir in unserem initialen State auch so ab:
 
+```javascript
+const initialState = Object.freeze({
+  user: {},
+  todos: [],
+});
+```
+
+Zusätzlich, da wir sicherstellen wollen, dass bei jedem Aufruf ein neues State-Objekt erzeugt wird und nicht das alte mutiert wird, umschließen wir unseren initialen State mit einem `Object.freeze()`. Dies sorgt dafür, dass wir einen `TypeError` bekommen, sollte das **State-Objekt** direkt mutiert werden.
+
+Schauen wir uns an wie eine **Reducer**-Funktion aussieht könnte, mit der wir den eingeloggten Benutzer setzen, neue Todos hinzufügen und entfernen sowie ihren Status ändern können:
+
+```javascript
+const rootReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case "SET_USER": {
+      return {
+        user: {
+          name: action.payload.name,
+          accessToken: action.payload.accessToken,
+        },
+        todos: state.todos,
+      };
+    }
+    
+    case "ADD_TODO": {
+      return {
+        user: state.user,
+        todos: state.todos.slice().concat(action.payload),
+      };
+    }
+    
+    case "REMOVE_TODO": {
+      return {
+        user: state.user,
+        todos: state.todos
+          .slice()
+          .filter(todo => todo.id !== action.payload.id),
+      };
+    }
+    
+    case "CHANGE_TODO_STATUS": {
+      const oldTodoItemIndex = state.todos.findIndex(
+        todo => todo.id === action.payload.id
+      );
+      if (oldTodoItemIndex === -1) {
+        return state;
+      }
+
+      const updatedTodo = {
+        ...state.todos[oldTodoItemIndex],
+        status: action.payload.status,
+      };
+
+      const newTodos = state.todos.slice();
+      newTodos.splice(oldTodoItemIndex, 1, updatedTodo);
+
+      return {
+        user: state.user,
+        todos: newTodos,
+      };
+    }
+    
+    default: {
+      return state;
+    }
+  }
+};
+
+const store = createStore(rootReducer);
+```
+
+Ich möchte hier gar nicht auf alles was hier passiert zu tief ins Detail eingehen, da es hier darum gehen soll wie ein großer Reducer aufgeteilt werden kann. Doch einige Stellen sind für das generelle Verständnis nicht unwichtig. Gehen wir also der Reihe nach den `switch`-Block durch, bei dem uns jeder `case`-Block ein neues State-Objekt zurück gibt.
+
+Angefangen bei `SET_USER`: das hier erzeugte State-Objekt ändert das `user`-Objekt und setzt dessen `name`-Eigenschaft auf `action.payload.name`, sowie die `accessToken`-Eigenschaft auf `action.payload.accessToken`. Wer mag, der kann hier stattdessen auch `user` auf `action.payload` setzen, dann würden alle in der entsprechenden Payload der Action übergebenen Eigenschaften im `user`-Objekt landen. In unserem Beispiel ignorieren wir aber alle anderen Eigenschaften indem wir explizit nur `name` und `accessToken` aus der Payload holen. 
+
+Neben dem modifizierten `user` geben wir auch eine `todos`-Eigenschaft zurück, die wir auf `state.todos` setzen, also beim bisherigen Wert belassen. **Dies ist wichtig**, da in unserem State-Objekt die `todos` ansonsten komplett aus dem State entfernt werden würden und wir nun zwar den Benutzer gesetzt, unsere Todos jedoch aus dem State verloren hätten!
+
+Weiter geht es mit `ADD_TODO`:
 
 ### Asynchrone Actions
 
