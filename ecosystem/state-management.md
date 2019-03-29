@@ -228,38 +228,29 @@ const rootReducer = (state = initialState, action) => {
     case "ADD_TODO": {
       return {
         user: state.user,
-        todos: state.todos.slice().concat(action.payload),
+        todos: state.todos.concat(action.payload),
       };
     }
     
     case "REMOVE_TODO": {
       return {
         user: state.user,
-        todos: state.todos
-          .slice()
-          .filter(todo => todo.id !== action.payload.id),
+        todos: state.todos.filter((todo) => todo.id !== action.payload.id),
       };
     }
-    
+
     case "CHANGE_TODO_STATUS": {
-      const oldTodoItemIndex = state.todos.findIndex(
-        todo => todo.id === action.payload.id
-      );
-      if (oldTodoItemIndex === -1) {
-        return state;
-      }
-
-      const updatedTodo = {
-        ...state.todos[oldTodoItemIndex],
-        status: action.payload.status,
-      };
-
-      const newTodos = state.todos.slice();
-      newTodos.splice(oldTodoItemIndex, 1, updatedTodo);
-
       return {
         user: state.user,
-        todos: newTodos,
+        todos: state.todos.map((todo) => {
+          if (todo.id !== action.payload.id) {
+            return todo;
+          }
+          return {
+            ...todo,
+            done: action.payload.done,
+          };
+        }),
       };
     }
     
@@ -272,13 +263,15 @@ const rootReducer = (state = initialState, action) => {
 const store = createStore(rootReducer);
 ```
 
-Ich möchte hier gar nicht auf alles was hier passiert zu tief ins Detail eingehen, da es hier darum gehen soll wie ein großer Reducer aufgeteilt werden kann. Doch einige Stellen sind für das generelle Verständnis nicht unwichtig. Gehen wir also der Reihe nach den `switch`-Block durch, bei dem uns jeder `case`-Block ein neues State-Objekt zurück gibt.
+Ich möchte hier gar nicht auf alles was hier passiert zu tief ins Detail eingehen, da es hier darum gehen soll wie ein großer, unübersichtlicher **Reducer** in mehrere kleinere und idealerweise übersichtlichere aufgeteilt werden kann. Doch einige Stellen sind für das generelle Verständnis nicht unwichtig. Gehen wir also der Reihe nach den `switch`-Block durch, bei dem uns jeder `case`-Block ein neues State-Objekt zurück gibt.
 
-Angefangen bei `SET_USER`: das hier erzeugte State-Objekt ändert das `user`-Objekt und setzt dessen `name`-Eigenschaft auf `action.payload.name`, sowie die `accessToken`-Eigenschaft auf `action.payload.accessToken`. Wer mag, der kann hier stattdessen auch `user` auf `action.payload` setzen, dann würden alle in der entsprechenden Payload der Action übergebenen Eigenschaften im `user`-Objekt landen. In unserem Beispiel ignorieren wir aber alle anderen Eigenschaften indem wir explizit nur `name` und `accessToken` aus der Payload holen. 
+Angefangen bei `SET_USER`: das hier erzeugte **State-Objekt** ändert das `user`-Objekt und setzt dessen `name`-Eigenschaft auf `action.payload.name`, sowie die `accessToken`-Eigenschaft auf `action.payload.accessToken`. Wer mag, der kann hier stattdessen auch `user` auf `action.payload` setzen, dann würden alle in der entsprechenden Payload der Action übergebenen Eigenschaften im `user`-Objekt landen. Dabei sollte dann aber sichergestellt sein, dass die `action.payload` immer ein Objekt ist, da wir ansonsten die Ausgangsform des `user`-Objekts verändern würden was zu Problemen führen kann, wenn bspw. auch andere Teile des Reducers auf das Objekt zugreifen und das Objekt plötzlich keines mehr ist. In unserem Beispiel ignorieren wir aber alle anderen Eigenschaften indem wir explizit nur `name` und `accessToken` aus der Payload der ausgelösten Action holen. 
 
 Neben dem modifizierten `user` geben wir auch eine `todos`-Eigenschaft zurück, die wir auf `state.todos` setzen, also beim bisherigen Wert belassen. **Dies ist wichtig**, da in unserem State-Objekt die `todos` ansonsten komplett aus dem State entfernt werden würden und wir nun zwar den Benutzer gesetzt, unsere Todos jedoch aus dem State verloren hätten!
 
-Weiter geht es mit `ADD_TODO`:
+Weiter geht es mit `ADD_TODO`: Hier ist es andersherum und wir geben zuerst einmal den `user`-Ast unseres State-Trees unverändert zurück. Anschließend fügen wir das neue Todo-Item mittels `.concat()`-Methode dem `todo`-Array hinzu. Hier ist es wichtig `concat()` und nicht `push()` zu benutzen, da `push()` eine sog. _mutative_ Methode ist, also den bestehenden State verändert statt einen neuen State zu erzeugen. Mittels `state.todos.concat` nehmen wir das aktuelle `todos`-Array als Basis und erzeugen daraus ein neues Array mit dem neuen Todo-Item und geben dieses zurück.
+
+Sehr ähnliches passiert im nächsten Fall: `REMOVE_TODO`. Hier geben wir wieder zuerst den `user`-Ast zurück, ehe wir im `todos`-Array nach dem zu entfernenden Eintrag suchen um diesen herauszufiltern. Das gefilterte Array ist dann unser neuer `todos`-State. Wir nutzen hier die `Array.filter()`-Methode, da diese anders als bspw. `Array.splice()` nicht _mutativ_ ist und ein neues Array erzeugt.
 
 ### Asynchrone Actions
 
