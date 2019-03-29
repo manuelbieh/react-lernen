@@ -22,3 +22,9 @@ Keine Angst, hier meine ich nicht die Werbeschleudern die jeder von uns ständig
 * [Fullstack React](http://newsletter.fullstackreact.com) \(Sophia Shoemaker\)
 * [React Digest](https://reactdigest.net/) \(Jakub Chodounsky / Bonobopress\) 
 
+## Communities
+
+* Deutsche Slack Community: https://reactjs.de/
+* [https://spectrum.chat/react](https://spectrum.chat/react)
+* [https://www.reactiflux.com/](https://www.reactiflux.com/)
+
