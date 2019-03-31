@@ -78,9 +78,9 @@ const reducer = (state, action) => {
 };
 ```
 
-Ein **Store** erwartet bei seiner Erstellung grundsätzlich einen einzigen **Reducer**, jedoch bietet **Redux** hier mit der `combineReducers()`-Funktion eine Möglichkeit um diese **Reducer**-Funktion zur besseren Verständlichkeit und Lesbarkeit in beliebig viele kleine Teilstücke zu splitten und anschließend zu einem großen, gemeinsamen **Reducer** zusammen zu setzen, auch **Root-Reducer** genannt. Wird dann eine Action dispatched wird jeder **Reducer** mit jeweils den gleichen Parametern, nämlich dem **State** und der **Action**, aufgerufen.
+Ein **Store** erwartet bei seiner Erstellung grundsätzlich einen einzigen **Reducer**, jedoch bietet **Redux** hier mit der `combineReducers()`-Funktion eine Möglichkeit um diese **Reducer**-Funktion zur besseren Verständlichkeit und Lesbarkeit in beliebig viele kleine Teilstücke zu splitten und anschließend zu einem großen, gemeinsamen **Reducer** zusammen zu setzen, auch **Root-Reducer** genannt. Wird dann eine Action _dispatched_ wird jeder **Reducer** mit jeweils den gleichen Parametern, nämlich dem **State** und der **Action**, aufgerufen. Diese Methode schauen wir uns in diesem Kapitel später noch etwas genauer an.
 
-Da der **Reducer** auf die `type`-Eigenschaft einer **Action** reagiert ist es ein Stück weit zur weit verbreiteten Konvention geworden alle verwendeten Types in gleichnamige Variablen auszulagern, da ein Tippfehler im ersten Moment nicht immer gleich auffällt \(bspw. `USER_ADDDED`\), der JavaScript-Interpreter jedoch einen Fehler wirft beim Zugriff auf eine nicht definierte Variable. So findet man in Apps in denen Redux eingesetzt wird zu Beginn einer Datei oft einen Code-Block von folgendem Format:
+Da jeder **Reducer** auf die `type`-Eigenschaft einer **Action** reagiert ist es ein Stück weit zur weit verbreiteten Konvention geworden alle verwendeten Types in gleichnamige Variablen auszulagern, da ein Tippfehler im ersten Moment nicht immer gleich auffällt \(bspw. `USER_ADDDED`\), der JavaScript-Interpreter jedoch einen Fehler wirft beim Zugriff auf eine nicht definierte Variable. So findet man in Apps in denen **Redux** eingesetzt wird zu Beginn einer Datei oft einen Code-Block von folgendem Format:
 
 ```javascript
 const PLUS = 'PLUS';
@@ -199,7 +199,7 @@ Dies geht bei entsprechender Benamung der **Action Creator** Funktionen deutlich
 
 Die bisherigen Beispiele dienten dazu mit dem Konzept von **Actions** und **Reducern** vertraut zu werden und um zu verstehen, wie **Actions** verwendet werden, um mit dem **Reducer** den **Store** zu mutieren. Typischerweise besteht der **State** in einer React-Anwendung aber aus deutlich komplexeren Daten und Objekten. Werfen wir also einen Blick auf einen Store, wie er realistisch in einer kleinen Anwendung aussehen könnte.
 
-Als Beispiel soll uns eine kleine Todo-App dienen, die sowohl eine Liste mit Todos verwaltet, als auch einen eingeloggten Benutzer beinhaltet. Unser State halt also die beiden Toplevel-Eigenschaften `todos` \(vom Typ Array\) und `user` \(vom Typ Objekt\). Dies bilden wir in unserem initialen State auch so ab:
+Als Beispiel soll uns das State-Management für eine fiktive kleine **Todo-App** dienen, die sowohl eine Liste mit Todos verwaltet, als auch einen eingeloggten Benutzer beinhaltet. Unser State halt also die beiden Toplevel-Eigenschaften `todos` \(vom Typ Array\) und `user` \(vom Typ Objekt\). Dies bilden wir in unserem initialen State auch so ab:
 
 ```javascript
 const initialState = Object.freeze({
@@ -224,21 +224,18 @@ const rootReducer = (state = initialState, action) => {
         todos: state.todos,
       };
     }
-    
     case "ADD_TODO": {
       return {
         user: state.user,
         todos: state.todos.concat(action.payload),
       };
     }
-    
     case "REMOVE_TODO": {
       return {
         user: state.user,
         todos: state.todos.filter((todo) => todo.id !== action.payload.id),
       };
     }
-
     case "CHANGE_TODO_STATUS": {
       return {
         user: state.user,
@@ -253,7 +250,6 @@ const rootReducer = (state = initialState, action) => {
         }),
       };
     }
-    
     default: {
       return state;
     }
@@ -272,6 +268,67 @@ Neben dem modifizierten `user` geben wir auch eine `todos`-Eigenschaft zurück, 
 Weiter geht es mit `ADD_TODO`: Hier ist es andersherum und wir geben zuerst einmal den `user`-Ast unseres State-Trees unverändert zurück. Anschließend fügen wir das neue Todo-Item mittels `.concat()`-Methode dem `todo`-Array hinzu. Hier ist es wichtig `concat()` und nicht `push()` zu benutzen, da `push()` eine sog. _mutative_ Methode ist, also den bestehenden State verändert statt einen neuen State zu erzeugen. Mittels `state.todos.concat` nehmen wir das aktuelle `todos`-Array als Basis und erzeugen daraus ein neues Array mit dem neuen Todo-Item und geben dieses zurück.
 
 Sehr ähnliches passiert im nächsten Fall: `REMOVE_TODO`. Hier geben wir wieder zuerst den `user`-Ast zurück, ehe wir im `todos`-Array nach dem zu entfernenden Eintrag suchen um diesen herauszufiltern. Das gefilterte Array ist dann unser neuer `todos`-State. Wir nutzen hier die `Array.filter()`-Methode, da diese anders als bspw. `Array.splice()` nicht _mutativ_ ist und ein neues Array erzeugt.
+
+Zuletzt haben wir den `CHANGE_TODO_STATUS` Fall. Mit diesem ändern wir den Status des Todo-Elements, also von _Zu erledigen_ \(`false`\) auf _Erledigt_ \(`true`\) - oder eben andersherum. Dazu geben wir, erneut, das unveränderte `user`-Objekt aus dem vorherigen State zurück und iterieren anschließend mittels `state.todos.map()`durch alle Todos. In der Map-Funktion schauen wir ob die ID des aktuellen Todo-Objekts der ID aus der `action.payload` entspricht. Ist dies nicht der Fall, geben wir einfach jeweilige Todo-Element unverändert zurück. 
+
+Entspricht die ID aus der Payload der ID des aktuellen Todo-Elements, erzeugen wir ein neues Objekt, schreiben alle Eigenschaften mit ihren jeweiligen Werten mittels ES2015+ Spread-Syntax \(`{ ...todo }`\) in das neu erzeugte Objekt und überschreiben die `done`-Eigenschaft mit dem neuen Wert aus der Action-Payload. Wir generieren hier ein neues Objekt statt einfach das bestehende zu überschreiben, da wir ja einen neuen State erzeugen müssen damit unser **Reducer** eine **Pure Function** bleibt. Die Verwendung der `Array.map()`-Methode sorgt bereits dafür, dass wir außerdem ein neues Array erzeugen.
+
+Hier haben wir es lediglich mit zwei Ästen in unserem State-Tree zu tun: `user` und `todos` - und dennoch wird unsere **Reducer**-Funktion bereits sehr lang. Bei steigender Komplexität des States wird die Funktion entsprechend noch länger und vor allem: **fehleranfälliger**. Da wir neben dem veränderten Teil des States auch immer alle anderen Teile zurückgeben müssen - also etwa den unveränderten `user` wenn wir die `todos` modifizieren oder eben die `todos` wenn wir den `user` modifizieren, wird die Funktion sehr schnell unübersichtlich und schwierig zu verwalten.
+
+Aus diesem Grund stellt **Redux** die `combineReducer()`-Methode bereit. Mit ihr wird es möglich unsere **Reducer** in einzelne Teilbereiche aufzuteilen die sich um eine bestimmte Aufgabe kümmern und in eigene Dateien ausgelagert werden können. 
+
+Ausgehend von unserem Beispiel hätten wir hier also die beiden **Reducer-**Funktionen `user` und `todos`. Beide befinden sich in einer eigenen Datei, die die **Reducer-**Funktion als `default` exportiert:
+
+```javascript
+// user/reducer.js
+const initialState = Object.freeze({});
+
+export default (state = initialState, action) => {
+  switch (action.type) {
+    case "SET_USER": {
+      return {
+        name: action.payload.name,
+        accessToken: action.payload.accessToken,
+      };
+    }
+    default: {
+      return state;
+    }
+  }
+};
+```
+
+```javascript
+// todos/reducer.js
+const initialState = Object.freeze([]);
+
+export default (state = initialState, action) => {
+  switch (action.type) {
+    case "ADD_TODO": {
+      return state.concat(action.payload);
+    }
+    case "REMOVE_TODO": {
+      return state.filter((todo) => todo.id !== action.payload.id);
+    }
+    case "CHANGE_TODO_STATUS": {
+      return state.map((todo) => {
+        if (todo.id !== action.payload.id) {
+          return todo;
+        }
+        return {
+          ...todo,
+          done: action.payload.done,
+        };
+      });
+    }
+    default: {
+      return state;
+    }
+  }
+};
+```
+
+
 
 ### Asynchrone Actions
 
