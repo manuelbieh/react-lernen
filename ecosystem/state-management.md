@@ -273,9 +273,20 @@ Zuletzt haben wir den `CHANGE_TODO_STATUS` Fall. Mit diesem ändern wir den Stat
 
 Entspricht die ID aus der Payload der ID des aktuellen Todo-Elements, erzeugen wir ein neues Objekt, schreiben alle Eigenschaften mit ihren jeweiligen Werten mittels ES2015+ Spread-Syntax \(`{ ...todo }`\) in das neu erzeugte Objekt und überschreiben die `done`-Eigenschaft mit dem neuen Wert aus der Action-Payload. Wir generieren hier ein neues Objekt statt einfach das bestehende zu überschreiben, da wir ja einen neuen State erzeugen müssen damit unser **Reducer** eine **Pure Function** bleibt. Die Verwendung der `Array.map()`-Methode sorgt bereits dafür, dass wir außerdem ein neues Array erzeugen.
 
-Hier haben wir es lediglich mit zwei Ästen in unserem State-Tree zu tun: `user` und `todos` - und dennoch wird unsere **Reducer**-Funktion bereits sehr lang. Bei steigender Komplexität des States wird die Funktion entsprechend noch länger und vor allem: **fehleranfälliger**. Da wir neben dem veränderten Teil des States auch immer alle anderen Teile zurückgeben müssen - also etwa den unveränderten `user` wenn wir die `todos` modifizieren oder eben die `todos` wenn wir den `user` modifizieren, wird die Funktion sehr schnell unübersichtlich und schwierig zu verwalten.
+Hier haben wir es lediglich mit zwei Ästen in unserem State-Tree zu tun: `user` und `todos` - und dennoch wird unsere **Reducer**-Funktion bereits sehr lang. Bei steigender Komplexität des States wird die Funktion entsprechend noch länger und vor allem: **fehleranfälliger**. Da wir neben dem veränderten Teil des States auch immer alle anderen Teile zurückgeben müssen - also etwa den unveränderten `user` wenn wir die `todos` modifizieren oder eben die `todos` wenn wir den `user` modifizieren, wird die Funktion sehr schnell unübersichtlich und schwierig zu verwalten. Zur Erleichterung könnten wir hier auch die Object Spread Syntax aus ES2015+ nutzen und aus dem bisherigen State einen neuen State erzeugen und anschließend den veränderten Ast des State-Trees überschreiben. Das könnte dann am Beispiel des `ADD_TODO` Falls so aussehen:
 
-Aus diesem Grund stellt **Redux** die `combineReducer()`-Methode bereit. Mit ihr wird es möglich unsere **Reducer** in einzelne Teilbereiche aufzuteilen die sich um eine bestimmte Aufgabe kümmern und in eigene Dateien ausgelagert werden können. 
+```javascript
+case "ADD_TODO": {
+  return {
+    ...state,
+    todos: state.todos.concat(action.payload),
+  };
+}
+```
+
+Aber auch das macht die Sache nur unwesentlich einfacher für uns, da es uns noch immer recht schnell passieren kann, dass wir vergessen den alten, unveränderten Teil des States mit zurück zu geben.
+
+Aus diesem Grund stellt **Redux** die `combineReducer()`-Methode bereit. Mit ihr wird es möglich unsere **Reducer**, bzw. den **State** den diese erzeugen, in einzelne benannte Teilbereiche aufzuteilen, die sich dann jeweils um eine bestimmte Aufgabe kümmern und in eigene Dateien ausgelagert werden können. 
 
 Ausgehend von unserem Beispiel hätten wir hier also die beiden **Reducer-**Funktionen `user` und `todos`. Beide befinden sich in einer eigenen Datei, die die **Reducer-**Funktion als `default` exportiert:
 
@@ -328,7 +339,52 @@ export default (state = initialState, action) => {
 };
 ```
 
+Wer genau hinschaut stellt fest, dass unsere große, unübersichtliche **Reducer**-Funktion nicht nur in zwei kleinere und deutlich übersichtlichere Funktionen aufgeteilt wurden. Die Funktionen selbst wurden darüber hinaus auch vereinfacht. Statt jeweils auch den _unveränderten_ Teil des **State-Trees** aus dem **Reducer** zurück zu geben, geben wir nur noch den Teil des States zurück, der _relevant für den jeweiligen_ **Reducer** ist. Im **User-Reducer** ist das eben der **Benutzer**, im **Todos-Reducer** entsprechend die **Todos**.
 
+Um unsere beiden _kleineren_ **Reducer** nun wieder zu einer _großen_ **Reducer**-Funktion zusammenzufügen, die wir dann als einzige an die `createStore()`-Funktion übergeben können, nutzen wir `combineReducers()`. Diese Funktion erwartet ein Objekt, dessen Eigenschaftennamen denen des erzeugten State-Tree entsprechen. Die Werte müssen jeweils selbst gültige **Reducer** sein:
+
+```javascript
+import { combineReducers, createStore } from "redux";
+import userReducer from './store/user/reducer';
+import todosReducer from './store/todos/reducer';
+
+const rootReducer = combineReducers({
+  todos: todosReducer,
+  user: userReducer,
+});
+
+const store = createStore(rootReducer);
+```
+
+Die `combineReducers()`-Funktion fügt dabei alle Reducer aus dem übergebenen Objekt zu einer neuen Funktion zusammen, die nun als unser **Root Reducer** an die `createStore()`-Funktion übergeben werden kann. Die erzeugte Funktion ruft dabei beim Auslösen einer Action _jeden_ übergebenen Reducer auf und erstellt aus deren Rückgabewerten dann ein neues State-Objekt, das von der Form dem, des initial übergebenen Objekts entspricht. In unserem Beispiel von oben ist der initiale State also:
+
+```javascript
+{
+  "todos": [],
+  "user": {}
+}
+```
+
+Tipp: durch die geschickte Nutzung der ES2015+ Object Shorthand Notation können wir noch ein klein wenig Code sparen, indem wir die Imports so nennen wie die Eigenschaften, die sie im State später einmal repräsentieren. Also:
+
+```javascript
+import user from './store/user/reducer';
+import todos from './store/todos/reducer';
+```
+
+Das Objekt das an `combineReducers()` übergeben wird, schrumpft dann auf ein übersichtlicheres:
+
+```javascript
+const rootReducer = combineReducers({ todos, user });
+```
+
+Die Nutzung von `combineReducers()` ist allerdings an einige formelle Regeln gebunden die, einmal verinnerlicht, aber nicht wirklich hinderlich oder gar schwer zu merken sind. So muss jede Reducer-Funktion die an `combineReducers()` übergeben wird die folgenden Kriterien erfüllen:
+
+* Für jede unbekannte **Action** \(also jede **Action**, auf deren `type`-Eigenschaft wir nicht reagieren\) die ein **Reducer** \(in seinem _zweiten_ Argument\) übergeben bekommt, muss der `state` zurückgegeben werden, den der **Reducer** stets als _erstes_ Argument bekommt.
+* Anders als „von Hand“ erzeugte, einfache **Root Reducer** darf eine innerhalb von `combineReducer()` verwendete **Reducer**-Funktion niemals `undefined` zurückgeben. Die `combineReducers()`-Funktion wirft dann einen **Error** um auf diesen Umstand hinzuweisen und dabei die Suche der Fehler-Ursache nicht durch Verlagerung des Fehlers an andere Stelle unnötig zu erschweren. In unserem Beispiel tun wir das, indem wir im `default`-Fall innerhalb des `switch`-Blocks den `state` zurückgeben.
+* Wenn der im ersten Argument übergebene `state` vom Typ `undefined` ist, muss der **initiale State** zurückgegeben werden. Dazu ist es am einfachsten den initialen State als Standardwert zu setzen, wie wir es im obigen Beispiel auch getan haben via `state = initialState`.
+
+**Übrigens:** `combineReducer()` lässt sich auch beliebig „verschachteln“. Und so können auch die **Reducer**-Funktionen die an `combineReducer()` übergeben werden selbst bereits durch `combineReducer()` erzeugt worden sein. Dabei sollte allerdings beachtet werden, dass zu fein granulare Aufteilung in immer kleinere State-Äste den Code irgendwann nicht mehr unbedingt übersichtlicher macht. In der Praxis habe ich persönlich bisher mit einer Verschachtelungstiefe von maximal _einer_ Ebene \(also insgesamt zwei `combineReducer()`-Aufrufen, einer innen, einer außen\) gearbeitet.
 
 ### Asynchrone Actions
 
@@ -375,9 +431,7 @@ const store = createStore(
 
 ### 
 
-### Reducer aufteilen und wieder zusammenfügen
-
-### Verwendung mit React
+### Verwendung von Redux mit React
 
 
 
