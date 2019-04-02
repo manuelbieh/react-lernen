@@ -160,7 +160,7 @@ Dieser State ist dabei noch denkbar simpel und besteht lediglich aus einem einzi
 
 ### Action Creators vs. Actions
 
-Wer Artikel über **Redux** liest oder auch in die offizielle Doku schaut wird immer wieder mit dem Begriff **Action Creator** konfrontiert. Mir selbst fiel es anfangs etwas schwer die Unterschiede zu verstehen und ich weiß auch von anderen, dass es nicht nur mir so erging. Daher möchte ich an dieser Stelle kurz einen keinen Exkurs einwerfen um die beiden Begriffe **Action Creator** und **Action** voneinander abzugrenzen.
+Wer Artikel über **Redux** liest oder auch in die offizielle Doku schaut wird immer wieder mit den Begriffen **Action** und **Action Creator** konfrontiert. Mir selbst fiel es anfangs etwas schwer die Unterschiede zu verstehen und ich weiß auch von anderen, dass es nicht nur mir so erging. Erschwerend kommt hinzu, dass die Begriffe auch gelegentlich synonym verwendet werden obwohl sie es nicht sind. Daher möchte ich an dieser Stelle kurz einen keinen Exkurs einwerfen um die beiden Begriffe **Action Creator** und **Action** voneinander abzugrenzen.
 
 Die **Action** haben wir oben bereits kennengelernt und ist ein einfaches und möglichst _serialisierbares_ **Objekt**, mit dem wir beschreiben wie wir den State verändern wollen. Es enthält immer zwingend eine `type`-Eigenschaft und meist auch eine `payload`.
 
@@ -210,7 +210,7 @@ const initialState = Object.freeze({
 
 Zusätzlich, da wir sicherstellen wollen, dass bei jedem Aufruf ein neues State-Objekt erzeugt wird und nicht das alte mutiert wird, umschließen wir unseren initialen State mit einem `Object.freeze()`. Dies sorgt dafür, dass wir einen `TypeError` bekommen, sollte das **State-Objekt** direkt mutiert werden.
 
-Schauen wir uns an wie eine **Reducer**-Funktion aussieht könnte, mit der wir den eingeloggten Benutzer setzen, neue Todos hinzufügen und entfernen sowie ihren Status ändern können:
+Schauen wir uns an wie eine **Reducer**-Funktion aussieht könnte, mit der wir den eingeloggten Benutzer setzen, neue Todos hinzufügen und entfernen sowie deren Status ändern können:
 
 ```javascript
 const rootReducer = (state = initialState, action) => {
@@ -227,7 +227,11 @@ const rootReducer = (state = initialState, action) => {
     case "ADD_TODO": {
       return {
         user: state.user,
-        todos: state.todos.concat(action.payload),
+        todos: state.todos.concat({
+          id: action.payload.id,
+          text: action.payload.text,
+          done: Boolean(action.payload.done),
+        }),
       };
     }
     case "REMOVE_TODO": {
@@ -388,11 +392,11 @@ Die Nutzung von `combineReducers()` ist allerdings an einige formelle Regeln geb
 
 ### Asynchrone Actions
 
-Alle **Actions** in vorherigen Beispielen wurden bisher immer **synchron** ausgeführt. In dynamischen Web-Anwendungen in denen die Stärken von **React** am meisten zum Vorschein kommen, haben wir jedoch regelmäßig mit **asynchronen Datenflüssen** zu tun, insbesondere mit Netzwerk-Requests. Hier helfen uns unsere _synchronen_ **Action Creator**-Funktionen nicht wirklich weiter, da die `dispatch`-Methode eines **Stores** ja zwingend eine **Action** erwartet, die, wie wir bereits gelernt haben ein simples und einfaches Objekt mit einer `type`-Eigenschaft ist.
+Alle **Actions** in vorherigen Beispielen wurden bisher immer **synchron** ausgeführt. D.h. ihre **Action Creators** wurden ausgeführt wann immer wir den State modifizieren wollten ohne dass wir auf das Ergebnis asynchroner Prozesse warten mussten. In dynamischen Web-Anwendungen, in denen die Stärken von **React** am meisten zum Vorschein kommen, haben wir jedoch regelmäßig mit **asynchronen Datenflüssen** zu tun, insbesondere mit Netzwerk-Requests. Hier helfen uns unsere _synchronen_ **Action Creator**-Funktionen nicht wirklich weiter, da die `dispatch`-Methode eines **Stores** ja zwingend eine **Action** erwartet, die, wie wir bereits gelernt haben ein simples und einfaches Objekt mit einer `type`-Eigenschaft ist.
 
 Hier kommt jetzt das **Middleware**-Konzept von **Redux** ins Spiel, und mit ihr insbesondere die **Redux Thunk Middleware**. Doch der Reihe nach.
 
-Die `createStore`-Funktion aus dem `redux`-Paket, die wir etwas weiter oben bereits benutzt haben um einen Store zu erzeugen, verarbeitet bis zu drei Parameter:
+Die `createStore`-Funktion aus dem `redux`-Paket, die wir etwas weiter oben bereits benutzt haben um verschiedene Stores zu erzeugen, verarbeitet bis zu drei Parameter:
 
 * Die **Reducer**-Funktion, die als einziger Parameter zwingend angegeben werden **muss** und sich in Verbindung mit den ausgelösten **Actions** um die Mutation unseres **States** kümmert indem sie mit jeder ausgelösten **Action** einen **State** zurückgibt.
 * Einen **initialen State**, der bspw. beim Initialisieren des Stores bereits mit Daten befüllt sein kann. Dieser initiale State wird bei der Initialisierung des Stores auch auch die **Reducer**-Funktion übergeben.
@@ -400,7 +404,7 @@ Die `createStore`-Funktion aus dem `redux`-Paket, die wir etwas weiter oben bere
 
 Bekommt die `createStore`-Funktion zwei Parameter übergeben, behandelt sie den zweiten Parameter als **Enhancer** wenn der Parameter eine **Funktion** ist. Andernfalls wird der zweite Parameter als **initialer State** an die **Reducer**-Funktion übergeben.
 
-Die **Middleware** in **Redux** legt sich dabei um die `dispatch`-Methode, fängt Aufrufe an diese ab, erlaubt es uns die aufgerufene **Action** zu modifizieren und gibt am Ende ihrer Ausführung eine neue `dispatch`-Funktion zurück. Möchten wir nun bspw. asynchrone Funktionen bzw. Promises als Parameter an die `dispatch()`-Methode übergeben, können wir den **Store-Enhancer** nutzen um **Middleware** zu registrieren, die es uns erlaubt genau dies zu tun. Die bekannteste dieser Art ist besagte **Thunk Middleware**.
+Eine **Middleware** in **Redux** legt sich dabei um die `dispatch`-Methode, fängt Aufrufe an diese ab, erlaubt es die aufgerufene **Action** zu modifizieren _bevor_ diese an den **Reducer** übergeben wird und gibt am Ende ihrer Ausführung eine neue `dispatch`-Funktion zurück. Möchten wir nun bspw. asynchrone Funktionen bzw. Promises als Parameter an die `dispatch()`-Methode übergeben, können wir den **Store-Enhancer** nutzen um **Middleware** zu registrieren, die es uns erlaubt genau dies zu tun. Die bekannteste dieser Art ist besagte **Thunk Middleware**.
 
 Zur Installation:
 
@@ -414,7 +418,7 @@ oder in Yarn:
 yarn add redux-thunk
 ```
 
-Ist die **Thunk Middleware** installiert, müssen wir sie über die Redux eigene `applyMiddleware`-Funktion beim Enhancer _registrieren_. Dazu importieren wir die Middleware selbst und die applyMiddleware-Funktion direkt aus Redux:
+Ist die **Thunk Middleware** installiert, müssen wir sie über die **Redux**-eigene `applyMiddleware`-Funktion beim **Enhancer** _registrieren_. Dazu importieren wir die **Middleware** und die `applyMiddleware()`-Funktion direkt aus **Redux:**
 
 ```javascript
 import { applyMiddleware, createStore } from 'redux';
@@ -424,12 +428,135 @@ import thunk from 'redux-thunk';
 
 const store = createStore(
   reducer, 
-  initialState, 
   applyMiddleware(thunk)
 );
 ```
 
-### 
+Durch die Einbindung der **Thunk-Middleware** können wir nun **Action Creator** schreiben, die _asynchronen_ Code ausführen und ihre **Actions** dann _dispatchen_ wenn ein Ergebnis vorliegt. Eine **Thunk**-Funktion ist dabei ein **Action Creator**, der selbst wiederum eine Funktion zurückgibt, deren beiden Parameter eine`dispatch()` und `getState()` Funktion sind. In der **Thunk Action Creator**-Funktion können wir dann selbst entscheiden wann der Zeitpunkt gekommen ist um unsere Action zu _dispatchen_.
+
+```javascript
+const delayedAdd = (newTodo) => {
+  return (dispatch, getState) => {
+    setTimeout(() => {
+      return dispatch({
+        type: 'ADD_TODO',
+        payload: newTodo,
+      });
+    }, 500);
+  };
+};
+
+store.dispatch(delayedAction({
+  id: 1,
+  text: 'Thunk Actions erklären',
+  done: false,
+}));
+```
+
+In diesem Beispiel erzeugen wir einen `delayedAdd` **Action Creator**. Dieser erhält das neue Todo-Element übergeben und gibt dann eine neue Funktion in der Form `(dispatch, getState) => {}` zurück. Die **Thunk-Middleware** sorgt dann dafür, dass dieser Funktion die `dispatch()` und `getState()` Funktionen entsprechend hereingereicht werden. Nach einer Verzögerung von, in diesem Beispiel, 500 ms rufen wir die `dispatch()`-Funktion mit der `ADD_TODO` **Action** auf und fügen das neue Objekt hinzu. 
+
+Um die Action zu _dispatchen_ können wir den _asynchronen_ **Action Creator** nun genauso verwenden wie wir auch bisher unsere _synchronen_ **Action Creators** _dispatched_ haben, nämlich durch das Übergeben der aufgerufenen Funktion an die `dispatch()`-Funktion des **Store**: `store.dispatch(ActionCreator)`. Die Thunk-Middleware erkennt dann, dass es sich um eine **Thunk**-Funktion handelt, führt sie aus und reicht ihr die beiden Argumente `dispatch` und `getState` hinein.
+
+Wer bereits mit der **Arrow Function Syntax** aus ES2015 vertraut ist kann das Ganze übrigens auch noch weiter abkürzen:
+
+```javascript
+const delayedAdd = (newTodo) => (dispatch, getState) => {
+  setTimeout(() => {
+    return dispatch({
+      type: 'ADD_TODO',
+      payload: newTodo,
+    });
+  }, 500);
+};
+```
+
+Hier geben wir über die verkürzte **Arrow Function** mit **impliziten Rückgabewert** direkt die dann von der **Thunk-Middleware** aufgerufene Funktion zurück, ohne das `return` Schlüsselwort dafür verwenden zu müssen. Das spart noch einmal zwei Zeilen Code, macht den Code aber gerade zu Beginn etwas schwieriger zu verstehen.
+
+### Ein typisches Beispiel für asynchrone Actions aus der Praxis
+
+In vielen Anwendungen in denen mit Schnittstellen \(APIs\) gearbeitet wird ist es ein gängiges Muster den Benutzer auf den Lade-Status hinzuweisen sobald Daten von der API bezogen werden. Bspw. über einen grafischen Spinner oder auch nur durch einen Text-Hinweis wie etwa _„Daten werden geladen“_. Hier eignet sich eine entsprechende **Thunk Action** hervorragend um diesen Anwendungsfall mit einem entsprechenden **Reducer** abzudecken. 
+
+Dazu erstellen wir im **Reducer** drei Fälle in denen wir auf die folgenden **Actions** regieren:
+
+* `FETCH_REPOS_REQUEST`, um zu Beginn des Netzwerk-Requests etwa Fehler aus voran gegangenen Requests zurück zu setzen und um unseren Lade-Status zu initiieren,
+* `FETCH_REPOS_SUCCESS` , die wir bei erfolgreich erfolgtem Request aufrufen und die das Ergebnis des Requests bekommt sowie das Datum der letzten Aktualisierung dieser Daten, sowie
+* `FETCH_REPOS_FAILURE` mit der wir auf aufgetretene Fehler reagieren und bspw. einen `error` Flag setzen um den Benutzer davon in Kenntnis zu setzen, dass sein Request fehlgeschlagen ist.
+
+In Form von Code könnte dies dann bspw. so aussehen:
+
+```javascript
+import { applyMiddleware, createStore } from 'redux';
+import thunk from 'redux-thunk';
+import axios from 'axios';
+
+const initialState = Object.freeze({
+  error: null,
+  items: [],
+  isFetching: false,
+  lastUpdated: null,
+  selectedAccount: 'manuelbieh',
+});
+
+const rootReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case 'FETCH_REPOS_REQUEST': {
+      return {
+        ...state,
+        isFetching: true,
+        error: null,
+      };
+    }
+    case 'FETCH_REPOS_SUCCESS': {
+      return {
+        ...state,
+        isFetching: false,
+        items: action.payload.items,
+        lastUpdated: action.payload.lastUpdated,
+      };
+    }
+    case 'FETCH_REPOS_FAILED': {
+      return {
+        ...state,
+        isFetching: false,
+        error: action.payload,
+      };
+    }
+    default: {
+      return state;
+    }
+  }
+};
+
+const fetchGithubRepos = () => (dispatch, getState) => {
+  dispatch({ type: 'FETCH_REPOS_REQUESTED' });
+  axios
+    .get(`https://api.github.com/users/${getState().selectedAccount}/repos`)
+    .then((response) => {
+      dispatch({
+        type: 'FETCH_REPOS_SUCCESS',
+        payload: {
+          lastUpdated: new Date(),
+          items: response.data,
+        },
+      });
+    })
+    .catch((error) => {
+      dispatch({
+        type: 'FETCH_REPOS_FAILURE',
+        error: true,
+        payload: error.response.data,
+      });
+    });
+};
+
+const store = createStore(rootReducer, applyMiddleware(thunk));
+
+store.dispatch(fetchGithubRepos());
+```
+
+Dispatchen wir nun den `fetchGithubRepos` Action Creator
+
+### Debugging mit den Redux Devtools
 
 ### Verwendung von Redux mit React
 
