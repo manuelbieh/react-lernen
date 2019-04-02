@@ -529,8 +529,9 @@ const rootReducer = (state = initialState, action) => {
 
 const fetchGithubRepos = () => (dispatch, getState) => {
   dispatch({ type: 'FETCH_REPOS_REQUESTED' });
+  const state = getState();
   axios
-    .get(`https://api.github.com/users/${getState().selectedAccount}/repos`)
+    .get(`https://api.github.com/users/${state.selectedAccount}/repos`)
     .then((response) => {
       dispatch({
         type: 'FETCH_REPOS_SUCCESS',
@@ -554,7 +555,18 @@ const store = createStore(rootReducer, applyMiddleware(thunk));
 store.dispatch(fetchGithubRepos());
 ```
 
-Dispatchen wir nun den `fetchGithubRepos` Action Creator
+_Dispatchen_ wir hier den `fetchGithubRepos()` **Action Creator** passiert folgendes: 
+
+Zunächst erkennt die **Thunk-Middleware**, dass es sich nicht um eine einfache **Action** \(also ein Objekt\) sondern um eine Funktion handelt, führt diese aus in der Form `Action()(dispatch, getState)`. Der **Action Creator** erhält die `dispatch`-Funktion übergeben um selbst wiederum **Actions** aus der **Action Creator** Funktion heraus _dispatchen_ zu können.
+
+Im **Action Creator** _dispatchen_ wir nun zunächst einmal die `FETCH_REPOS_REQUESTED` Action. Der **Reducer** reagiert auf die Action, erzeugt ein neues **State-Objekt** indem der _bestehende_ **State** per **ES2015+ Spread Operator** in ein neues Objekt kopiert wird und außerdem einen ggf. existierenden `error` zurücksetzt auf `null`. Gleichzeitig wird der State mittels `isFetching` davon in Kenntnis gesetzt, dass nun ein Request folgen wird. Das ist hier etwas Geschmackssache und so bevorzugen es einige die `error`-Eigenschaft erst dann wieder auf `null` zu setzen, wenn der anstehende Request auch tatsächlich erfolgreich war.
+
+Für den Request holen wir uns nun mittels `getState()` zunächst den _aktuellen_ **State**, aus diesem holen wir uns aus `selectedAccount` dann den ausgewählten Account, zu dem wir uns anschließend über den API Request die GitHub-Repos besorgen. Wir starten den Request \(und nutzen hier wie schon in früheren Beispielen Axios zur Vereinfachung\) und reagieren auf zwei mögliche Fälle:
+
+* Der Request ist erfolgreich und wir beziehen Daten von der GitHub API. Wir _dispatchen_ dann die nächste **Action**, `FETCH_REPOS_SUCCESS`, übergeben die aktuelle Uhrzeit \(die wir später bspw. für Caching oder automatische Reloads benutzen können\) sowie das Array mit den Repos, die sich in `response.data` verbirgt. Da der Request außerdem nicht mehr aktiv ist, setzen wir `isFetching` wieder zurück auf `false`.
+* Der Request schlägt fehlt. In diesem Fall _dispatchen_ wir die `FETCH_REPOS_FAILURE` Action und übergeben die Fehlermeldung die Axios hier in `error.response.data` bereithält als Payload. Auch hier setzen wir `isFetching` wieder zurück auf `false`, da der Request auch hier beendet ist, wenn auch mit einem für uns unschönen Ergebnis, nämlich einem Fehler.
+
+Unser State enthält nun die GitHub-Repos des laut `state.selectedAccount` ausgewählten Benutzers wenn der Request erfolgreich war oder eine Fehlermeldung wenn er es nicht war. Auf beide Fälle könnten wir nun in unserem User Interface entsprechend reagieren!
 
 ### Debugging mit den Redux Devtools
 
