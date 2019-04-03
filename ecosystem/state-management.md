@@ -418,7 +418,7 @@ oder in Yarn:
 yarn add redux-thunk
 ```
 
-Ist die **Thunk Middleware** installiert, müssen wir sie über die **Redux**-eigene `applyMiddleware`-Funktion beim **Enhancer** _registrieren_. Dazu importieren wir die **Middleware** und die `applyMiddleware()`-Funktion direkt aus **Redux:**
+Ist die **Thunk Middleware** installiert, müssen wir sie über die **Redux**-eigene `applyMiddleware()`-Funktion beim **Enhancer** _registrieren_. Dazu importieren wir die **Middleware** und die `applyMiddleware()`-Funktion direkt aus **Redux** und übergeben ihr jede **Middleware** die wir nutzen wollen als eigenen Parameter. In unserem Fall ist das erst einmal nur `thunk`:
 
 ```javascript
 import { applyMiddleware, createStore } from 'redux';
@@ -569,6 +569,59 @@ Für den Request holen wir uns nun mittels `getState()` zunächst den _aktuellen
 Unser State enthält nun die GitHub-Repos des laut `state.selectedAccount` ausgewählten Benutzers wenn der Request erfolgreich war oder eine Fehlermeldung wenn er es nicht war. Auf beide Fälle könnten wir nun in unserem User Interface entsprechend reagieren!
 
 ### Debugging mit den Redux Devtools
+
+Zum Inspizieren des Stores haben wir diverse Möglichkeiten, so gibt es bspw. eine praktische **Logger-Middleware**, die uns für jede dispatchte **Action** den vorherigen State, die Action selbst und den neuen State in die Browser-Console logged: [https://github.com/LogRocket/redux-logger](https://github.com/LogRocket/redux-logger)
+
+Wir können selbstverständlich jederzeit auch manuell mittels `console.log(store.getState())` den aktuellen State ausgeben, wobei das mühsam ist und insbesondere bei asynchronen Actions manchmal etwas verwirrend sein kann. 
+
+Und dann gibt es die **Redux Devtools**. Diese kommen als Browser-Extension daher und integrieren sich nahtlos in die Developer Tools in Chrome und Firefox, auch mit künftigen Edge Versionen ist die Verwendung der **Redux Devtools** möglich sobald die Browser-Engine erst einmal final auf Chromium umgestellt wurde. Gefunden werden können die Extensions in den jeweiligen Add-On Stores:
+
+* Chrome: [https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd)
+* Firefox: [https://addons.mozilla.org/en-US/firefox/addon/reduxdevtools/](https://addons.mozilla.org/en-US/firefox/addon/reduxdevtools/)
+
+Sind die **Redux Devtools** erst einmal installiert, bekommen die Developer Tools im Browser einen neuen Tab **„Redux“**, unter dem wir sie finden können. Doch zur Verwendung müssen wir einige Vorkehrungen in unserem Code treffen. Wir müssen sie als weiteren **Enhancer** zu unserem **Store** hinzufügen.
+
+![Browser Devtools mit installiertem Redux Addon](../.gitbook/assets/redux-devtools.png)
+
+Die **Redux Devtools** registrieren sich mit zwei eigenen globalen Variable auf dem `window`-Objekt im Browser: `window.REDUX_DEVTOOLS_EXTENSION` und `window.REDUX_DEVTOOLS_EXTENSION_COMPOSE`. Nutzen wir keine eigenen Store Enhancer, wie beispielsweise `applyMiddleware()` um bspw. Middlewares wie Thunk zu registrieren ist die Sache recht simpel: wir schauen mittels Logical AND Operator \(`&&`\) ob die **Redux Devtools** installiert sind und übergeben wenn das der Fall ist einen Aufruf der `window.REDUX_DEVTOOLS_EXTENSION` an die `createStore()`-Funktion:
+
+```javascript
+createStore(
+  rootReducer,
+  window.__REDUX_DEVTOOLS_EXTENSION__ &&   window.__REDUX_DEVTOOLS_EXTENSION__()
+);
+```
+
+Damit sehen wir nun automatisch jede ausgelöste **Action** in den **Devtools**, können uns in Detail anschauen welche **Action** mit welcher **Payload** _dispatched_ wurde und können sogar manuell **Actions** _dispatchen_. Außerdem gibt es die Möglichkeit des **Time Travelings**, also dem „Zurückblättern“ zu vorherigen Zuständen des Stores. Dies ist mitunter sehr hilfreich beim Debugging. 
+
+Hier ist es besonders wichtig dass unsere **Reducer** _Pure Functions_ sind, damit sie beim Durchblättern durch die Historie des **Stores** auch jedesmal wieder erneut den gleichen **State** erzeugen wie beim ursprünglichen Aufruf. Ansonsten läuft man möglicherweise einem Bug hinterher, der einfach nicht reproduzierbar ist, da er mit jedem Aufruf einen unterschiedlichen **State** erzeugt.
+
+Wird wie bei unserem letzten Beispiel bereits eine Enhancer-Funktion verwendet, nutzen wir stattdessen die `window.REDUX_DEVTOOLS_EXTENSION_COMPOSE` Funktion. Diese Funktion ist eine `compose`-Funktion die es ermöglicht _mehrere_ **Enhancer**-Funktionen zu einer _einzelnen_ zu kombinieren die dann der Reihe nach aufgerufen werden. Also das gleiche Prinzip, wie wir es schon bei der `combineReducers()`-Methode für **Reducer** kennengelernt haben. 
+
+Auch Redux selbst bietet mit `compose` eine solche Funktion um mehrere Enhancer-Funktionen zu einer einzelnen zu kombinieren. Diese importieren wir der Einfachheit halber um eine neue, eigene `composeEnhancer()`-Funktion zu erstellen die nun von einer Bedingung abhängt: sind die Redux Devtools installiert, nutzt sie die `REDUX_DEVTOOLS_EXTENSION_COMPOSE`-Funktion um die **Devtools** dem **Store-Enhancer** zuzufügen. Sind sie nicht installiert nutzen wir stattdessen die Redux eigene `compose()`-Funktion um eine Funktion von gleicher Signatur zu erzeugen:
+
+```javascript
+import { applyMiddleware, compose, createStore } from 'redux';
+import thunk from 'thunk-middleware';
+
+const composeEnhancers =
+  typeof window === 'object' &&
+  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ 
+  ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({}) 
+  : compose;
+
+// ...
+
+const store = createStore(
+  rootReducer, 
+  composeEnhancers(
+    applyMiddleware(thunk),
+  )
+);
+    
+```
+
+Wer sich jetzt hier von den ganzen Funktionen und Begrifflichkeiten überwältigt fühlt den kann ich etwas trösten: das ist in der Praxis normal gar nicht so sehr von Relevanz das alles zu verstehen und zu beherrschen. Ich selbst nutze die **Redux Devtools** in jedem Projekt in dem ich **Redux** verwende und noch immer muss ich jedesmal erneut nachschlagen, wie genau das doch gleich funktionierte mit der Einbindung der Devtools. Speziell dieser Text dient daher also primär dazu das Bewusstsein dafür zu schaffen wie das Debugging von **Redux-Stores** möglich ist und denjenigen, die gern genaueres darüber wissen möchten einen kleinen Leitfaden mit an die Hand zu geben.
 
 ### Verwendung von Redux mit React
 
