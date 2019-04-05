@@ -631,6 +631,8 @@ Hier kommt nun das `react-redux` Paket ins Spiel, das gleich zu Beginn des Kapit
 
 Das Paket besteht aus im wesentlichen aus lediglich zwei React-Komponenten, bzw. einer Komponente und einer Funktion, die eine **Higher Order Component** erzeugt \(plus einer weiteren Funktion, die von React Redux selbst intern verwendet wird, in der täglichen Arbeit aber praktisch nicht von Relevanz ist\). Da wäre zum einen die `Provider`-Komponente, die wir um den Teil unseres Komponenten-Baums legen, innerhalb dessen wir später auf den gemeinsam genutzten **Store** zugreifen wollen, sowie die `connect()`-Funktion, die eine **Higher Order Component** zurückgibt und mit der wir einzelne Komponenten dann mit dem Store zu _verbinden_ können.
 
+#### Die Provider Komponente
+
 Da eine Anwendung in den meisten Fällen nur einen **Store** besitzt und alle Komponenten dieser Anwendung auf genau diesen Zugriff bekommen sollen, wird die `Provider`-Komponente üblicherweise sehr weit oben in der Komponenten-Hierarchie eingesetzt. Nicht selten als die erste und damit oberste Komponente überhaupt. Die `Provider`-Komponente bekommt dabei einen **Redux Store** als `store`-Prop übergeben und enthält darüber hinaus Kind-Elemente. Alle ihre Kind-Elemente haben dann entsprechend die Möglichkeit auf den in der `store`-Prop angegebenen **Store** zuzugreifen, diesen also zu lesen und durch das Auslösen von **Actions** zu verändern:
 
 ```jsx
@@ -657,7 +659,11 @@ ReactDOM.render(
 );
 ```
 
-Statt wie in den meisten anderen Beispielen in diesem Buch übergeben wir hier der `ReactDOM.render()`-Methode diesmal nicht nur das `<App />`-Element, sondern umschließen dieses außerdem mit der `Provider`-Komponente, die den zuvor erzeugten \(Dummy-\)Store übergeben bekommt.
+Statt wie in den meisten anderen Beispielen in diesem Buch übergeben wir hier der `ReactDOM.render()`-Methode diesmal nicht nur das `<App />`-Element, sondern umschließen dieses außerdem mit der `Provider`-Komponente, die den zuvor erzeugten \(Dummy-\)Store übergeben bekommt. 
+
+Die `Provider`-Komponente kann auch ineinander geschachtelt werden, Komponenten die mit dem Store verbunden werden nutzen dann immer den **Store** der _nächsthöheren_ `Provider`-Komponente. Ein solches Vorgehen ist aber eher unüblich und man würde in einer solchen Situation, in der zwei Stores parallel existieren sollen, wohl eher die Reducer beider Stores über die `combineReducer()`-Funktion zu einem gemeinsamen Store verbinden um schließlich wieder nur noch ein gemeinsames `Provider`-Element für alle Komponenten zu nutzen.
+
+#### Komponenten via connect-Funktion mit dem Store verbinden
 
 Dies war noch die eher leichtere Übung. Etwas umständlicher wird es beim zweiten Teil, nämlich dem **Verbinden** einer React-Komponente mit dem **Redux Store** über besagte `connect()`-Funktion. Diese kann bis zu 4 Parameter erhalten, wovon die ersten 3 Funktionen sind, die selbst wiederum zum Teil bis zu 3 Parameter übergeben bekommen können. Au weia. Die gute Nachricht: in den deutlich überwiegenden Fällen benötigen wir in der Praxis maximal 2 der 4 Parameter und bei diesen beiden auch jeweils nur jeweils den ersten Parameter. Arbeiten wir uns der Reihe nach daran ab, von simpel zu komplex. 
 
@@ -669,9 +675,17 @@ connect(mapStateToProps, mapDispatchToProps, mergeProps, options)
 
 Zuerst einmal erzeugt der Aufruf der `connect()`-Funktion eine **Higher Order Component**. Diese können wir nutzen, um bestimmte Teile des States aus dem Store an die von dieser umschlossenen Komponente zu übergeben. Um zu entscheiden welcher Teil des States an die Komponente übergeben wird nutzen wir den ersten Parameter, die meist als `mapStateToProps`-Funktion bezeichnet wird, so, wie sie auch in der Doku genannt wird.
 
-Die `mapStateToProps`-Funktion bekommt als ersten Parameter den kompletten **State** von Redux übergeben, als zweiten Parameter die in der Doku als `ownProps` bezeichneten „eigenen“ Props der Komponente. Also diejenigen, die ggf. an die erzeugte HOC übergeben werden. Je nachdem ob nur einer oder zwei Parameter übergeben werden, wird die Funktion dann entweder immer nur dann aufgerufen wenn sich etwas im **Redux State** ändert _oder_ auch dann, wenn sich die **Props** die der Komponente ggf. übergeben werden ändern.
+#### Zugriff auf Teile des globalen States über mapStateToProps
 
-In beiden Fällen wird von der Funktion ein Objekt als Rückgabewert erwartet. Die Eigenschaften dieses Objekts werden dann als die sog. `stateProps` an die Komponente übergeben. Erinnern wir uns nochmal zurück an unseren Todo-Store von etwas weiter oben. Als Beispiel möchten wir nun einer Komponente die Todos vorgefiltert nach ihrem Status übergeben, sowie die Anzahl der Todos insgesamt. 
+Die `mapStateToProps`-Funktion bekommt als ersten Parameter den kompletten **State** von Redux übergeben, als zweiten, optionalen Parameter die in der Doku als `ownProps` bezeichneten „eigenen“ Props der Komponente. Also diejenigen, die ggf. an die erzeugte HOC übergeben werden. Je nachdem ob nur einer oder zwei Parameter übergeben werden, wird die Funktion dann entweder immer nur dann aufgerufen wenn sich etwas im **Redux State** ändert _oder_ auch dann, wenn sich die **Props** die der Komponente ggf. übergeben werden ändern.
+
+```javascript
+const mapStateToProps = (state, ownProps) => {
+  // ...
+};
+```
+
+In beiden Fällen wird von der Funktion ein **Objekt** als Rückgabewert erwartet. Die Eigenschaften dieses Objekts werden dann als die sog. `stateProps` an die Komponente übergeben. Erinnern wir uns nochmal zurück an unseren Todo-Store von etwas weiter oben. Als Beispiel möchten wir nun einer Komponente die Todos vorgefiltert nach ihrem Status \(erledigt oder nicht erledigt\) übergeben, sowie die Anzahl der Todos insgesamt. 
 
 Unsere `mapStateToProps`-Funktion sieht dann etwa so aus:
 
@@ -680,10 +694,144 @@ const mapStateToProps = (state) => {
   return {
     openTodos: state.todos.filter((todo) => todo.completed !== true),
     completedTodos: state.todos.filter((todo) => todo.completed === true),
-    todoCount: state.todos.length,
+    totalCount: state.todos.length,
   };
 };
 ```
 
+Die Eigenschaften dieses Objekts, also `openTodos`, `completedTodos` und `totalCount` werden dann als **Props** an die umschlossene Komponente übergeben. Dies passiert indem wir der connect\(\)-Funktion die mapStateToProps Funktion übergeben. Diese gibt uns dann eine HOC zurück, der wir wiederum die Komponente übergeben, in der wir auf unsere drei Props aus dem State zugreifen wollen:
 
+```jsx
+const ConnectedTodoList = connect(mapStateToProps)(TodoList); 
+```
+
+Nutzen wir nun im **JSX** ein `<ConnectedTodoList />` Element und befindet sich dieses auch innerhalb eines von der `Provider`-Komponente umschlossenen Teils der Anwendung, wird die `TodoList` gerendert mit den obigen Props aus dem globalen **Redux Store:**
+
+```jsx
+import React from "react";
+import ReactDOM from "react-dom";
+import { combineReducers, createStore } from "redux";
+import { Provider, connect } from "react-redux";
+import user from "./store/user/reducer";
+import todos from "./store/todos/reducer";
+
+const rootReducer = combineReducers({ todos, user });
+
+const store = createStore(rootReducer);
+
+const TodoList = (props) => (
+  <div>
+    <p>
+      {props.totalCount} Todos. Davon {props.completedTodos.length} abgeschlossen 
+      und {props.openTodos.length} noch offen.
+    </p>
+  </div>
+);
+
+const mapStateToProps = (state) => {
+  return {
+    openTodos: state.todos.filter((todo) => todo.completed !== true),
+    completedTodos: state.todos.filter((todo) => todo.completed === true),
+    totalCount: state.todos.length,
+  };
+};
+
+const ConnectedTodoList = connect(mapStateToProps)(TodoList);
+
+ReactDOM.render(
+  <Provider store={store}>
+    <ConnectedTodoList />
+  </Provider>,
+  document.getElementById("root")
+);
+```
+
+Hier rendern wir eine ziemlich spartanische `TodoList`-Komponente, die uns zu Demonstrationszwecken lediglich die Anzahl aller Todos, sowie die Anzahl der offenen und bereits erledigten Todos anzeigt.
+
+Über den zweiten möglichen Parameter der `mapStateToProps`-Funktion, üblicherweise als `ownProps` bezeichnet, ist es möglich innerhalb der Funktion auf die **Props** der Komponente zuzugreifen um bspw. darüber entscheiden zu können welchen Teil des States wir in die verbundene Komponente hereinreichen wollen. Möchten wir also bspw. entweder immer nur die offenen Todos _oder_ die geschlossenen Todos zurückgeben, und soll die Entscheidung darüber auf einer Prop basieren, könnte der entsprechende Teil so aussehen:
+
+```jsx
+const mapStateToProps = (state, ownProps) => {
+  const filteredTodos =
+    ownProps.type === "completed"
+      ? state.todos.filter((todo) => todo.completed === true)
+      : state.todos.filter((todo) => todo.completed !== true);
+
+  return {
+    totalCount: state.todos.length,
+    todos: filteredTodos,
+  };
+};
+
+const ConnectedTodoList = connect(mapStateToProps)(TodoList);
+
+ReactDOM.render(
+  <Provider store={store}>
+    <ConnectedTodoList type="completed" />
+  </Provider>,
+  document.getElementById("root")
+);
+```
+
+Über `ownProps.type` schauen wir zunächst, ob wir die erledigten Todos anzeigen wollen oder die offenen. Anschließend filtern wir `state.todos` entsprechend und geben jeweils nur die gewünschten Todos aus dem State zurück. Da wir nun die übergebenen Todos nicht mehr nach Typ unterteilen sondern in der `mapStateToProps`-Funktion bereits eine Vorauswahl treffen, geben wir die Todos unter einer allgemeinen `todos`-Eigenschaft zurück, wodurch wir nun via `props.todos` auf diese Zugreifen können innerhalb der Komponente.
+
+Über die `mapStateToProps()`-Funktion erhalten wir also Lese-Zugriff auf den kompletten **State** aus unserem **Redux Store**. Sämtliche Daten die wir in einer Komponente nutzen wollen geben wir hier als Objekt zurück. Die entsprechende React-Komponente wird dann immer nur neu gerendert wenn sich auch tatsächlich die relevanten Daten im Store geändert haben. Dann wird entsprechend ein Rerendering der verbundenen Komponente ausgelöst.
+
+#### Actions dispatchen über mapDispatchToProps
+
+Weiter geht es mit dem zweiten Parameter für die `connect()`-Funktion: `mapDispatchToProps`:
+
+```javascript
+const mapDispatchToProps = (dispatch, ownProps) => {
+  // ...
+};
+```
+
+oder alternativ:
+
+```javascript
+const mapDispatchToProps = {
+  // ...
+};
+```
+
+Während wir mittels `mapStateToProps` **lesend** auf den Store zugreifen, erlaubt es uns `mapDispatchToProps` durch das Dispatchen von Actions **schreibend** auf den Store einzuwirken. Die Funktionssignatur ist dabei sogar erst einmal recht ähnlich zu `mapStateToProps`, nur bekommen wir als ersten Parameter eben nicht den State übergeben, sondern die `dispatch`-Methode des Stores, mit dem wir uns verbinden. Der zweite Parameter entspricht auch hier den `ownProps`, also den Props, die der Komponente selbst übergeben werden. Als kleine Besonderheit ist es möglich ein `mapDispatchToProps`-**Objekt** statt einer Funktion an den `connect()`-Aufruf zu übergeben. Doch dazu später mehr. Schauen wir uns zuerst einmal an wie die `mapDispatchToProps`-**Funktion** verwendet wird.
+
+Dazu wollen wir unsere TodoList-Komponente um die Möglichkeit erweitern neue Todos hinzuzufügen, als erledigt zu markieren oder ganz aus der Liste zu löschen. Die entsprechenden Actions sind im Beispiel über Reducer weiter oben in diesem Kapitel bereits vorgesehen: `ADD_TODO`, `REMOVE_TODO` und `CHANGE_TODO_STATUS`. Nun wollen wir es ermöglichen, dass ein Benutzer der mit unserer Anwendung interagiert, diese Actions auslösen kann:
+
+```javascript
+// Helper-Funktion zur Erzeugung einer (hoffentlich) eindeutigen ID
+const getPseudoRandomId = () =>
+  Math.random()
+    .toString(36)
+    .slice(-6);
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addTodo: (text) =>
+      dispatch({
+        type: "ADD_TODO",
+        payload: {
+          id: getPseudoRandomId(),
+          text,
+        },
+      }),
+    removeTodo: (id) =>
+      dispatch({
+        type: "REMOVE_TODO",
+        payload: id,
+      }),
+    changeStatus: (id, done) =>
+      dispatch({
+        type: "CHANGE_TODO_STATUS",
+        payload: {
+          id,
+          done,
+        },
+      }),
+  };
+};
+```
+
+Hier geben wir ein Objekt mit den drei Eigenschaften `addTodo`, `removeTodo` und `changeStatus` zurück, die unter jeweils genau diesem Namen an die verbundene Komponente, also in unserem Fall an die `TodoList` in ihren Props übergeben wird.
 
