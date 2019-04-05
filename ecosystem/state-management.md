@@ -34,7 +34,7 @@ yarn add redux react-redux
 
 Installiert werden hier **zwei** Pakete. Die Library `redux` selbst und `react-redux`. Während mit dem `redux` Paket die eigentliche State Management Library installiert wird, werden mit `react-redux` die sog. **Bindings** installiert. Auf gut Deutsch gesagt ist dies einfach nur ein Paket mit einigen **React-Komponenten** die konkret für die Verwendung von **Redux** mit **React** entwickelt und daraufhin optimiert wurden. Keine große Magie. 
 
-Theoretisch wäre auch die Verwendung von Redux alleine möglich, allerdings müssten wir uns dann selbst darum kümmern zu schauen wann Komponenten neu gerendert werden und darum, wie Daten aus einer Komponente in den State Container rein und wieder raus kommen. Da wir das nicht wollen, weil sich jemand anderes der sich viel besser damit auskennt als wir alle das bereits gemacht hat, nutzen wir eben zusätzlich `react-redux`.
+Theoretisch wäre auch die Verwendung von **Redux** alleine möglich, allerdings müssten wir uns dann selbst darum kümmern zu schauen wann Komponenten neu gerendert werden und darum, wie Daten aus einer Komponente in den State Container rein und wieder raus kommen. Da wir das nicht wollen, weil sich jemand anderes der sich viel besser damit auskennt als wir alle das bereits gemacht hat, nutzen wir eben zusätzlich `react-redux`.
 
 ### Store, Actions und Reducer
 
@@ -624,6 +624,66 @@ const store = createStore(
 Wer sich jetzt hier von den ganzen Funktionen und Begrifflichkeiten überwältigt fühlt den kann ich etwas trösten: das ist in der Praxis normal gar nicht so sehr von Relevanz das alles zu verstehen und zu beherrschen. Ich selbst nutze die **Redux Devtools** in jedem Projekt in dem ich **Redux** verwende und noch immer muss ich jedesmal erneut nachschlagen, wie genau das doch gleich funktionierte mit der Einbindung der Devtools. Speziell dieser Text dient daher also primär dazu das Bewusstsein dafür zu schaffen wie das Debugging von **Redux-Stores** möglich ist und denjenigen, die gern genaueres darüber wissen möchten einen kleinen Leitfaden mit an die Hand zu geben.
 
 ### Verwendung von Redux mit React
+
+Nun haben wir bereits ziemlich genau kennengelernt wie wir einen neuen **Store** erzeugen, wie wir **Actions** _dispatchen_, welche Rolle der **Reducer** spielt und wie wir **Middleware** einsetzen. Doch wie bringen wir das jetzt unter einen Hut mit **React?** 
+
+Hier kommt nun das `react-redux` Paket ins Spiel, das gleich zu Beginn des Kapitels bereits einmal angerissen wurde. Dies sind die _„offiziellen React Bindings für Redux“_, also die offizielle Anbindung von **Redux** an **React**, die von den Redux-Entwicklern gepflegt wird und ursprünglich von Dan Abramov entwickelt wurde, der inzwischen auch Teil des offiziellen React Core Teams ist.
+
+Das Paket besteht aus im wesentlichen aus lediglich zwei React-Komponenten, bzw. einer Komponente und einer Funktion, die eine **Higher Order Component** erzeugt \(plus einer weiteren Funktion, die von React Redux selbst intern verwendet wird, in der täglichen Arbeit aber praktisch nicht von Relevanz ist\). Da wäre zum einen die `Provider`-Komponente, die wir um den Teil unseres Komponenten-Baums legen, innerhalb dessen wir später auf den gemeinsam genutzten **Store** zugreifen wollen, sowie die `connect()`-Funktion, die eine **Higher Order Component** zurückgibt und mit der wir einzelne Komponenten dann mit dem Store zu _verbinden_ können.
+
+Da eine Anwendung in den meisten Fällen nur einen **Store** besitzt und alle Komponenten dieser Anwendung auf genau diesen Zugriff bekommen sollen, wird die `Provider`-Komponente üblicherweise sehr weit oben in der Komponenten-Hierarchie eingesetzt. Nicht selten als die erste und damit oberste Komponente überhaupt. Die `Provider`-Komponente bekommt dabei einen **Redux Store** als `store`-Prop übergeben und enthält darüber hinaus Kind-Elemente. Alle ihre Kind-Elemente haben dann entsprechend die Möglichkeit auf den in der `store`-Prop angegebenen **Store** zuzugreifen, diesen also zu lesen und durch das Auslösen von **Actions** zu verändern:
+
+```jsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+
+const dummyReducer = (state = {}, action) => {
+  return state;
+};
+
+const store = createStore(dummyReducer);
+
+const App = () => (
+  <p>Hier haben wir nun Zugriff auf den erzeugten Redux-Store</p>
+);
+
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('root')
+);
+```
+
+Statt wie in den meisten anderen Beispielen in diesem Buch übergeben wir hier der `ReactDOM.render()`-Methode diesmal nicht nur das `<App />`-Element, sondern umschließen dieses außerdem mit der `Provider`-Komponente, die den zuvor erzeugten \(Dummy-\)Store übergeben bekommt.
+
+Dies war noch die eher leichtere Übung. Etwas umständlicher wird es beim zweiten Teil, nämlich dem **Verbinden** einer React-Komponente mit dem **Redux Store** über besagte `connect()`-Funktion. Diese kann bis zu 4 Parameter erhalten, wovon die ersten 3 Funktionen sind, die selbst wiederum zum Teil bis zu 3 Parameter übergeben bekommen können. Au weia. Die gute Nachricht: in den deutlich überwiegenden Fällen benötigen wir in der Praxis maximal 2 der 4 Parameter und bei diesen beiden auch jeweils nur jeweils den ersten Parameter. Arbeiten wir uns der Reihe nach daran ab, von simpel zu komplex. 
+
+Die grundsätzliche Funktionssignatur ist die folgende:
+
+```javascript
+connect(mapStateToProps, mapDispatchToProps, mergeProps, options)
+```
+
+Zuerst einmal erzeugt der Aufruf der `connect()`-Funktion eine **Higher Order Component**. Diese können wir nutzen, um bestimmte Teile des States aus dem Store an die von dieser umschlossenen Komponente zu übergeben. Um zu entscheiden welcher Teil des States an die Komponente übergeben wird nutzen wir den ersten Parameter, die meist als `mapStateToProps`-Funktion bezeichnet wird, so, wie sie auch in der Doku genannt wird.
+
+Die `mapStateToProps`-Funktion bekommt als ersten Parameter den kompletten **State** von Redux übergeben, als zweiten Parameter die in der Doku als `ownProps` bezeichneten „eigenen“ Props der Komponente. Also diejenigen, die ggf. an die erzeugte HOC übergeben werden. Je nachdem ob nur einer oder zwei Parameter übergeben werden, wird die Funktion dann entweder immer nur dann aufgerufen wenn sich etwas im **Redux State** ändert _oder_ auch dann, wenn sich die **Props** die der Komponente ggf. übergeben werden ändern.
+
+In beiden Fällen wird von der Funktion ein Objekt als Rückgabewert erwartet. Die Eigenschaften dieses Objekts werden dann als die sog. `stateProps` an die Komponente übergeben. Erinnern wir uns nochmal zurück an unseren Todo-Store von etwas weiter oben. Als Beispiel möchten wir nun einer Komponente die Todos vorgefiltert nach ihrem Status übergeben, sowie die Anzahl der Todos insgesamt. 
+
+Unsere `mapStateToProps`-Funktion sieht dann etwa so aus:
+
+```jsx
+const mapStateToProps = (state) => {
+  return {
+    openTodos: state.todos.filter((todo) => todo.completed !== true),
+    completedTodos: state.todos.filter((todo) => todo.completed === true),
+    todoCount: state.todos.length,
+  };
+};
+```
 
 
 
