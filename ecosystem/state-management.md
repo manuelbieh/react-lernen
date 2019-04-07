@@ -50,9 +50,9 @@ Beispiel für eine typische **Action** in **Redux**:
 
 ```javascript
 {
-  type: "USER_ADDED",
+  type: "SET_USER",
   payload: {
-    id: 1,
+    id: "d929e553-7079-4309-8c7d-2d2db39922c6",
     name: "Manuel"
   }
 }
@@ -237,7 +237,7 @@ const rootReducer = (state = initialState, action) => {
     case "REMOVE_TODO": {
       return {
         user: state.user,
-        todos: state.todos.filter((todo) => todo.id !== action.payload.id),
+        todos: state.todos.filter((todo) => todo.id !== action.payload),
       };
     }
     case "CHANGE_TODO_STATUS": {
@@ -265,13 +265,13 @@ const store = createStore(rootReducer);
 
 Ich möchte hier gar nicht auf alles was hier passiert zu tief ins Detail eingehen, da es hier darum gehen soll wie ein großer, unübersichtlicher **Reducer** in mehrere kleinere und idealerweise übersichtlichere aufgeteilt werden kann. Doch einige Stellen sind für das generelle Verständnis nicht unwichtig. Gehen wir also der Reihe nach den `switch`-Block durch, bei dem uns jeder `case`-Block ein neues State-Objekt zurück gibt.
 
-Angefangen bei `SET_USER`: das hier erzeugte **State-Objekt** ändert das `user`-Objekt und setzt dessen `name`-Eigenschaft auf `action.payload.name`, sowie die `accessToken`-Eigenschaft auf `action.payload.accessToken`. Wer mag, der kann hier stattdessen auch `user` auf `action.payload` setzen, dann würden alle in der entsprechenden Payload der Action übergebenen Eigenschaften im `user`-Objekt landen. Dabei sollte dann aber sichergestellt sein, dass die `action.payload` immer ein Objekt ist, da wir ansonsten die Ausgangsform des `user`-Objekts verändern würden was zu Problemen führen kann, wenn bspw. auch andere Teile des Reducers auf das Objekt zugreifen und das Objekt plötzlich keines mehr ist. In unserem Beispiel ignorieren wir aber alle anderen Eigenschaften indem wir explizit nur `name` und `accessToken` aus der Payload der ausgelösten Action holen. 
+Angefangen bei `SET_USER`: das hier erzeugte **State-Objekt** ändert das `user`-Objekt und setzt dessen `name`-Eigenschaft auf `action.payload.name`, sowie die `accessToken`-Eigenschaft auf `action.payload.accessToken`. Wer mag, der kann hier stattdessen auch `user` auf `action.payload` setzen, dann würden alle in der entsprechenden **Payload** der **Action** übergebenen Eigenschaften im `user`-Objekt landen. Dabei sollte dann aber sichergestellt sein, dass die `action.payload` immer ein Objekt ist, da wir ansonsten die Ausgangsform des `user`-Objekts verändern würden was zu Problemen führen kann, wenn bspw. auch andere Teile des **Reducers** auf das Objekt zugreifen und das Objekt plötzlich keines mehr ist. In unserem Beispiel ignorieren wir aber alle anderen Eigenschaften indem wir explizit nur `name` und `accessToken` aus der **Payload** der ausgelösten Action holen. 
 
 Neben dem modifizierten `user` geben wir auch eine `todos`-Eigenschaft zurück, die wir auf `state.todos` setzen, also beim bisherigen Wert belassen. **Dies ist wichtig**, da in unserem State-Objekt die `todos` ansonsten komplett aus dem State entfernt werden würden und wir nun zwar den Benutzer gesetzt, unsere Todos jedoch aus dem State verloren hätten!
 
 Weiter geht es mit `ADD_TODO`: Hier ist es andersherum und wir geben zuerst einmal den `user`-Ast unseres State-Trees unverändert zurück. Anschließend fügen wir das neue Todo-Item mittels `.concat()`-Methode dem `todo`-Array hinzu. Hier ist es wichtig `concat()` und nicht `push()` zu benutzen, da `push()` eine sog. _mutative_ Methode ist, also den bestehenden State verändert statt einen neuen State zu erzeugen. Mittels `state.todos.concat` nehmen wir das aktuelle `todos`-Array als Basis und erzeugen daraus ein neues Array mit dem neuen Todo-Item und geben dieses zurück.
 
-Sehr ähnliches passiert im nächsten Fall: `REMOVE_TODO`. Hier geben wir wieder zuerst den `user`-Ast zurück, ehe wir im `todos`-Array nach dem zu entfernenden Eintrag suchen um diesen herauszufiltern. Das gefilterte Array ist dann unser neuer `todos`-State. Wir nutzen hier die `Array.filter()`-Methode, da diese anders als bspw. `Array.splice()` nicht _mutativ_ ist und ein neues Array erzeugt.
+Sehr ähnliches passiert im nächsten Fall: `REMOVE_TODO`. Hier geben wir wieder zuerst den `user`-Ast zurück, ehe wir im `todos`-Array nach dem zu entfernenden Eintrag suchen, um diesen anschließend herauszufiltern. Welcher Eintrag zu entfernen ist, das übergeben wir der Action als `action.payload` in Form einer Todo-ID. Das gefilterte Array ist dann unser neuer `todos`-State. Wir nutzen hier die `Array.filter()`-Methode, da diese anders als bspw. `Array.splice()` nicht _mutativ_ ist und ein neues Array erzeugt.
 
 Zuletzt haben wir den `CHANGE_TODO_STATUS` Fall. Mit diesem ändern wir den Status des Todo-Elements, also von _Zu erledigen_ \(`false`\) auf _Erledigt_ \(`true`\) - oder eben andersherum. Dazu geben wir, erneut, das unveränderte `user`-Objekt aus dem vorherigen State zurück und iterieren anschließend mittels `state.todos.map()`durch alle Todos. In der Map-Funktion schauen wir ob die ID des aktuellen Todo-Objekts der ID aus der `action.payload` entspricht. Ist dies nicht der Fall, geben wir einfach jeweilige Todo-Element unverändert zurück. 
 
@@ -323,7 +323,7 @@ export default (state = initialState, action) => {
       return state.concat(action.payload);
     }
     case "REMOVE_TODO": {
-      return state.filter((todo) => todo.id !== action.payload.id);
+      return state.filter((todo) => todo.id !== action.payload);
     }
     case "CHANGE_TODO_STATUS": {
       return state.map((todo) => {
@@ -795,12 +795,12 @@ const mapDispatchToProps = {
 };
 ```
 
-Während wir mittels `mapStateToProps` **lesend** auf den Store zugreifen, erlaubt es uns `mapDispatchToProps` durch das Dispatchen von Actions **schreibend** auf den Store einzuwirken. Die Funktionssignatur ist dabei sogar erst einmal recht ähnlich zu `mapStateToProps`, nur bekommen wir als ersten Parameter eben nicht den State übergeben, sondern die `dispatch`-Methode des Stores, mit dem wir uns verbinden. Der zweite Parameter entspricht auch hier den `ownProps`, also den Props, die der Komponente selbst übergeben werden. Als kleine Besonderheit ist es möglich ein `mapDispatchToProps`-**Objekt** statt einer Funktion an den `connect()`-Aufruf zu übergeben. Doch dazu später mehr. Schauen wir uns zuerst einmal an wie die `mapDispatchToProps`-**Funktion** verwendet wird.
+Während wir mittels `mapStateToProps` **lesend** auf den Store zugreifen, erlaubt es uns `mapDispatchToProps` durch das Dispatchen von Actions **schreibend** auf den Store einzuwirken. Die Funktionssignatur ist dabei sogar erst einmal recht ähnlich zu `mapStateToProps`, nur bekommen wir als ersten Parameter eben nicht den State übergeben, sondern die `dispatch`-Methode des Stores, mit dem wir uns verbinden. Der zweite Parameter entspricht auch hier den `ownProps`, also den **Props**, die der Komponente selbst übergeben werden. Als kleine Besonderheit ist es möglich ein `mapDispatchToProps`-**Objekt** statt einer Funktion an den `connect()`-Aufruf zu übergeben. Doch dazu später mehr. Schauen wir uns zuerst einmal an wie die `mapDispatchToProps`-**Funktion** verwendet wird.
 
-Dazu wollen wir unsere TodoList-Komponente um die Möglichkeit erweitern neue Todos hinzuzufügen, als erledigt zu markieren oder ganz aus der Liste zu löschen. Die entsprechenden Actions sind im Beispiel über Reducer weiter oben in diesem Kapitel bereits vorgesehen: `ADD_TODO`, `REMOVE_TODO` und `CHANGE_TODO_STATUS`. Nun wollen wir es ermöglichen, dass ein Benutzer der mit unserer Anwendung interagiert, diese Actions auslösen kann:
+Dazu wollen wir unsere `TodoList`-Komponente um die Möglichkeit erweitern neue Todos hinzuzufügen, als erledigt zu markieren oder ganz aus der Liste zu löschen. Die entsprechenden **Actions** sind im Beispiel über **Reducer** weiter oben in diesem Kapitel bereits vorgesehen: `ADD_TODO`, `REMOVE_TODO` und `CHANGE_TODO_STATUS`. Nun wollen wir es ermöglichen, dass ein Benutzer der mit unserer Anwendung interagiert, diese **Actions** auslösen kann:
 
 ```javascript
-// Helper-Funktion zur Erzeugung einer (hoffentlich) eindeutigen ID
+// Helper-Funktion zur Erzeugung einer (hoffentlich ;)) eindeutigen ID
 const getPseudoRandomId = () =>
   Math.random()
     .toString(36)
@@ -833,5 +833,228 @@ const mapDispatchToProps = (dispatch) => {
 };
 ```
 
-Hier geben wir ein Objekt mit den drei Eigenschaften `addTodo`, `removeTodo` und `changeStatus` zurück, die unter jeweils genau diesem Namen an die verbundene Komponente, also in unserem Fall an die `TodoList` in ihren Props übergeben wird.
+Hier geben wir ein Objekt mit den drei Eigenschaften `addTodo`, `removeTodo` und `changeStatus` zurück, die unter jeweils genau diesem Namen an eine verbundene Komponente, also in unserem Fall an die `TodoList`, in ihren **Props** übergeben wird. Dazu übergeben wir die `mapStateToProps()`-Funktion als zweiten Parameter an `connect()`:
+
+```javascript
+const ConnectedTodoList = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TodoList);
+```
+
+Durch die Verwendung beider obigen Funktionen `mapStateToProps` und `mapDispatchToProps` ergibt sich ein Aufruf der in etwa dem folgenden entspricht:
+
+```jsx
+<TodoList todos={...} addTodo={...} removeTodo={...} changeStatus={...} />
+```
+
+Alle Eigenschaften, die die wir aus `mapStateToProps` wie auch die, die wir aus `mapDispatchToProps` zurückgeben, werden an die Komponente übergeben, die mittels `connect()`-Funktion mit dem **Store** verbunden wird. In der Komponente \(in diesem Fall in der `TodoList`-Komponente\) können wir dann darauf zugreifen und durch den Aufruf der Funktionen aus `mapDispatchToProps` Actions dispatchen oder durch den Zugriff auf die Eigenschaften aus `mapStateToProps` den State aus dem Store auslesen.
+
+Die **Actions**, die wir hier in `mapDispatchToProps` inline übergeben, werden für gewöhnlich in entsprechende **Action Creator** Funktionen extrahiert. Diese sorgen für bessere Lesbarkeit, sind leichter testbar und normalerweise auch verständlicher:
+
+```javascript
+const addTodo = (text) => ({
+  type: "ADD_TODO",
+  payload: {
+    id: getPseudoRandomId(),
+    text,
+  },
+});
+
+const removeTodo = (id) => ({
+  type: "REMOVE_TODO",
+  payload: id,
+});
+
+const changeStatus = (id, done) => ({
+  type: "CHANGE_TODO_STATUS",
+  payload: {
+    id,
+    done,
+  },
+});
+```
+
+Unsere `mapStateToProps`-Funktion verkürzt sich dann und wird deutlich übersichtlicher:
+
+```javascript
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addTodo: (text) => dispatch(addTodo(text)),
+    removeTodo: (id) => dispatch(removeTodo(id)),
+    changeStatus: (id, done) => dispatch(changeStatus(id, done)),
+  };
+};
+```
+
+Doch diese Variante hat noch einen weiteren entscheidenden Vorteil: da wir hier einiges an Wiederholung im Code haben und Entwickler Wiederholungen natürlich möglichst vermeiden, bietet uns Redux eine Abkürzung. Stimmen die Funktionssignaturen der **Action Creators** mit denen der Funktionen überein, wie wir sie aus `mapDispatchToProps` zurückgeben, können wir unsere **Action Creators** als **ES2015+ Shorthand Objekt** zurückgeben! **Redux** setzt den notwendigen `dispatch()`-Aufruf dann von allein um alle Funktionen herum. 
+
+Mit dem folgenden Code erreichen wir also die identische Funktionalität wie mit dem Code aus dem vorherigen Beispiel:
+
+```javascript
+const mapDispatchToProps = {
+  addTodo,
+  removeTodo,
+  changeStatus,
+}
+```
+
+Doch Vorsicht: dies funktioniert tatsächlich nur wenn auch alle Action Creator Funktionen mit den gleichen Funktionen aus der verbundenen React-Komponente aufgerufen werden und `mapDispatchToProps` genau in dieser Form als Objekt übergeben wird!
+
+#### Wie wir alle Teile des Puzzles miteinander verbinden
+
+Werfen wir einmal einen Blick auf ein sehr umfangreiches aber dafür auch vollständiges Beispiel einer voll funktionsfähigen TodoList-App, mit der wir neue Todos hinzufügen, diese als erledigt oder nicht erledigt markieren und auch wieder entfernen können:
+
+```jsx
+import React, { useState } from "react";
+import ReactDOM from "react-dom";
+import { combineReducers, createStore } from "redux";
+import { Provider, connect } from "react-redux";
+
+const initialState = Object.freeze([]);
+
+const todosReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case "ADD_TODO": {
+      return state.concat(action.payload);
+    }
+    case "REMOVE_TODO": {
+      return state.filter((todo) => todo.id !== action.payload);
+    }
+    case "CHANGE_TODO_STATUS": {
+      return state.map((todo) => {
+        if (todo.id !== action.payload.id) {
+          return todo;
+        }
+        return {
+          ...todo,
+          done: action.payload.done,
+        };
+      });
+    }
+    default: {
+      return state;
+    }
+  }
+};
+
+const rootReducer = combineReducers({
+  todos: todosReducer,
+});
+
+const store = createStore(rootReducer);
+
+const getPseudoRandomId = () =>
+  Math.random()
+    .toString(36)
+    .slice(-6);
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    todos: state.todos,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addTodo: (text) =>
+      dispatch({
+        type: "ADD_TODO",
+        payload: {
+          id: getPseudoRandomId(),
+          text,
+        },
+      }),
+    removeTodo: (id) =>
+      dispatch({
+        type: "REMOVE_TODO",
+        payload: id,
+      }),
+    changeStatus: (id, done) =>
+      dispatch({
+        type: "CHANGE_TODO_STATUS",
+        payload: {
+          id,
+          done,
+        },
+      }),
+  };
+};
+
+const TodoList = (props) => {
+  const [todoText, setTodoText] = useState("");
+
+  return (
+    <div>
+      <p>{props.todos.length} Todos.</p>
+      <ul>
+        {props.todos.map((todo) => (
+          <li
+            key={todo.id}
+            style={{ textDecoration: todo.done ? "line-through" : "none" }}
+          >
+            <button
+              type="button"
+              onClick={() => {
+                props.removeTodo(todo.id);
+              }}
+            >
+              löschen
+            </button>
+            <label>
+              <input
+                type="checkbox"
+                name={todo.id}
+                checked={Boolean(todo.done)}
+                onChange={(e) => {
+                  const { name, checked } = e.target;
+                  props.changeStatus(name, checked);
+                }}
+              />
+              {todo.text}
+            </label>
+          </li>
+        ))}
+      </ul>
+      <input onChange={(e) => setTodoText(e.target.value)} value={todoText} />
+      <button
+        type="button"
+        onClick={() => {
+          props.addTodo(todoText);
+          setTodoText("");
+        }}
+      >
+        hinzufügen
+      </button>
+    </div>
+  );
+};
+
+const ConnectedTodoList = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TodoList);
+
+ReactDOM.render(
+  <Provider store={store}>
+    <ConnectedTodoList />
+  </Provider>,
+  document.getElementById("root")
+);
+```
+
+Hier definieren wir zunächst mal unseren `todosReducer`, der uns aus vorherigen Beispielen bekannt vorkommen dürfte. Aus diesem erstellen wir dann einen **Root Reducer** mittels `combineReducer()`. Das wäre an dieser Stelle noch unnötig, da wir ohnehin nur _einen_ **Reducer** haben und diesen daher direkt als **Root Reducer** einsetzen könnten. Allerdings gehen wir in diesem Fall einfach mal davon aus, dass unsere Anwendung weiter wachsen wird und wir mit der Zeit weitere **Reducer** hinzufügen werden.
+
+Als nächstes erstellen wir den Store mittels `createStore()`, wie wir das ebenfalls bereits in vorherigen Beispielen kennengelernt haben. Soweit also nichts Neues für den aufmerksamen Leser.
+
+Dann folgt die Definition unserer `mapStateToProps` und `mapDispatchToProps` Funktionen. Über `mapStateToProps` geben wir die `todos`-Eigenschaft zurück, die auf den `todos`-Ast unseres **States** zeigt. Über `mapDispatchToProps` geben wir die drei Funktionen zurück, mit denen wir später den Todos-State verändern werden. Dabei erstellen wir eine Funktion, die beim Aufruf selbst wiederum `dispatch` aufruft und die jeweilige **Action** übergibt. 
+
+Möchten wir nur `mapDispatchToProps()` übergeben um aus einer Komponente heraus **Actions** dispatchen zu können, wollen aber den State selbst in der Komponente nicht lesen, kann als erster Parameter `null` übergeben werden:
+
+```javascript
+const ConnectedTodoList = connect(
+  null,
+  mapDispatchToProps
+)(TodoList);
+```
 
