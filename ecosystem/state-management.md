@@ -842,14 +842,6 @@ const ConnectedTodoList = connect(
 )(TodoList);
 ```
 
-Durch die Verwendung beider obigen Funktionen `mapStateToProps` und `mapDispatchToProps` ergibt sich ein Aufruf der in etwa dem folgenden entspricht:
-
-```jsx
-<TodoList todos={...} addTodo={...} removeTodo={...} changeStatus={...} />
-```
-
-Alle Eigenschaften, die die wir aus `mapStateToProps` wie auch die, die wir aus `mapDispatchToProps` zurückgeben, werden an die Komponente übergeben, die mittels `connect()`-Funktion mit dem **Store** verbunden wird. In der Komponente \(in diesem Fall in der `TodoList`-Komponente\) können wir dann darauf zugreifen und durch den Aufruf der Funktionen aus `mapDispatchToProps` Actions dispatchen oder durch den Zugriff auf die Eigenschaften aus `mapStateToProps` den State aus dem Store auslesen.
-
 Die **Actions**, die wir hier in `mapDispatchToProps` inline übergeben, werden für gewöhnlich in entsprechende **Action Creator** Funktionen extrahiert. Diese sorgen für bessere Lesbarkeit, sind leichter testbar und normalerweise auch verständlicher:
 
 ```javascript
@@ -899,29 +891,74 @@ const mapDispatchToProps = {
 }
 ```
 
-Doch Vorsicht: dies funktioniert tatsächlich nur wenn auch alle Action Creator Funktionen mit den gleichen Funktionen aus der verbundenen React-Komponente aufgerufen werden und `mapDispatchToProps` genau in dieser Form als Objekt übergeben wird!
+Doch Vorsicht: dies funktioniert tatsächlich nur wenn auch alle **Action Creator**-Funktionen mit den gleichen Funktionen aus der verbundenen React-Komponente aufgerufen werden und `mapDispatchToProps` genau in dieser Form als Objekt übergeben wird!
+
+Durch die Verwendung der beiden Funktionen `mapStateToProps` und `mapDispatchToProps` ergibt sich ein Aufruf der in etwa dem folgenden entspricht:
+
+```jsx
+<TodoList todos={...} addTodo={...} removeTodo={...} changeStatus={...} />
+```
+
+Alle Eigenschaften, die die wir aus `mapStateToProps` wie auch die, die wir aus `mapDispatchToProps` zurückgeben, werden an die Komponente übergeben, die mittels `connect()`-Funktion mit dem **Store** verbunden wird. In der Komponente \(in obigen Beispiel in der `TodoList`-Komponente\) können wir dann über die **Props** darauf zugreifen und durch den Aufruf der Funktionen aus `mapDispatchToProps` **Actions** _dispatchen_ oder durch den Zugriff auf die Eigenschaften aus `mapStateToProps` den State aus dem **Store** auslesen.
+
+Möchten wir nur `mapDispatchToProps()` an den `connect()`-Aufruf übergeben um aus einer Komponente heraus **Actions** dispatchen zu können, müssen jedoch den State selbst in der Komponente nicht lesen, kann als erster Parameter `null` übergeben werden:
+
+```javascript
+const ConnectedTodoList = connect(
+  null,
+  mapDispatchToProps
+)(TodoList);
+```
+
+#### Die StateProps und die DispatchProps zusammenführen mit mergeProps
+
+Der dritte Parameter deckt einen Fall ab, der in der Praxis eher äußerst selten vorkommt. Ich möchte ihn daher an dieser Stelle der Vollständigkeit halber nicht unerwähnt lassen, aber auch nicht zu sehr im Detail drauf eingehen. Hier handelt es sich um die `mergeProps()`-Funktion:
+
+```javascript
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  // ...
+}
+```
+
+Die Funktion bekommt als ersten Parameter das Ergebnis von `mapStateToProps` und`mapDispatchToProps`, sowie abermals `ownProps` übergeben. Als Rückgabewert wird ein neues Objekt erwartet, dessen Eigenschaften dann ebenfalls über die Props an die mit dem Store verbundene Komponente übergeben werden.
+
+Diese Funktion kann hilfreich sein wenn man bspw. ohne die Verwendung der **Thunk Middleware** gewisse **Actions** dispatchen möchte, die auf Daten aus dem State angewiesen sind. Auch denkbar wäre es, die **Actions** zu filtern, basierend auf dem State, so dass eine Komponente bspw. eine mögliche `updateProfile()` **Action** nicht hereingereicht bekommt wenn `state.profile` nicht existiert, der Benutzer also etwa nicht eingeloggt ist. Solche Bedingungen lassen sich aber innerhalb der Komponenten selbst in der Regel deutlich eleganter lösen.
+
+#### Zuletzt: die Optionen als vierter Parameter für connect\(\)
+
+Wer soweit ist den 4. Parameter zu benötigen, der sollte ziemlich genau wissen was er dort tut. Redux ist standardmäßig so optimiert, dass die Optionen nur in sehr seltenen Ausnahmefällen überhaupt benutzt werden müssen. So kann etwa ein eigener Context angegeben werden den Redux nutzen soll oder es können eigene Vergleichsfunktionen übergeben werden, mittels denen ermittelt wird ob eine Komponente neu gerendert werden soll oder nicht. Die komplette Liste der verfügbaren Optionen ist die folgende:
+
+```javascript
+{
+  context: Object,
+  pure: boolean,
+  areStatesEqual: Function,
+  areOwnPropsEqual: Function,
+  areStatePropsEqual: Function,
+  areMergedPropsEqual: Function,
+  forwardRef: boolean,
+}
+```
+
+Wer das Gefühl hat die Optionen zu benötigen \(meist ist die Antwort darauf „nein“\) schaut am besten einmal in die offizielle Doku: [https://react-redux.js.org/api/connect\#options-object](https://react-redux.js.org/api/connect#options-object)
 
 #### Wie wir alle Teile des Puzzles miteinander verbinden
 
-Werfen wir einmal einen Blick auf ein sehr umfangreiches aber dafür auch vollständiges Beispiel einer voll funktionsfähigen TodoList-App, mit der wir neue Todos hinzufügen, diese als erledigt oder nicht erledigt markieren und auch wieder entfernen können:
+Nun wissen wir welchen Zweck der `Provider` erfüllt und wie wir die `connect()`-Funktion einsetzen. Werfen wir nun doch einmal einen Blick auf ein sehr umfangreiches aber dafür auch vollständiges Beispiel einer voll funktionsfähigen TodoList-App, mit der wir neue Todos hinzufügen, diese als erledigt oder nicht erledigt markieren und auch wieder entfernen können:
 
-```jsx
-import React, { useState } from "react";
-import ReactDOM from "react-dom";
-import { combineReducers, createStore } from "redux";
-import { Provider, connect } from "react-redux";
-
+```javascript
+// store/todos/reducer.js
 const initialState = Object.freeze([]);
 
-const todosReducer = (state = initialState, action) => {
+export default (state = initialState, action) => {
   switch (action.type) {
-    case "ADD_TODO": {
+    case 'ADD_TODO': {
       return state.concat(action.payload);
     }
-    case "REMOVE_TODO": {
+    case 'REMOVE_TODO': {
       return state.filter((todo) => todo.id !== action.payload);
     }
-    case "CHANGE_TODO_STATUS": {
+    case 'CHANGE_TODO_STATUS': {
       return state.map((todo) => {
         if (todo.id !== action.payload.id) {
           return todo;
@@ -937,71 +974,61 @@ const todosReducer = (state = initialState, action) => {
     }
   }
 };
+```
 
-const rootReducer = combineReducers({
-  todos: todosReducer,
-});
-
-const store = createStore(rootReducer);
-
+```javascript
+// store/todos/actions.js
 const getPseudoRandomId = () =>
   Math.random()
     .toString(36)
     .slice(-6);
 
-const mapStateToProps = (state, ownProps) => {
-  return {
-    todos: state.todos,
-  };
-};
+export const addTodo = (text) => ({
+  type: "ADD_TODO",
+  payload: {
+    id: getPseudoRandomId(),
+    text,
+  },
+});
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    addTodo: (text) =>
-      dispatch({
-        type: "ADD_TODO",
-        payload: {
-          id: getPseudoRandomId(),
-          text,
-        },
-      }),
-    removeTodo: (id) =>
-      dispatch({
-        type: "REMOVE_TODO",
-        payload: id,
-      }),
-    changeStatus: (id, done) =>
-      dispatch({
-        type: "CHANGE_TODO_STATUS",
-        payload: {
-          id,
-          done,
-        },
-      }),
-  };
-};
+export const removeTodo = (id) => ({
+  type: "REMOVE_TODO",
+  payload: id,
+});
+
+export const changeStatus = (id, done) => ({
+  type: "CHANGE_TODO_STATUS",
+  payload: {
+    id,
+    done,
+  },
+});
+```
+
+```jsx
+// TodoList.js
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { addTodo, removeTodo, changeStatus } from './store/todos/actions';
 
 const TodoList = (props) => {
-  const [todoText, setTodoText] = useState("");
+  const [todoText, setTodoText] = useState('');
 
   return (
     <div>
       <p>{props.todos.length} Todos.</p>
       <ul>
         {props.todos.map((todo) => (
-          <li
-            key={todo.id}
-            style={{ textDecoration: todo.done ? "line-through" : "none" }}
-          >
+          <li key={todo.id}>
             <button
               type="button"
               onClick={() => {
                 props.removeTodo(todo.id);
-              }}
-            >
+              }}>
               löschen
             </button>
-            <label>
+            <label
+              style={{ textDecoration: todo.done ? 'line-through' : 'none' }}>
               <input
                 type="checkbox"
                 name={todo.id}
@@ -1021,40 +1048,117 @@ const TodoList = (props) => {
         type="button"
         onClick={() => {
           props.addTodo(todoText);
-          setTodoText("");
-        }}
-      >
+          setTodoText('');
+        }}>
         hinzufügen
       </button>
     </div>
   );
 };
 
-const ConnectedTodoList = connect(
+const mapStateToProps = (state) => ({
+  todos: state.todos,
+});
+
+const mapDispatchToProps = {
+  addTodo,
+  removeTodo,
+  changeStatus,
+};
+
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(TodoList);
-
-ReactDOM.render(
-  <Provider store={store}>
-    <ConnectedTodoList />
-  </Provider>,
-  document.getElementById("root")
-);
 ```
 
-Hier definieren wir zunächst mal unseren `todosReducer`, der uns aus vorherigen Beispielen bekannt vorkommen dürfte. Aus diesem erstellen wir dann einen **Root Reducer** mittels `combineReducer()`. Das wäre an dieser Stelle noch unnötig, da wir ohnehin nur _einen_ **Reducer** haben und diesen daher direkt als **Root Reducer** einsetzen könnten. Allerdings gehen wir in diesem Fall einfach mal davon aus, dass unsere Anwendung weiter wachsen wird und wir mit der Zeit weitere **Reducer** hinzufügen werden.
+```jsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { combineReducers, createStore } from 'redux';
+import { Provider } from 'react-redux';
+import todosReducer from './store/todos/reducer';
+import TodoList from './TodoList';
 
-Als nächstes erstellen wir den Store mittels `createStore()`, wie wir das ebenfalls bereits in vorherigen Beispielen kennengelernt haben. Soweit also nichts Neues für den aufmerksamen Leser.
+const rootReducer = combineReducers({
+  todos: todosReducer,
+});
 
-Dann folgt die Definition unserer `mapStateToProps` und `mapDispatchToProps` Funktionen. Über `mapStateToProps` geben wir die `todos`-Eigenschaft zurück, die auf den `todos`-Ast unseres **States** zeigt. Über `mapDispatchToProps` geben wir die drei Funktionen zurück, mit denen wir später den Todos-State verändern werden. Dabei erstellen wir eine Funktion, die beim Aufruf selbst wiederum `dispatch` aufruft und die jeweilige **Action** übergibt. 
+const store = createStore(rootReducer);
 
-Möchten wir nur `mapDispatchToProps()` übergeben um aus einer Komponente heraus **Actions** dispatchen zu können, wollen aber den State selbst in der Komponente nicht lesen, kann als erster Parameter `null` übergeben werden:
+const App = () => (
+  <Provider store={store}>
+    <TodoList />
+  </Provider>
+);
+
+ReactDOM.render(<App />, document.getElementById('root'));
+```
+
+Hier definieren wir zunächst mal unseren `todosReducer`, sowie die drei **Actions** `addTodo`, `removeTodo` und `changeStatus`, die uns jeweils aus vorherigen Beispielen bekannt vorkommen dürften. Zur besseren Übersicht lagern wir sowohl **Reducer** als auch **Actions** in eigene Dateien aus, die wir in ein eigenes Unterverzeichnis `./store/todos` legen.
+
+{% hint style="warning" %}
+Achtung, kontrovers: über die „korrekte“ Ordnerstruktur beim Aufteilen einer Anwendung in mehrere Dateien werden immer wieder hitzige Debatten geführt. Ich selbst habe mit vielen unterschiedlichen Strukturen gearbeitet und fand die Aufteilung nach Domäne \(also etwa `todos`, `user`, `repositories`, …\) und nach Typ \(`actions`, `reducer`, ...\) am übersichtlichsten. Andere wiederum bevorzugen es  alle Actions in einem Ordner `actions` zu sammeln, alle Reduer in einem Ordner `reducer`. Wieder andere vermeiden die Aufteilung von Actions und Reducern in separate Dateien. 
+
+Hier gibt es kein eindeutiges _Richtig_ oder _Falsch_.  Dies hängt einerseits von den persönlichen Vorlieben ab, andererseits aber auch ein Stück weit vom sonstigen Aufbau der Anwendung, ihrer Größe, ihrer Komplexität und letztendlich auch davon, wie und von wem die Anwendung auf Entwicklerseite verwendet wird.
+{% endhint %}
+
+Weiter erstellen wir eine neue Datei die unsere `TodoList`-Komponente beinhalten wird: `./TodoList.js`.  Mit ihr werden wir gleich unsere Todos anzeigen, neue anlegen oder wieder entfernen, sowie einzelne Todos als erledigt markieren können. Dazu verbinden wir die Komponente über `connect()` mit dem Store. Dementsprechend müssen wir in der Komponente auch unsere **Actions** importieren, die wir in `mapDispatchToProps` an `connect()` übergeben werden. Der besseren Übersichtlichkeit halber nutzen wir die **Object Shorthand Syntax**:
 
 ```javascript
-const ConnectedTodoList = connect(
-  null,
-  mapDispatchToProps
-)(TodoList);
+const mapDispatchToProps = {
+  addTodo,
+  removeTodo,
+  changeStatus,
+};  
 ```
+
+Die Funktionen werden dann von React Redux automatisch von einem `dispatch`-Aufruf umschlossen. 
+
+In `mapStateToProps` legen wir fest, dass wir den `todos`-Ast unseres Stores an die Komponente übergeben wollen. Sowohl `mapStateToProps` als auch `mapDispatchToProps` übergeben wir dann an die `connect()`-Funktion:
+
+```javascript
+connect(
+  mapStateToProps,
+  mapDispatchToProps
+)
+```
+
+Doch das ist noch nicht alles: die `connect()`-Funktion erzeugt uns eine neue **HOC**, an die wir unsere `TodoList`-Komponente übergeben:
+
+```javascript
+connect(...)(TodoList);
+```
+
+Unsere `TodoList`-Komponente ist nun mit dem **Redux-Store** verbunden, wir müssen nun nur darauf achten, dass wir sie entsprechend auch nur innerhalb eines `<Provider>`-Elements verwenden. Wir nutzen außerdem `export default` vor dem Aufruf der `connect()`-Funktion um unsere mit dem Store verbundene Komponente zu exportieren.
+
+Zuletzt werfen wir einen Blick auf die `index.js`, die letztendlich den „Einstiegspunkt“ unserer App darstellt. Hier findet der `ReactDOM.render()`-Aufruf statt, mit dem wir unsere App in das jeweilige DOM-Element rendern. Doch bevor es soweit ist, passiert hier noch einiges:
+
+Wir importieren `combineReducers` und `createStore` aus `redux`. Damit erstellen wir gleich unser `store`-Objekt. Dazu importieren wir unseren ausgelagerten `todosReducer`, den wir an `combineReducers()` übergeben um einen neuen **Root Reducer** zu erstellen. Das wäre an dieser Stelle noch unnötig, da wir ohnehin nur einen einzigen **Reducer** haben und diesen daher direkt an `createStore()` übergeben könnten. Allerdings gehen wir in diesem Fall bereits vorsorglich davon aus, dass unsere Anwendung noch weiter wachsen wird und wir mit der Zeit sicherlich noch weitere **Reducer** hinzufügen werden.
+
+Wir importieren außerdem die `Provider`-Komponente aus `react-redux`. An diese übergeben wir später den eben erstellten **Store**. Aus der `TodoList.js` importieren wir unsere verbundene Komponente, die wir letztlich in unserer `App`-Komponente _innerhalb_ der `Provider`-Komponente mit unserem `store`-Objekt verwenden.
+
+Interagieren wir nun mit der TodoList können wir entsprechend neue Todos anlegen, diese über eine Checkbox als erledigt markieren oder über den Löschen-Button vollständig wieder entfernen.
+
+An dieser Stelle macht es sicherlich am meisten Sinn etwas mit der Komponente rumzuspielen und zu schauen wie sich die Interaktion auf den Store auswirkt. Dazu sollten die Redux-Devtools für unseren Store aktiviert werden. Dazu ändern wir in der `index.js` die Zeile:
+
+```javascript
+const store = createStore(rootReducer);
+```
+
+In die folgende:
+
+```javascript
+const store = createStore(rootReducer, __REDUX_DEVTOOLS_EXTENSIONS__());
+```
+
+Dabei muss sichergestellt sein, dass im verwendeten Browser die Redux Devtools installiert sind.
+
+### Fazit
+
+Ich muss gestehen, dass ich die Komplexität dieses Kapitels bei weitem unterschätzt habe. **Redux** gehört für mich in vielen Projekten seit Jahren zum Alltagsgeschäft und so fühlt sich die Verwendung von **Redux** mittlerweile ein Stück weit sehr _natürlich_ an, also wie etwas, über dass ich nicht viel nachdenken muss. Grundsätzlich würde ich **Redux** als Tool beschreiben, dass es schafft sehr komplexes State Management sehr einfach, nachvollziehbar und eben _vorhersehbar_ zu machen.
+
+Beim Schreiben dieses Kapitels habe ich dann erst einmal wieder gemerkt wie überwältigend **Redux** aber gerade für Einsteiger sein kann und so kann ich mir vorstellen, dass einige der in diesem Kapitel beschriebenen Dinge trotz meiner Erläuterungen nicht unbedingt gleich verständlich sein werden. Hier sollte es aber tatsächlich helfen mit geöffneten Devtools etwas mit den Actions und den Reducern herumzuspielen um zu verstehen wie das eine das andere beeinflusst und wie die das Zusammenspiel aller Komponenten, also dem Store, dem State, den Props einer Komponente, der `connect()`-Funktion und letztendlich der Actions und Reducer letztendlich ablaufen.
+
+Sollte es danach immer noch Fragen geben könnt ihr euch jederzeit gern mit Bezug auf dieses Buch an mich wenden!
 
