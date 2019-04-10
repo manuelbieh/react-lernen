@@ -76,5 +76,39 @@ i18next
   });
 ```
 
-Wir setzen also die Sprache erst einmal auf Englisch, ebenso die Fallback-Sprache. Dann folgt ein `resources`-Objekt das etwas Erläuterung bedarf.
+Wir setzen also die Sprache erst einmal auf Englisch, ebenso die Fallback-Sprache. Dann folgt ein `resources`-Objekt das etwas Erläuterung bedarf. Das Objekt hat die Form:
+
+```text
+[Sprache].[Namespace].[Translation Key] = Übersetzung
+```
+
+Die Sprache dürfte klar sein. Das kann `de` für Deutsch sein, `en` für Englisch oder auch `de-AT` für deutsch mit österreichischer Regionalisierung. Die Spracheigenschaft besitzt als Wert ein Objekt, bestehend aus mindestens einem bis zu theoretisch unbegrenzt vielen **Namespaces**.
+
+Der **Namespace** ist ein zentrales Feature in **i18next** das benutzt werden kann, aber nicht muss. Es erlaubt dem Entwickler größere Übersetzungsdateien in mehrere Teile zu splitten, die bei Bedarf dynamisch nachgeladen werden können. Während dieses Feature bei kleineren Anwendungen nicht unbedingt sinnvoll ist, kann es in größeren und komplexeren Anwendungen dazu benutzt werden um Übersetzungen klein und übersichtlich zu halten, etwa indem jeder größere Seitenbereich einen eigenen **Namespace** erhält.
+
+In **i18next** muss zwingend immer mindestens _ein_ **Namespace** benutzt werden. Standardmäßig heißt dieser `translation`, dies kann aber durch die `defaultNS`-Option im Konfigurationsobjekt der `.init()`-Methode geändert werden. Der **Namespace** ist dabei selbst wiederum ein Objekt, das letztendlich die eigentlichen Übersetzungen enthält in der Form `translationKey: value`, also etwa `greeting: 'Hallo Welt!'`. 
+
+Der Wert selbst _kann_ wiederum ein Objekt sein: 
+
+```javascript
+{
+  greeting: {
+    morning: 'Guten Morgen!',
+    evening: 'Guten Abend!',
+  }
+}
+```
+
+Oder in verkürzter Form:
+
+```javascript
+{
+  'greeting.morning': 'Guten Morgen!',
+  'greeting.evening': 'Guten Abend!',
+}
+```
+
+Auch das liegt aber im Ermessen des Entwicklers.
+
+
 
