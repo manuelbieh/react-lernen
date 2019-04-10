@@ -20,58 +20,43 @@ Mit lediglich dieser einen Zeile haben wir bereits einen neuen **Context** erste
 
 Innerhalb unserer Anwendung kann der **Context** nun genutzt werden, indem ein bestimmter Baum von einem Provider umschlossen wird:
 
-{% code-tabs %}
-{% code-tabs-item title="LanguageContext.js" %}
 ```jsx
+// LanguageContext.js
 import React from 'react';
-
-
 const LanguageContext = React.createContext('de');
-
 export default LanguageContext;
 ```
-{% endcode-tabs-item %}
-{% endcode-tabs %}
 
 ```jsx
+// index.js
 import React from 'react';
 import ReactDOM from 'react-dom';
 import LanguageContext from './LanguageContext';
 
-const App = () => {
-  return (
-    <LanguageContext.Provider value={'en'}>
-      {/* innerhalb dieses Baums steht uns nun der Wert 'de' zur Verfügung */}
-    </LanguageContext.Provider>
-  );
-}
-
-ReactDOM.render(
-  <App />, 
-  document.getElementById('#root')
+const App = () => (
+  <LanguageContext.Provider value={'en'}>
+    {/* innerhalb dieses Baums steht uns nun der Wert 'de' zur Verfügung */}
+  </LanguageContext.Provider>
 );
+
+ReactDOM.render(<App />, document.getElementById('#root'));
 ```
 
 Möchten wir in einer Komponente nun auf den Wert des **Contexts** zugreifen, umschließen wir eine Komponente und machen uns das **Function as a Child** Prinzip das wir uns im vorherigen Kapitel angeschaut haben zu nutze:
 
-{% code-tabs %}
-{% code-tabs-item title="DisplaySelectedLanguage.js" %}
 ```jsx
+// DisplaySelectedLanguage.js
 import React from 'react';
 import LanguageContext from './LanguageContext';
 
-const DisplaySelectedLanguage = () => {
-  return (
-    <LanguageContext.Consumer>
-      {(value) => (<p>Die ausgewählte Sprache ist {value}</p>)}
-    </LanguageContext.Consumer>
-  );
-}
+const DisplaySelectedLanguage = () => (
+  <LanguageContext.Consumer>
+    {(value) => (<p>Die ausgewählte Sprache ist {value}</p>)}
+  </LanguageContext.Consumer>
+);
 
 export default DisplaySelectedLanguage;
 ```
-{% endcode-tabs-item %}
-{% endcode-tabs %}
 
 Wir können nun an einer beliebigen Stelle innerhalb unserer Anwendung die `SelectedLanguage` Komponente verwenden und haben dort immer den jeweils vom Provider bereitgestellten Wert verfügbar. Ändert sich der Wert im **Provider** werden auch alle **Consumer-**Komponenten unterhalb des entsprechenden Providers mit dem aktualisierten Wert neu gerendert!
 
@@ -83,25 +68,20 @@ import ReactDOM from 'react-dom';
 import LanguageContext from './LanguageContext';
 import DisplaySelectedLanguage from './DisplaySelectedLanguage';
 
-const App = () => {
-  return (
-    <LanguageContext.Provider value="en">
-      <header>Herzlich willkommen</header>
-      <div className="content">
-        <div className="sidebar"></div>
-        <div className="mainContent">
-          <DisplaySelectedLanguage />
-        </div>
+const App = () => (
+  <LanguageContext.Provider value="en">
+    <header>Herzlich willkommen</header>
+    <div className="content">
+      <div className="sidebar"></div>
+      <div className="mainContent">
+        <DisplaySelectedLanguage />
       </div>
-      <footer>© 2019</footer>
-    </LanguageContext.Provider>
-  );
-}
-
-ReactDOM.render(
-  <App />, 
-  document.getElementById('#root')
+    </div>
+    <footer>© 2019</footer>
+  </LanguageContext.Provider>
 );
+
+ReactDOM.render(<App />, document.getElementById('#root'));
 ```
 
 Obwohl wir keinerlei **Props** an die `DisplaySelectedLanguage`-Komponente übergeben hat diese dennoch Kenntnis von der aktuell ausgewählten Sprache und zeigt korrekt an: 
@@ -171,6 +151,7 @@ const Greeting = () => (
     {(contextValue) => contextValue.translations.greeting}
   </LanguageContext.Consumer>
 );
+
 const Headline = () => (
   <LanguageContext.Consumer>
       {(contextValue) => contextValue.translations.headline}
@@ -195,18 +176,15 @@ const LanguageSelector = () => {
   );
 };
 
-function App() {
-  return (
-    <Localized>
-      <LanguageSelector />
-      <p><Greeting /></p>
-      <p><Headline /></p>
-    </Localized>
-  );
-}
+const App = () => (
+  <Localized>
+    <LanguageSelector />
+    <p><Greeting /></p>
+    <p><Headline /></p>
+  </Localized>
+);
 
-const rootElement = document.getElementById("root");
-ReactDOM.render(<App />, rootElement);
+ReactDOM.render(<App />, document.getElementById("root"));
 ```
 
 Zuerst definieren wir ein Objekt `defaultLanguageContextValue` welches den Default-Wert unseres neuen Context-Objekts darstellt. Dieses besteht aus:
@@ -234,18 +212,16 @@ const Translated = ({ translationKey }) => (
 )
 ```
 
-Unsere App-Komponente sieht dann entsprechend so aus:
+Unsere `App`-Komponente sieht dann entsprechend so aus:
 
 ```jsx
-function App() {
-  return (
-    <Localized>
-      <LanguageSelector />
-      <p><Translated translationKey="greeting" /></p>
-      <p><Translated translationKey="headline" /></p>
-    </Localized>
-  );
-}
+const App = () => (
+  <Localized>
+    <LanguageSelector />
+    <p><Translated translationKey="greeting" /></p>
+    <p><Translated translationKey="headline" /></p>
+  </Localized>
+);
 ```
 
 Die `Headline` und `Greeting` Komponenten aus dem vorherigen Beispiel können wir uns dann einfach sparen.
@@ -311,6 +287,7 @@ class Translated extends React.Component {
     return this.context.translations[this.props.translationKey];
   }
 }
+
 Translated.contextType = LanguageContext;
 ```
 

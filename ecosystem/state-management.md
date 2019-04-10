@@ -1073,6 +1073,7 @@ export default connect(
 ```
 
 ```jsx
+// index.js
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { combineReducers, createStore } from 'redux';
