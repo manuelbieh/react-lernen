@@ -120,7 +120,7 @@ Auch das liegt aber im Ermessen des Entwicklers.
 
 Ist **i18next** erst einmal korrekt eingerichtet und die Übersetzungen angelegt können wir auch schon damit weitermachen unsere Komponenten zu übersetzen. Auch hier bietet uns **i18next** volle Flexbilität: wir bekommen eine `withTranslation`-HOC für die Verwendung mit **Klassen-Komponenten**, einen `useTranslation`-Hook, zur Verwendung in **Function Components** und für Fälle, in denen wir Komponenten innerhalb von Übersetzungen nutzen wollen gibt uns `react-i18next` auch eine entsprechende `Trans`-Komponente an die Hand. 
 
-#### Verwendung bei Klassen-Komponenten mit withTranslation\(\)-HOC
+#### Verwendung mit Klassen-Komponenten und withTranslation\(\)-HOC
 
 Wir gehen sie der Reihe nach durch und fangen mit der `withTranslation()`-Funktion an. Diese erzeugt uns eine **HOC** an die wir die zu übersetzende Komponente übergeben und bekommen daraufhin die Props `t` und `i18n` in diese hereingereicht. Dazu importieren wir die Funktion zuerst als benannten Export aus dem `react-i18next`-Paket:
 
@@ -212,5 +212,26 @@ const Greeting = () => {
 };
 ```
 
-Wie auch bereits in der `withTranslation()`-HOC ist `t` hier die Funktion um Übersetzungen über ihren **Translation Key** auszugeben und `i18n` die **i18next**-Instanz. Der Hook stellt also exakt die gleiche Funktionalität bereit wie auch die HOC, ist in **Function Components** aber deutlich übersichtlicher.
+Wie auch bereits in der `withTranslation()`-HOC ist `t` hier die Funktion um Übersetzungen über ihren **Translation Key** auszugeben und `i18n` die **i18next**-Instanz. Der Hook stellt also exakt die gleiche Funktionalität bereit wie auch die HOC, ist in **Function Components** aber deutlich übersichtlicher, weil expliziter. Um bestimmte **Namespaces** zu verwenden, können dem Hook wie schon der `withTranslation()`-Funktion ein String oder ein Array mit Strings übergeben werden:
+
+```javascript
+const { t } = useTranslation('namespace');
+const { t } = useTranslation(['namespace1', 'namespace2']);
+```
+
+Wird kein Namespace übergeben, greift auch hier die Default-Einstellung.
+
+#### Komplexe Übersetzungen mit der Trans-Komponente
+
+In einigen Fällen kann es notwendig sein React-Komponenten in seinen Übersetzungen zu verwenden. Das ist bspw. der Fall, möchte man die `Link`-Komponente vom React Router nutzen um innerhalb einer Übersetzung auf eine andere URL zu verlinken. Das ist nur durch die Verwendung der `t()`-Funktion nicht ohne weiteres möglich. Hierzu stellt uns `react-i18next` die `Trans`-Komponente bereit. Die Verwendung ist nicht immer ganz einfach zu verstehen, aber dennoch ist sie ein sehr mächtiges Werkzeug.
+
+Nehmen wir also an wir wollen innerhalb unserer Übersetzung die `Link`-Komponente verwenden. Der Code sieht vor der Übersetzung also in etwa so aus:
+
+```jsx
+<p>
+  Du hast 3 neue Nachrichten. <Link to="/inbox">Zum Posteingang</Link>
+</p>
+```
+
+In diesem Beispiel sehen wir einen Wert der variabel bleiben soll \(die Anzahl der Nachrichten\) sowie eben die Verlinkung mit der Link-Komponente.
 
