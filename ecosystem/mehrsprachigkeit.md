@@ -223,15 +223,43 @@ Wird kein Namespace übergeben, greift auch hier die Default-Einstellung.
 
 #### Komplexe Übersetzungen mit der Trans-Komponente
 
-In einigen Fällen kann es notwendig sein React-Komponenten in seinen Übersetzungen zu verwenden. Das ist bspw. der Fall, möchte man die `Link`-Komponente vom React Router nutzen um innerhalb einer Übersetzung auf eine andere URL zu verlinken. Das ist nur durch die Verwendung der `t()`-Funktion nicht ohne weiteres möglich. Hierzu stellt uns `react-i18next` die `Trans`-Komponente bereit. Die Verwendung ist nicht immer ganz einfach zu verstehen, aber dennoch ist sie ein sehr mächtiges Werkzeug.
+In einigen Fällen kann es notwendig sein React-Komponenten in Übersetzungen zu verwenden. Das ist bspw. der Fall, möchte man die `Link`-Komponente vom React Router nutzen, um innerhalb einer Übersetzung auf eine andere URL zu verlinken. Das ist nur durch die Verwendung der `t()`-Funktion nicht ohne weiteres möglich. Hierzu stellt uns `react-i18next` die `Trans`-Komponente bereit. Die Verwendung ist nicht immer ganz einfach zu verstehen, aber sie ist ein sehr mächtiges Werkzeug.
 
 Nehmen wir also an wir wollen innerhalb unserer Übersetzung die `Link`-Komponente verwenden. Der Code sieht vor der Übersetzung also in etwa so aus:
 
 ```jsx
 <p>
-  Du hast 3 neue Nachrichten. <Link to="/inbox">Zum Posteingang</Link>
+  <label>
+    <input type="checkbox" name="terms" />
+    Ich akzeptiere die <Link to="/terms">AGB</Link>
+  </label>
 </p>
 ```
 
-In diesem Beispiel sehen wir einen Wert der variabel bleiben soll \(die Anzahl der Nachrichten\) sowie eben die Verlinkung mit der Link-Komponente.
+Die Verwendung der Link-Komponente in einer Übersetzung würde hier nicht funktionieren, da Übersetzungen grundsätzlich Strings sind und wir keine Möglichkeit hätten um festzulegen, dass es sich bei `<Link>` um die Link-Komponente aus dem React-Router Paket handelt.
+
+Die Lösung ist hier nun die Verwendung der `Trans`-Komponente. Übersetzungen die mit dieser Komponente verwendet werden können nummerierte Platzhalter besitzen. An ihre Stelle werden Komponenten eingesetzt, die an gleicher Position in der `Trans`-Komponente verwendet werden. 
+
+Schauen wir uns das obige Beispiel also einmal unter Verwendung von `Trans` an:
+
+```jsx
+const de = {
+  terms: 'Ich akzeptiere die <1>AGB</1>.',
+};
+
+const en = {
+  terms: 'I accept the <1>Terms and Conditions</1>.',
+};
+
+// ...
+
+<p>
+  <label>
+    <input type="checkbox" />
+    <Trans i18nKey="terms">
+      I accept the <Link to="/terms">Terms and Conditions</Link>.
+    </Trans>
+  </label>
+</p>
+```
 
