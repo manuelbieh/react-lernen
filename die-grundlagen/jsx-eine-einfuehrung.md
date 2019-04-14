@@ -161,7 +161,7 @@ Da das später noch wichtig wird, hier nochmal einige Beispiele für JSX, das g�
 
 All dies sind erste Beispiele wie Ausdrücke dafür verwendet werden können um aus JSX mehr als nur simples HTML zu machen.
 
-## **Was man außerdem wissen sollte**
+## Was man außerdem wissen sollte
 
 Wer die Beispiele aufmerksam studiert hat, dem werden je nach JavaScript-Kenntnissen vielleicht einige Dinge aufgefallen sein. Zuerst einmal tauchen in den Beispielen scheinbar willkürlich Klammern auf. Dies hat den Hintergrund, dass JSX stets in Klammern, also „`(`“ und „`)`“ geschrieben werden muss wenn sich das JSX sich über mehr als eine Zeile erstreckt \(also doch nicht willkürlich.\)
 
