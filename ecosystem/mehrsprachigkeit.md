@@ -243,6 +243,7 @@ Die Lösung ist hier nun die Verwendung der `Trans`-Komponente. Übersetzungen d
 Schauen wir uns das obige Beispiel also einmal unter Verwendung von `Trans` an:
 
 ```jsx
+// Übersetzungen:
 const de = {
   terms: 'Ich akzeptiere die <1>AGB</1>.',
 };
@@ -251,8 +252,7 @@ const en = {
   terms: 'I accept the <1>Terms and Conditions</1>.',
 };
 
-// ...
-
+// JSX:
 <p>
   <label>
     <input type="checkbox" />
@@ -262,4 +262,59 @@ const en = {
   </label>
 </p>
 ```
+
+Hier umschließen wir unseren Text mit einem `Trans`-Element. Der Text dient dabei lediglich als Platzhalter der verwendet wird wenn es zu dem in der `i18nKey`-Prop angegebenen Wert keine entsprechende Übersetzung gibt. Nun geht es ans Zählen. Wo welcher Text wie ersetzt wird und an welche Stelle eine Komponente tritt ergibt sich aus dem Index-Wert der Kind-Elemente. Analog dazu, wie auch `React.createElement()`-Funktioniert.
+
+Im obigen Beispiel ergibt sich also folgendes Zähl-Ergebnis:
+
+```text
+0: I accept the
+1: <Link to="/terms">Terms and Conditions</Link>
+2: .
+```
+
+An die Stelle `<1>Terms and Conditions</1>` tritt also hier das `<Link>`-Element, da es im Children-Array den Index-Wert 1 besitzt.
+
+Nun kann das gerade in komplexeren Strukturen in denen es vielleicht sogar mehrere Links gibt ziemlich umständlich werden das zu zählen. Hier bietet `react-i18next` zwei Möglichkeiten um die Platzhalter automatisch zu generieren. Beide werden als Option beim Initialisieren von i18next gesetzt.
+
+Die erste Option ist das Setzen von `saveMissing` auf `true` und die Verwendung einer `missingKeyHandler` Funktion. Im folgenden Beispiel nutzen wir ein simples `console.log()` um fehlende Übersetzungen in die Browser-Konsole zu loggen:
+
+```javascript
+i18next
+  .use(initReactI18next)
+  .init({
+    saveMissing: true,
+    missingKeyHandler: (language, namespace, key, fallbackValue) => {
+      console.log('Fehlende Übersetzung:', fallbackValue);
+    },
+    // weitere Optionen
+  });
+```
+
+Wird nun ein `i18nKey` benutzt der nicht existiert, wird stattdessen der Fallback-Wert, also der Wert aus dem Trans-Element in die Browser Konsole geschrieben:
+
+{% hint style="info" %}
+Fehlende Übersetzung: I accept the &lt;1&gt;Terms and Conditions&lt;/1&gt;.
+{% endhint %}
+
+Für diese kann nun eine entsprechende Übersetzung angelegt werden. Der React Router Link wurde in der Ausgabe bereits durch den passenden Platzhalter-Index ersetzt, in diesem Fall also 1.
+
+Als zweite Option können wir statt des `missingKeyHandlers` die `debug`-Option auf `true` setzen. 
+
+```javascript
+i18next
+  .use(initReactI18next)
+  .init({
+    debug: true,
+    // weitere Optionen
+  });
+```
+
+Wir erhalten dann eine Reihe an Debugging-Informationen, wie eben auch einen Hinweis auf fehlende Übersetzungen. Die Ausgabe ist dann etwa:
+
+{% hint style="info" %}
+i18next::translator: missingKey de translation terms I accept the &lt;1&gt;Terms and Conditions&lt;/1&gt;.
+{% endhint %}
+
+
 
