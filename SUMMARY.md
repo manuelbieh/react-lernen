@@ -36,5 +36,5 @@
   * [State Management](ecosystem/state-management.md)
   * [Mehrsprachigkeit](ecosystem/mehrsprachigkeit.md)
   * [Informationsquellen](ecosystem/informationsquellen.md)
-  * [Tools](ecosystem/tools.md)
+  * [Tools und Frameworks](ecosystem/tools.md)
 

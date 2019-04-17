@@ -221,7 +221,7 @@ const { t } = useTranslation(['namespace1', 'namespace2']);
 
 Wird kein Namespace übergeben, greift auch hier die Default-Einstellung.
 
-#### Komplexe Übersetzungen mit der Trans-Komponente
+### Komplexe Übersetzungen mit der Trans-Komponente
 
 In einigen Fällen kann es notwendig sein React-Komponenten in Übersetzungen zu verwenden. Das ist bspw. der Fall, möchte man die `Link`-Komponente vom React Router nutzen, um innerhalb einer Übersetzung auf eine andere URL zu verlinken. Das ist nur durch die Verwendung der `t()`-Funktion nicht ohne weiteres möglich. Hierzu stellt uns `react-i18next` die `Trans`-Komponente bereit. Die Verwendung ist nicht immer ganz einfach zu verstehen, aber sie ist ein sehr mächtiges Werkzeug.
 
@@ -297,9 +297,9 @@ Wird nun ein `i18nKey` benutzt der nicht existiert, wird stattdessen der Fallbac
 Fehlende Übersetzung: I accept the &lt;1&gt;Terms and Conditions&lt;/1&gt;.
 {% endhint %}
 
-Für diese kann nun eine entsprechende Übersetzung angelegt werden. Der React Router Link wurde in der Ausgabe bereits durch den passenden Platzhalter-Index ersetzt, in diesem Fall also 1.
+Für diese kann nun eine entsprechende Übersetzung angelegt werden. Der React Router Link wurde in der Ausgabe bereits durch den passenden Platzhalter-Index ersetzt, in diesem Fall also **1**.
 
-Als zweite Option können wir statt des `missingKeyHandlers` die `debug`-Option auf `true` setzen. 
+Als zweite Option können wir statt des `missingKeyHandler` die `debug`-Option auf `true` setzen. 
 
 ```javascript
 i18next
@@ -316,5 +316,19 @@ Wir erhalten dann eine Reihe an Debugging-Informationen, wie eben auch einen Hin
 i18next::translator: missingKey de translation terms I accept the &lt;1&gt;Terms and Conditions&lt;/1&gt;.
 {% endhint %}
 
+Die Ausgabe ist hier etwas unfänglicher als bei der eigenen `missingKeyHandler`-Variante, dafür reicht es hier aber auch aus, lediglich eine Option auf `true` zu setzen.
 
+Innerhalb von `<Trans>`-Elementen kann übrigens auch die `t`-Funktion wie gewohnt verwendet werden. So wäre etwa auch folgendes möglich:
+
+```jsx
+<Trans i18nKey="terms">
+  I accept the <Link to="/terms" title={t('termsTitle')}>Terms and Conditions</Link>.
+</Trans>
+```
+
+### Fazit
+
+Mit den in diesem Kapitel gezeigten Beispielen ist es relativ einfach seine Anwendung gleich mehrsprachig zu entwickeln. In der Praxis hat sich i18next dabei für mich persönlich als sehr universelles und vollständiges Tool erwiesen. Die Integration in verscheidene Libraries und Frameworks funktioniert einwandfrei, es bietet alle Funktionen die ein solches i18n-Framework benötigt und mit nur wenigen Funktionen und Komponenten \(`i18n.changeLanguage()`, `t`, `<Trans>`\) ist es darüber hinaus relativ leicht zu erlernen.
+
+Einmal korrekt aufgesetzt und eingerichtet, hier empfehle ich einen Blick auf die [vollständigen Optionen von i18next](https://www.i18next.com/overview/configuration-options), realisiert man dabei Mehrsprachigkeit in seiner React-Anwendung, ohne dass es sich wie ein Mehraufwand anfühlt. Dafür sorgen auch Online-Services wie [Locize.com](https://locize.com/) oder [Lokalise.co](https://www.lokalise.co) um nur einige Beispiele zu nennen, mit denen die Erstellung von Übersetzungen verwaltet und zum Teil sogar automatisiert outgesourced werden kann.
 
