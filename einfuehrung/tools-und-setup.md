@@ -164,5 +164,11 @@ Führt Tests aus. Als Test-Framework bringt CRA das ebenfalls von Facebook entwi
 
 ### yarn eject
 
-Mit `yarn eject` können wir uns von Create-React-App „verabschieden“. Dabei werden alle build-Scripts, Dependencies und Config-Files in das aktuelle Projektverzeichnis kopiert und wir sind fortan selbst verantwortlich das alles korrekt läuft. Dadurch haben wir mehr Verantwortung, aber eben auch deutlich mehr Freiheiten, da wir von nun an eigene Änderungen an der Standard-Konfiguration von CRA vornehmen können. Wann und ob dieser Schritt überhaupt jemals nötig wird ist völlig abhängig vom Projekt. Ich selbst habe bereits in Projekten über Monate mit dem CRA Standard-Setup gearbeitet, in anderen Projekten hat es sich bereits nach wenigen Tagen oder Wochen ergeben, dass Änderungen am Setup vorgenommen werden müssen, so dass ein Eject recht frühzeitig vorgenommen wurde.
+Mit `yarn eject` können wir uns von Create React App „verabschieden“. Dabei werden alle build-Scripts, Dependencies und Config-Files in das aktuelle Projektverzeichnis kopiert und wir sind fortan selbst verantwortlich das alles korrekt läuft. Dadurch haben wir mehr Verantwortung, aber eben auch deutlich mehr Freiheiten, da wir von nun an eigene Änderungen an der Standard-Konfiguration von CRA vornehmen können. Wann und ob dieser Schritt überhaupt jemals nötig wird ist völlig abhängig vom Projekt. Ich selbst habe bereits in Projekten über Monate mit dem CRA Standard-Setup gearbeitet, in anderen Projekten hat es sich bereits nach wenigen Tagen oder Wochen ergeben, dass Änderungen am Setup vorgenommen werden müssen, so dass ein Eject recht frühzeitig vorgenommen wurde.
+
+{% hint style="info" %}
+Um die Code-Beispiele in diesem Buch nachzuvollziehen empfehle ich an dieser Stelle **Create React App** zu installieren. Die große Mehrzahl der Beispiele können dann per Copy and Paste in die App.js-Datei aus Create React App übertragen und ausgeführt werden. Um den Lern-Effekt zu erhöhen würde ich sogar empfehlen die Beispiele nicht zu kopieren, sondern tatsächlich abzutippen.
+
+Wer CRA nicht installieren möchte oder es eilig hat, dem sei [CodeSandbox](https://codesandbox.io/) ans Herz gelegt. Hier kann in einer per Knopfdruck ein neues Setup mit Create React App als Basis erstellt und dann in einer Browser-Entwicklungsumgebung herumprobiert werden.
+{% endhint %}
 
