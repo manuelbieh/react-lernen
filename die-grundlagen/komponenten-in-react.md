@@ -6,7 +6,7 @@ Eine erste einfache **HelloWorld**-Komponente haben wir schon beim [Sprung ins k
 
 Das Prinzip von **Komponenten** ist einfach erklärt: eine **Komponente** erlaubt es komplexe User Interfaces in einzelne kleine Stücke zu unterteilen. Diese sind im Idealfall wiederverwendbar, isoliert und in sich geschlossen. Sie verarbeiten beliebigen Input von außen in Form von sogenannter **Props** \(engl. für „Properties“, also Eigenschaften\) und beschreiben letztendlich anhand ihrer `render()`-Funktion was auf dem Bildschirm erscheint.
 
-Komponenten können grob in zwei verschiedenen Varianten auftreten: in Form einer einfachen Funktion \(engl. **Function Component**\), sowie **Class Components**, die eine gewöhnliche ES2015-Klasse repräsentieren. Bis zur Einführung der React **Hooks** war es in **Function Components** nicht möglich einen lokalen State zu verwalten, weswegen man in diesem Buch hin und wieder möglicherweise noch auf den Begriff **Stateless Functional Component** stößen könnte. \(Ich arbeite bereits daran alle betreffenden Stellen entsprechend umzuschreiben ;\)\)
+Komponenten können grob in zwei verschiedenen Varianten auftreten: in Form einer einfachen Funktion \(engl. **Function Component**\), sowie **Class Components**, die eine gewöhnliche ES2015-Klasse repräsentieren. Bis zur Einführung der React **Hooks** war es in **Function Components** nicht möglich einen lokalen State zu verwalten, daher stößt man mancherorts noch auf den Begriff **Stateless Functional Component**, der aus einer Zeit stammt, als **Function Components** noch keinen State halten konnten. Wie **Hooks** im Detail funktionieren und wie State seit React 16.8.0 nun auch in Function Components verwendet werden kann, wird im weiteren Verlauf noch ausführlich im Kapitel über **Hooks** erläutert.
 
 ### Function Components
 
@@ -18,11 +18,11 @@ function Hello(props) {
 }
 ```
 
-Diese Funktion erfüllt alle Kriterien einer gültigen **React-Komponente**: sie hat als `return`-Wert ein explizites `null` \(`undefined` ist dagegen **nicht** gültig!\) oder ein gültiges `React.Element` \(hier in Form von **JSX**\) und sie empfängt ein `props`-Objekt als erstes und Funktionsargument, wobei sogar dieses optional ist und ebenfalls `null` sein kann.
+Diese Funktion erfüllt alle Kriterien einer gültigen **React-Komponente**: sie hat als `return`-Wert ein explizites `null` \(`undefined` ist dagegen **nicht** gültig!\) oder ein gültiges `React.Element` \(hier in Form von **JSX**\) und sie empfängt ein `props`-Objekt als erstes Funktionsargument, wobei sogar dieses optional ist und ebenfalls `null` sein kann.
 
-###  Class Components
+###  Class Components / Klassen-Komponenten
 
-Die zweite Möglichkeit wie eine **React-Komponente** erstellt werden kann habe ich im Eingangsbeispiel schon kurz gezeigt: **Class Components**. Diese bestehen aus einer ES2015-Klasse, die von der `React.Component` oder `React.PureComponent`\(dazu später mehr\) Klasse ableitet und hat mindestens eine Methode mit dem Namen `render()`:
+Die zweite Möglichkeit wie eine **React-Komponente** erstellt werden kann habe ich im Eingangsbeispiel schon kurz gezeigt: **Class Components** oder auf gut Deutsch **Klassen-Komponenten**. Diese bestehen aus einer ES2015-Klasse, die von der `React.Component` oder `React.PureComponent`\(dazu später mehr\) Klasse ableitet und hat mindestens eine Methode mit dem Namen `render()`:
 
 ```jsx
 class Hello extends React.Component {
@@ -46,9 +46,9 @@ Wie wir innerhalb der **Komponenten** jeweils mit dem **State** arbeiten, diesen
 
 ### Sonderfall PureComponent
 
-Eine Sonderform der **Class Component** stellt die **Pure Component** dar. Diese erbt von `React.PureComponent` und funktioniert vom Grundsatz her wie die gewöhnliche Class Component, die von `React.Component` abgeleitet wird. Mit dem Unterschied, dass React diese Art der Komponente nur dann neu rendert wenn sich ihre **Props** oder ihr **State** im Vergleich zur vorherigen Render-Phase geändert haben.
+Eine Sonderform der **Class Component** stellt die **Pure Component** dar. Diese erbt von `React.PureComponent` und funktioniert vom Grundsatz her wie die gewöhnliche Klassen-Komponente, die von `React.Component` abgeleitet wird. Mit dem Unterschied, dass React diese Art der Komponente nur dann neu rendert wenn sich ihre **Props** oder ihr **State** im Vergleich zur vorherigen Render-Phase geändert haben. Sie kann zur Optimierung der Performance verwendet werden.
 
-Die Klasse führt dazu einen oberflächlichen \(_„shallow“_\) Vergleich durch, schaut also lediglich ob die Referenzen noch identisch zum vorherigen Rendering sind und **nicht**, ob sich die Werte selbst geändert haben. Dies bedeutet, dass eine PureComponent ggf. auch dann neu rendert wenn die Werte zwar identisch sind, sich die Referenzen jedoch geändert haben, etwa weil eine neue Arrow-Function erzeugt wurde.
+Die Klasse führt dazu einen oberflächlichen \(_„shallow“_\) Vergleich durch, schaut also lediglich ob die **Referenzen** noch identisch zum vorherigen Rendering sind und **nicht**, ob sich deren **Werte** selbst geändert haben. Dies bedeutet, dass eine **Pure Component** ggf. auch dann neu rendert wenn die Werte zwar identisch sind, sich die Referenzen jedoch geändert haben, etwa weil eine neue Arrow-Function erzeugt wurde.
 
 Am besten lässt sich dies an einem kurzen Beispiel erklären:
 
@@ -62,9 +62,9 @@ class App extends React.Component {
 }
 ```
 
-Hier definieren wir eine Funktion `logFunction` außerhalb der Klasse. Die fiktive `MyComponent`-Komponente bekommt als `logger`-Prop hier die **Referenz** zur `logFunction` übergeben. Die **Identität** der Referenz bleibt hier bei jedem erneuten Rendering bestehen und eine PureComponent würde nicht erneut gerendert sofern sich ihr eigener State nicht geändert hat, da die Props hier in der Rendering-Phase die selben sind wie in der vorherigen.
+Hier definieren wir eine Funktion `logFunction` außerhalb der Klasse. Die fiktive `MyComponent`-Komponente bekommt als `logger`-Prop hier die **Referenz** zur `logFunction` übergeben. Die **Identität** der **Referenz** bleibt hier bei jedem erneuten Rendering bestehen und eine **Pure Component** würde nicht erneut gerendert, sofern sich ihr eigener State nicht geändert hat, da die Props hier in der Rendering-Phase mit denen aus dem vorherigen Rendering exakt übereinstimmen, also identisch sind.
 
-Im folgenden Beispiel hingegen, würde auch die PureComponent neu gerendert:
+Im folgenden Beispiel hingegen, würde auch die **Pure Component** neu gerendert:
 
 ```jsx
 class App extends React.Component {
@@ -74,7 +74,7 @@ class App extends React.Component {
 }
 ```
 
-Zwar übergeben wir auch hier stets eine immer gleiche Funktion an die `MyComponent`, allerdings erzeugen wir für den Interpreter bei jedem neuen Rendering auch eine neue Funktion. Dadurch geht der Bezug zur alten Funktion verloren und die _Shallow-Comparison_, also der oberflächliche Vergleich zwischen den vorherigen und den neuen Props schlägt fehl, ist also unterschiedlich und löst damit ein Rerendering aus.
+Zwar übergeben wir auch hier stets eine immer gleiche Funktion an die `MyComponent`, allerdings erzeugen wir für den Interpreter bei jedem neuen Rendering auch eine neue Funktionsidentität. Dadurch geht der Bezug zur alten Funktion verloren und die _Shallow-Comparison_, also der oberflächliche Vergleich zwischen den vorherigen und den neuen Props schlägt fehl, ist also unterschiedlich und löst damit ein Rerendering aus.
 
 Dies gilt gleichermaßen auch für Objekte und Arrays:
 
@@ -88,7 +88,7 @@ Hier würde ein Rendering ausgelöst, weil auch das `logConfig`-Objekt bzw. das 
 
 ### „Pure“ Function Components
 
-**Class Components** leiten von den Klassen `Component` oder `PureComponent` ab und wir bestimmen durch die Auswahl von welcher Klassen wir ableiten, ob die Komponente mit jeder Änderung einer sich in der Hierarchie höher befindlichen Komponente neu gerendert werden soll. Diese Möglichkeit haben wir bei einfachen Funktionen nicht. Seit **React 16.6.0** bietet React jedoch durch die neue Wrapper-Funktion `React.memo()` auch in **Function Components** die Möglichkeit der Rerendering-Optimierung. Dazu wird diese einfach um die entsprechende Funktion gelegt:
+**Klassen-Komponenten** leiten von den Klassen `Component` oder `PureComponent` ab und wir bestimmen durch die Auswahl von welcher Klasse wir ableiten, ob die Komponente mit jeder Änderung einer sich in der Hierarchie höher befindlichen Komponente neu gerendert werden soll. Diese Möglichkeit haben wir bei **Function Components**, die lediglich einfache JavaScript-Funktionen sind, nicht. Seit **React 16.6.0** bietet React jedoch durch die neue Wrapper-Funktion `React.memo()` auch in **Function Components** die Möglichkeit der Rerendering-Optimierung. Dazu wird diese einfach um die entsprechende Funktion gelegt:
 
 ```jsx
 const MyComponent = React.memo((props) => {
@@ -96,7 +96,7 @@ const MyComponent = React.memo((props) => {
 });
 ```
 
-Die **Function Component** verhält sich dann so wie eine vergleichbare **Class Component**, die von der `React.PureComponent` Klasse abgeleitet wird.
+Die **Function Component** verhält sich dann so wie eine vergleichbare **Klassen-Komponente**, die von der `React.PureComponent` Klasse abgeleitet wird.
 
 Wer neugierig geworden ist, kann sich für das einfachere Verständnis auch mit der folgenden Demo etwas austoben:
 
@@ -177,14 +177,10 @@ function MyApp() {
   );
 }
 
-ReactDOM.render(
-  <MyApp />, 
-  document.getElementById('app')
-);
-
+ReactDOM.render(<MyApp />, document.getElementById('app'));
 ```
 
-Die Komponente `<MyApp>` gibt hier ein `<div>` zurück, das zweimal die Hello-Komponente aus dem vorherigen Beispiel benutzt um Manuel und Tom zu begrüßen. Das Resultat:
+Die Komponente `<MyApp>` gibt hier ein `<div>` zurück, das zweimal die `Hello`-Komponente aus dem vorherigen Beispiel benutzt um Manuel und Tom zu begrüßen. Das Resultat:
 
 ```jsx
 <div>
@@ -193,7 +189,7 @@ Die Komponente `<MyApp>` gibt hier ein `<div>` zurück, das zweimal die Hello-Ko
 </div>
 ```
 
-Wichtig: eine Komponente darf stets nur ein einzelnes Root-Element zurückgeben! Dies kann sein:
+Wichtig: eine Komponente darf stets nur ein einzelnes **Root-Element** zurückgeben! Dies kann sein:
 
 * ein einzelnes React-Element:
 
@@ -204,7 +200,9 @@ Wichtig: eine Komponente darf stets nur ein einzelnes Root-Element zurückgeben!
 * Auch in verschachtelter Form, solange es nur ein einzelnes Element auf äußerer Ebene gibt:
 
 ```jsx
-<Parent><Child /></Parent>
+<Parent>
+  <Child />
+</Parent>
 ```
 
 * ein DOM-Element \(auch dieses darf wiederum verschachtelt sein und andere Elemente beinhalten\):
@@ -254,7 +252,7 @@ Seit **React 16.0.0** dürfen das außerdem auch sein:
 </React.Fragment>
 ```
 
-Beim Transpiling mit Babel ab Version 7 kann außerdem die Fragment-Kurzform benutzt werden die aus einem leeren öffnenden und schließenden Element besteht:
+Beim **Transpiling** mit **Babel ab Version 7** kann außerdem die `Fragment`-Kurzform benutzt werden die aus einem leeren öffnenden und schließenden Element besteht:
 
 ```jsx
 <>
@@ -268,7 +266,7 @@ Komponenten können dabei beliebig zusammengesetzt \(_„composed“_\) werden. 
 
 ## Komponenten aufteilen – Übersicht bewahren
 
-Werfen wir doch mal einen Blick auf eine beispielhafte Kopfleiste, die ein Logo, eine Navigation und eine Suchleiste enthält. Kein ganz unübliches Muster also schaut man sich Web-Anwendungen an:
+Werfen wir doch mal einen Blick auf eine beispielhafte Kopfleiste, die ein Logo, eine Navigation und eine Suchleiste enthält. Kein ganz unübliches Muster also schaut man sich gewöhnliche Web-Anwendungen an:
 
 ```jsx
 function Header() {
@@ -366,25 +364,25 @@ Und nicht zuletzt haben wir ganz nebenbei noch Wiederverwendbarkeit geschaffen. 
 
 Nun habe ich bereits soviel über **Props** geschrieben. Höchste Zeit also einmal das Geheimnis zu lüften und genauer darauf einzugehen. Was sind also „Props“?
 
-Durch die **Props** nehmen Komponenten beliebige Arten von Daten entgegen und können innerhalb der **Komponente** auf diese Daten zugreifen. Denken wir an unsere **funktionale Komponente** zurück, erinnern wir uns vielleicht, dass in diesem Fall die **Props** tatsächlich als ganz gewöhnliches Argument an die Funktion übergeben wurden. Ähnlich ist das Prinzip bei einer **Class Component**, mit dem Unterschied, dass die **Props** über den Constructor der Klasse in die Komponente hereingereicht werden und über `this.props` innerhalb der Klassen-Instanz verfügbar sind, statt über ein Funktionsargument, wie das bei funktionalen Komponenten der Fall ist.
+Durch die **Props** nehmen Komponenten beliebige Arten von Daten entgegen und können innerhalb der **Komponente** auf diese Daten zugreifen. Denken wir an unsere **funktionale Komponente** zurück, erinnern wir uns vielleicht, dass in diesem Fall die **Props** tatsächlich als ganz gewöhnliches Argument an die Funktion übergeben wurden. Ähnlich ist das Prinzip bei einer **Klassen-Komponente**, mit dem Unterschied, dass die **Props** über den **Constructor** der Klasse in die Komponente hereingereicht werden und über `this.props` innerhalb der Klassen-Instanz verfügbar sind, statt über ein Funktionsargument, wie das bei funktionalen Komponenten der Fall ist. Darum kümmert sich React beim Parsing der `createElement()`-Aufrufe.
 
-Wichtig dabei ist: wann immer eine Komponente von außen neue **Props** hereingereicht bekommt, löst dies ein Re-Rendering der Komponente aus! Dieses Verhalten kann mittels der `shouldComponentUpdate()` **Lifecycle-Methode** explizit unterbunden werden, doch dazu gibt es im nachfolgenden Kapitel mehr. Wichtig ist erst einmal der allgemeine Grundsatz: empfängt eine **Komponente** von außen neue **Props**, veranlasst dies React dazu eine **Komponente** mitsamt ihrer Kind-Komponenten neu zu rendern.
+Wichtig dabei ist: wann immer eine Komponente von außen neue **Props** hereingereicht bekommt, löst dies ein Rerendering der Komponente aus! Dieses Verhalten kann mittels der `shouldComponentUpdate()` **Lifecycle-Methode** explizit unterbunden werden, doch dazu gibt es im nachfolgenden Kapitel über **State und Lifecycle-Methoden** mehr. Wichtig ist erst einmal der allgemeine Grundsatz: empfängt eine **Komponente** von außen neue **Props**, veranlasst dies React dazu eine **Komponente** mitsamt ihrer Kind-Komponenten neu zu rendern.
 
 ### Props sind readonly innerhalb einer Komponente
 
-Unabhängig davon wie die Props in welcher Art von Komponente auch immer landen, eines ist ihnen gemeinsam: sie sind innerhalb der Komponente **immer readonly**, dürfen \(und können\) also nur gelesen, nicht aber modifiziert werden! Der Profi spricht hier auch von **Immutability** oder **Immutable Objects**. Um mit veränderlichen Daten zu arbeiten kommt später der React **State** ins Spiel. Aber eins nach dem anderen.
+Unabhängig davon wie die **Props** in welcher Art von Komponente auch immer landen, eines ist ihnen gemeinsam: sie sind innerhalb der Komponente **immer readonly**, dürfen \(und können\) also nur gelesen, nicht aber modifiziert werden! Der Kenner spricht hier auch von **Immutability** oder **Immutable Objects**. Um mit veränderlichen Daten zu arbeiten kommt später der React **State** ins Spiel. Aber eins nach dem anderen.
 
-Modifiziert eine Funktion ihren Input nicht und hat auch keine Abhängigkeit nach außen, so spricht man in der funktionalen Programmierung von einer puren Funktion \(engl.: **Pure Function**\) und die Idee dahinter ist recht simpel: so soll sichergestellt werden, dass eine Funktion in sich geschlossen ist, daher davon unbeeindruckt bleibt wenn sich außerhalb der Funktion etwas ändert, die Funktion bekommt alle benötigten Parameter hereingereicht, ist frei von Seiteneffekten \(engl.: **Side Effects**\) und erzielt somit bei gleichen Eingabewerten auch immer die exakt identische Ausgabe. **Gleicher Input, gleicher Output!**
+Modifiziert eine Funktion ihren Input nicht und hat auch keine Abhängigkeit nach außen, so spricht man in der funktionalen Programmierung von einer puren Funktion \(engl: **Pure Function**\) und die Idee dahinter ist recht simpel: so soll sichergestellt werden, dass eine Funktion in sich geschlossen ist, daher davon unbeeindruckt bleibt wenn sich außerhalb der Funktion etwas ändert, die Funktion bekommt alle benötigten Parameter hereingereicht, ist frei von Seiteneffekten \(engl: **Side Effects**\) und erzielt somit bei gleichen Eingabewerten auch immer die exakt identische Ausgabe. **Gleicher Input, gleicher Output!**
 
-Mit anderen Worten: egal welche Variablen außerhalb der Funktion ihren Wert ändern, egal wie oft andere Funktionen anderswo aufgerufen werden: bekommt eine Pure Function die gleichen Parameter wie zuvor, gibt sie mir auch das gleiche Ergebnis wie zuvor zurück. Immer und ausnahmslos.
+Mit anderen Worten: egal welche Variablen außerhalb der Funktion ihren Wert ändern, egal wie oft andere Funktionen anderswo aufgerufen werden: bekommt eine **Pure Function** die gleichen Parameter wie zuvor, gibt sie mir auch das gleiche Ergebnis wie zuvor zurück. Immer und ausnahmslos.
 
-Warum ist das wichtig? Nun, React verfolgt bei seinen Komponenten das Prinzip von **Pure Functions**. Erhält eine Komponente die gleichen Props von außen hineingereicht, ist der initiale Output auch immer identisch.
+Warum ist das wichtig? Nun, React verfolgt bei seinen Komponenten das Prinzip von **Pure Functions**. Erhält eine Komponente die gleichen Props von außen hineingereicht und ist der State der Komponente der gleiche, sollte auch der Output immer identisch sein.
 
 ### Pure Functions im Detail
 
 Da das Prinzip von **Pure Functions** ein grundlegendes ist bei der Arbeit mit React möchte ich diese Anhand einiger Beispiele etwas näher beleuchten. Hier geht es überwiegend um Theorie, die sich sicherlich komplizierter anhört als das später bei der praktischen Arbeit mit React der Fall sein wird. Dennoch möchte ich diese zum besseren Verständnis nicht unerwähnt lassen.
 
-#### Beispiel für eine simple Pure Function
+#### Beispiel für eine simple „Pure Function“
 
 ```javascript
 function pureDouble(number) {
@@ -394,7 +392,7 @@ function pureDouble(number) {
 
 Unsere erste simple Funktion bekommt eine Nummer übergeben, verdoppelt diese und gibt das Ergebnis zurück. Egal ob ich die Funktion 1, 10 oder 250 mal aufrufe: übergebe ich der Funktion bspw. eine `5` als Wert, erhalte ich eine `10` zurück. Immer und ausnahmslos. Same input, same output.
 
-#### Beispiel für eine Impure Function
+#### Beispiel für eine „Impure Function“
 
 ```javascript
 function impureCalculation(number) {
@@ -402,7 +400,7 @@ function impureCalculation(number) {
 }
 ```
 
-Die zweite Funktion ist nicht mehr pure, weil sie nicht zuverlässig immer den gleichen Output liefert, selbst wenn ihr Input identisch ist. Momentan ist mein Browser-Fenster 1920 Pixel breit. Rufe ich die Funktion mit `10` als Argument auf, erhalte ich `1930` zurück \(`10 + 1920`\). Verkleinere ich nun das Fenster auf 1280 Pixel und rufe die Funktion erneut, mit exakt der gleichen `10` als Argument auf bekomme ich dennoch ein anderes Ergebnis \(`1290`\) als beim ersten Mal. Es handelt sich also nicht um eine Pure Function.
+Die zweite Funktion ist nicht mehr _pure_, weil sie nicht zuverlässig immer den gleichen Output liefert, selbst wenn ihr Input identisch ist. Momentan ist mein Browser-Fenster 1920 Pixel breit. Rufe ich die Funktion mit `10` als Argument auf, erhalte ich `1930` zurück \(`10 + 1920`\). Verkleinere ich nun das Fenster auf 1280 Pixel und rufe die Funktion erneut, mit exakt der gleichen `10` als Argument auf bekomme ich dennoch ein anderes Ergebnis \(`1290`\) als beim ersten Mal. Es handelt sich also nicht um eine **Pure Function**.
 
 Eine Möglichkeit diese Funktion „pure“ zu machen wäre, ihr meine Fensterbreite als weiteres Funktionsargument zu übergeben:
 
@@ -412,7 +410,7 @@ function pureCalculation(number, outerWidth) {
 }
 ```
 
-So liefert die Funktion beim Aufruf von pureCalculation\(10, window.outerWidth\) zwar immer noch ein Ergebnis was von meiner Fensterbreite abhängt, die Funktion ist dennoch „pure“ da sie beim gleichen Input weiterhin den gleichen Output liefert. Einfacher kann man das nachvollziehen wenn man die Funktion mal auf ihre wesentlichen Eigenschaften reduziert:
+So liefert die Funktion beim Aufruf von `pureCalculation(10, window.outerWidth)` zwar immer noch ein Ergebnis was von meiner Fensterbreite abhängt, die Funktion ist dennoch _„pure“_ da sie beim gleichen Input weiterhin den gleichen Output liefert. Einfacher kann man das nachvollziehen wenn man die Funktion mal auf ihre wesentlichen Eigenschaften reduziert:
 
 ```javascript
 function pureSum(number1, number2) {
@@ -438,10 +436,10 @@ Das obige Beispiel ist ebenfalls eine Funktion die nicht „pure“ ist, da sie 
 
 ```javascript
 console.log(accelerate(car)) 
-> {speed: 1, seats: 5}
+// {speed: 1, seats: 5}
 
 console.log(accelerate(car)) 
-> {speed: 2, seats: 5}
+// {speed: 2, seats: 5}
 ```
 
 Wie sorgen wir also nun dafür, dass auch unser letztes Beispiel „pure“ wird? Indem wir den Eingabewert nicht mehr modifizieren und stattdessen jedes Mal ein neues Objekt erzeugen, basierend auf dem Eingabewert, und dieses neue Objekt aus der Funktion zurückgebend,
@@ -457,12 +455,12 @@ function accelerate(car) {
 
 Neues Ergebnis:
 
-```text
+```javascript
 console.log(accelerate(car)) 
-> {speed: 1}
+// {speed: 1}
 
 console.log(accelerate(car)) 
-> {speed: 1}
+// {speed: 1}
 ```
 
 **Gleicher Input: gleicher Output:** wir sind „pure“!
@@ -471,13 +469,13 @@ Ihr wundert euch jetzt vielleicht warum ich euch das erzähle und hier mit langw
 
 React ist eine sehr liberale Library, die dem Entwickler sehr viele Freiheiten lässt. Aber eine Sache ist oberstes Gebot und da kennt React auch wirklich keinen Spaß: **Komponenten müssen sich im Hinblick auf ihre Props wie „Pure Functions“ verhalten und bei gleichen Props stets die gleiche Ausgabe erzeugen!**
 
-Haltet ihr euch da nicht dran, kann es bei der Arbeit mit React zu sehr eigenartigen Effekten kommen, zu unerwünschten und nicht nachvollziehbaren Ergebnissen führen und euch das Leben beim Bugfixing zur Hölle machen. Und genau aus diesem Grund lernt ihr ja React: weil ihr ein einfaches aber dennoch zugleich unglaublich mächtiges Tool haben wollt, mit denen ihr nach etwas Einarbeitung in unglaublich schneller Zeit wirklich professionelle User Interfaces entwickeln könnt, ohne euch dabei selbst in den Wahnsinn zu treiben. All das bietet euch React, solange ihr euch an diese Regel haltet.
+Haltet ihr euch da nicht dran, kann es bei der Arbeit mit React zu sehr eigenartigen Effekten kommen, zu unerwünschten und nicht nachvollziehbaren Ergebnissen führen und euch das Leben beim Bugfixing zur Hölle machen. Und genau aus diesem Grund lernt ihr ja React: weil ihr ein einfaches aber dennoch zugleich unglaublich mächtiges Tool haben wollt, mit denen ihr nach etwas Einarbeitung in unglaublich schneller Zeit wirklich professionelle User Interfaces entwickeln könnt, ohne euch dabei selbst in den Wahnsinn zu treiben. All das bietet euch React, solange ihr euch an diese Regel haltet!
 
 Das hat für uns aber gleichzeitig den sehr angenehmen Nebeneffekt, dass sich Komponenten in der Regel auch sehr einfach testen lassen.
 
-So und was bedeutet jetzt genau das _„readonly innerhalb einer Komponente“_? Das ist mit unserem neuen Wissen über „Pure Functions“ recht schnell erklärt: egal wie ich in der Komponente auf die Props zugreife, ob direkt über das `props`-Argument einer SFC \(_„Stateless Functional Component“_\), über den `constructor()` in einer Class-Component oder an beliebiger anderer Stelle innerhalb einer Class-Component mittels `this.props`: ich kann und darf \(und will!\) den Wert der hereingereichten Props nicht ändern.
+So und was bedeutet jetzt genau das _„readonly innerhalb einer Komponente“_? Das ist mit unserem neuen Wissen über „Pure Functions“ recht schnell erklärt: egal wie ich in der Komponente auf die Props zugreife, ob direkt über das `props`-Argument einer **Function Component**, über den `constructor()` in einer **Klassen-Komponente** oder an beliebiger anderer Stelle innerhalb einer **Klassen-Komponente** mittels `this.props`: ich kann und darf \(und soll! und will!!\) den Wert der hereingereichten **Props** nicht ändern.
 
-Anders sieht das natürlich **außerhalb** aus. Hier kann ich den Wert problemlos ändern \(vorausgesetzt natürlich, wir befinden uns nicht wiederum in einer Komponente, welche die Prop die wir modifizieren wollen selbst nur hereingereicht bekommen hat\).
+Anders sieht das natürlich **außerhalb** von Komponenten aus. Hier kann ich den Wert problemlos ändern \(vorausgesetzt natürlich, wir befinden uns nicht wiederum in einer Komponente, welche die Prop die wir modifizieren wollen selbst nur hereingereicht bekommen hat\).
 
 #### Was nicht möglich ist
 
@@ -502,13 +500,13 @@ ReactDOM.render(
  TypeError: Cannot add property number, object is not extensible
 {% endhint %}
 
-Hier versuche ich direkt die `number` und `fullName` Props innerhalb meiner Example-Komponente zu ändern, was natürlich nicht funktionieren kann, da wir ja gelernt haben, dass Props grundsätzlich readonly sind.
+Hier versuche ich direkt die `number` und `fullName` Props innerhalb meiner `Example`-Komponente zu ändern, was natürlich nicht funktionieren kann, da wir ja gelernt haben, dass Props grundsätzlich **readonly** sind.
 
 #### Was allerdings möglich ist
 
-Manchmal möchte ich aber eben doch einen neuen Wert von einer hereingereichten Prop ableiten. Das ist auch gar kein Problem, React 17 bietet dafür sogar noch eine umfassende Funktion `getDerivedStateFromProps()`, auf die ich im entsprechenden Kapital nochmal gesondert und sehr detailliert eingehen werde.
+Manchmal möchte ich aber eben doch einen neuen Wert von einer hereingereichten Prop ableiten. Das ist auch gar kein Problem, React 16.3.0 bietet dafür sogar noch eine umfassende Funktion `getDerivedStateFromProps()`, auf die ich im nächsten Kapital nochmal gesondert und sehr detailliert eingehen werde.
 
-Möchte ich aber eben nur mal eben einen Wert anzeigen der sich von der Prop ableitet, die ich als Komponente hereingereicht bekomme, geht das indem nur die Ausgabe auf Basis der Prop anpasse ohne zu probieren den Wert zurück zu schreiben.
+Möchte ich aber eben nur mal eben einen Wert anzeigen der sich von der Prop ableitet, die ich als Komponente hereingereicht bekomme, geht das indem nur die Ausgabe auf Basis der Prop anpasse ohne zurück zu schreiben.
 
 ```jsx
 var React = require('react');
@@ -580,13 +578,13 @@ gibt sie uns als Ergebnis zurück:
 <div>5</div>
 ```
 
-Und zwar egal wie oft die Komponente inzwischen tatsächlich gerendert wurde. Gleicher Input, gleicher Output.
+Und zwar egal wie oft die Komponente inzwischen tatsächlich gerendert wurde. **Gleicher Input, gleicher Output.**
 
-Innerhalb unserer Komponente sind und bleiben wir weiterhin „pure“. Wir modifizieren den Eingabewert nicht und wir haben in der Komponente auch keinerlei direkten Abhängigkeiten nach außen, die unser Render-Ergebnis beeinflussen könnten. Der Wert wird lediglich außerhalb unserer Komponente geändert und neu in die Komponente **hereingegeben**, was uns aber an dieser Stelle auch gar nicht weiter interessieren braucht, da es für uns lediglich wichtig ist, dass unsere Komponente mit gleichen Props auch weiterhin das gleiche Ergebnis liefert. Und das ist hier zweifellos gegeben. Wer die Props außerhalb unserer Komponente modifiziert, wie oft und in welcher Form ist uns ganz gleich, solange wir das nicht selber innerhalb unserer Komponente tun. Okay, Prinzip verstanden?
+Innerhalb unserer Komponente sind und bleiben wir weiterhin _pure_. Wir modifizieren den Eingabewert nicht und wir haben in der Komponente auch keinerlei direkten Abhängigkeiten nach außen, die unser Rendering-Ergebnis beeinflussen könnten. Der Wert wird lediglich außerhalb unserer Komponente geändert und neu in die Komponente **hereingegeben**, was uns aber an dieser Stelle auch gar nicht weiter interessieren braucht, da es für uns lediglich wichtig ist, dass unsere Komponente mit gleichen Props auch weiterhin das gleiche Ergebnis liefert. Und das ist hier zweifellos gegeben. Wer die Props außerhalb unserer Komponente modifiziert, wie oft und in welcher Form ist uns ganz gleich, solange wir das nicht selber innerhalb unserer Komponente tun. Okay, Prinzip verstanden?
 
 #### Props sind ein abstrahiertes Funktionsargument
 
-Da Props, reduziert man sie auf das Wesentliche, nichts anderes als ein Funktionsargument sind, können sie auch in dessen diversen Formen auftreten. Alles, was auch Functions oder Constructors in JavaScript als Argument akzeptieren, kann auch als Wert für eine Prop verwendet werden. Vom simplen String, über Objekte, Funktionen oder gar andere React-Elemente \(die ja, wie wir bereits wissen, hinter den Kulissen auch nichts anderes als ein Funktionsaufruf sind\) kann das nahezu alles sein, solange es eben ein valider Ausdruck ist.
+Da Props, reduziert man sie auf das Wesentliche, nichts anderes als ein Funktionsargument sind, können sie auch in dessen diversen Formen auftreten. Alles, was auch Functions oder Constructors in JavaScript als Argument akzeptieren, kann auch als Wert für eine Prop verwendet werden. Vom simplen String, über Objekte, Funktionen oder gar andere React-Elemente \(die ja, wie wir bereits wissen, hinter den Kulissen auch nichts anderes als ein Aufruf von `createElement()` sind\) kann das nahezu alles sein, solange es eben ein valider Ausdruck ist.
 
 ```jsx
 <MyComponent
@@ -613,7 +611,7 @@ Auch wenn die meisten Props hier inhaltlich wenig Sinn ergeben und nur zur Veran
 
 ### Props sind nicht auf eine Verschachtelungsebene beschränkt
 
-Eine Komponente die Props empfängt kann diese problemlos auch an Kind-Komponenten weiterreichen. Dies kann einerseits hilfreich sein wenn man große Komponenten in mehrere kleinere Komponenten unterteilt und gewisse Props an Kind-Komponenten weitergegeben werden müssen, kann aber bei komplexen Anwendungen teilweise dazu führen dass es schwer erkenntlich wird wo der genaue Ursprung einer Prop ist und wo ich anfangen muss zu suchen, wenn ich den Wert einer Prop ändern möchte.
+Eine Komponente die Props empfängt kann diese problemlos auch an Kind-Elemente weiterreichen. Dies kann einerseits hilfreich sein wenn man große Komponenten in mehrere kleinere Komponenten unterteilt und gewisse Props an Kind-Komponenten weitergegeben werden müssen, kann aber bei komplexen Anwendungen teilweise dazu führen dass es schwer erkenntlich wird wo der genaue Ursprung einer Prop ist und wo ich anfangen muss zu suchen, wenn ich den Wert einer Prop ändern möchte.
 
 ```jsx
 function User(props) {
@@ -634,8 +632,8 @@ ReactDOM.render(
 
 ### Die wichtigsten Punkte im Überblick
 
-{% hint style="success" %}
-Komponenten müssen sich hinsichtlich ihrer Props als „Pure Functions“ verhalten und bei gleichen Props stets die gleiche Ausgabe erzeugen.
+{% hint style="info" %}
+Komponenten müssen sich hinsichtlich ihrer Props als **Pure Functions** verhalten und bei gleichen Props stets die gleiche Ausgabe erzeugen.
 
 * Props sind innerhalb einer Komponente grundsätzlich als **readonly** zu betrachten
 * Komponenten können eine **beliebige Menge an Props** übergeben bekommen.
