@@ -28,28 +28,9 @@ Grundsätzlich ist also auch nach wie vor nichts gegen die Verwendung von Klasse
 
 Um zu veranschaulichen wie viel simpler Komponenten durch die Verwendung von **Hooks** werden können hat Sunil Pai, ebenfalls ein Core-Entwickler von React, einen Vergleich erstellt bei dem zusammenhängende Logik gleich eingefärbt wurde und die Teile, die in der Function Component mit Hooks nicht mehr benötigt werden, in der Klassen-Komponente geschwärzt wurden. Das Ergebnis ist ein sehr harmonisches Bild in dem Logik jeweils an einer Stelle gebündelt ist und nicht an verschiedenen Stellen innerhalb der Komponente verwendet wird:
 
-<table>
-  <thead>
-    <tr>
-      <th style="text-align:left">Klassen-Komponente</th>
-      <th style="text-align:left">Komponente mit Hooks</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="text-align:left">
-        <p></p>
-        <p>
-          <img src="../.gitbook/assets/react-class.jpg" alt/>
-        </p>
-      </td>
-      <td style="text-align:left">
-        <p></p>
-        <p>
-          <img src="../.gitbook/assets/react-hooks.jpg" alt/>
-        </p>
-      </td>
-    </tr>
-  </tbody>
-</table>Quelle: [Sunil Pai auf Twitter](https://twitter.com/threepointone/status/1056594421079261185)
+| Klassen-Komponente | Komponente mit Hooks |
+|-------------------------------|-----------------------------|
+|<img src="../.gitbook/assets/react-class.jpg" alt/> | <img src="../.gitbook/assets/react-hooks.jpg" alt/> |
+
+Quelle: [Sunil Pai auf Twitter](https://twitter.com/threepointone/status/1056594421079261185)
 
