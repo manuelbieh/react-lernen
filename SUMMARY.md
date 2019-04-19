@@ -37,4 +37,5 @@
   * [Mehrsprachigkeit](ecosystem/mehrsprachigkeit.md)
   * [Informationsquellen](ecosystem/informationsquellen.md)
   * [Tools und Frameworks](ecosystem/tools.md)
+* [Schlusswort](schlusswort.md)
 
