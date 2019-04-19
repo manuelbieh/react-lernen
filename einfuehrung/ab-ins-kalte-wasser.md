@@ -31,7 +31,6 @@ Sind mehrere React-Komponenten im Spiel redet man üblicherweise von einer **App
 Starten wir also klassischerweise mit dem üblichen „Hello World“ Beispiel und setzen das Script an die Stelle an der sich oben der Platzhalter befindet:
 
 ```javascript
-<script>
 class HelloWorld extends React.Component {
   render() {
     return React.createElement(
@@ -45,7 +44,6 @@ ReactDOM.render(
   React.createElement(HelloWorld), 
   document.getElementById('root')
 );
-</script>
 ```
 
 Und damit haben wir bereits die erste einfache React-Komponente implementiert! Setzen wir diesen Code nun an die Stelle unseres Platzhalters aus dem vorangegangenen Code-Snippet. Sehen wir im Browser die folgende Ausgabe:
