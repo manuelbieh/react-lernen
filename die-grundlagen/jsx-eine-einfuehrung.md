@@ -67,7 +67,7 @@ null
 
 … da **JavaScript-Datentypen** allesamt auch als Ausdruck verwendet werden können.
 
-Die ES2015 **Template String Syntax**, die Backticks \(```\) benutzt, ist ebenfalls ein Ausdruck. Klar, sind sie doch letztlich nichts anderes als ein String:
+Die ES2015 **Template String Syntax**, die Backticks \(\`\`\`\) benutzt, ist ebenfalls ein Ausdruck. Klar, sind sie doch letztlich nichts anderes als ein String:
 
 ```javascript
 `Hallo ${name}`;
@@ -113,25 +113,25 @@ All das wird später noch wichtig werden. Um dem ganzen jetzt endgültig die Kro
 
 Da das später noch wichtig wird, hier nochmal einige Beispiele für JSX, das gültige Ausdrücke beinhaltet:
 
-#### Simple Mathematik
+### Simple Mathematik
 
 ```jsx
 <span>5 + 1 = {5 + 1}</span>
 ```
 
-#### Ternary Operator
+### Ternary Operator
 
 ```jsx
 <span>Heute ist {new Date().getDay() === 1 ? 'Montag' : 'nicht Montag'}</span>
 ```
 
-#### Ternary Operator als Wert einer Prop
+### Ternary Operator als Wert einer Prop
 
 ```jsx
 <div className={user.isAdmin ? 'is-admin' : null}>…</div>
 ```
 
-#### Array.map\(\) mit JSX als Rückgabewert das wiederum einen Ausdruck enthält
+### Array.map\(\) mit JSX als Rückgabewert das wiederum einen Ausdruck enthält
 
 ```jsx
 <ul>
@@ -141,7 +141,7 @@ Da das später noch wichtig wird, hier nochmal einige Beispiele für JSX, das g�
 </ul>
 ```
 
-#### Zahlenwerte in Props
+### Zahlenwerte in Props
 
 ```jsx
 <input type="range" min={0} max={100} />
@@ -234,9 +234,9 @@ Damit solltest du auch schon ausreichend Kenntnisse über JSX erlangt haben, um 
 
 {% hint style="info" %}
 
-- Mehrzeiliges JSX muss stets in Klammern gesetzt werden
-- JSX kann JavaScript-Ausdrücke verarbeiten. Diese müssen in geschweifte Klammern gesetzt werden und können dann auch in Props verwendet werden.
-- Um Attribute für HTML-Elemente zu setzen muss die Schreibweise des DOM Element Interface benutzt werden \(`htmlFor` statt `for`, `className` statt `class`\)
-- CSS Inline-Styles werden als JavaScript Object geschrieben
-- Kommentare werden ebenfalls in geschweifte Klammern gesetzt und verwenden Multiline-Comment Syntax: `{/* */}`
-  {% endhint %}
+* Mehrzeiliges JSX muss stets in Klammern gesetzt werden
+* JSX kann JavaScript-Ausdrücke verarbeiten. Diese müssen in geschweifte Klammern gesetzt werden und können dann auch in Props verwendet werden.
+* Um Attribute für HTML-Elemente zu setzen muss die Schreibweise des DOM Element Interface benutzt werden \(`htmlFor` statt `for`, `className` statt `class`\)
+* CSS Inline-Styles werden als JavaScript Object geschrieben
+* Kommentare werden ebenfalls in geschweifte Klammern gesetzt und verwenden Multiline-Comment Syntax: `{/* */}`
+
