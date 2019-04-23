@@ -175,7 +175,7 @@ render() {
 
 Hier geben wir aus der `render()`-Methode direkt und ohne umschließendes Eltern-Element mehrere `li`-Elemente zurück, was zu einer Fehlermeldung führt. Manchmal ist dies aber notwendig, bspw. wenn sich das umschließende Element in einer Eltern-Komponente befinden soll, die Kind-Elemente aber durch eine eigene Komponente erzeugt werden soll. 
 
-Innerhalb einiger Elemente \(`table`, `ul`, `ol`, `dl`, …\) ist es aber nicht erlaubt bspw. ein `div`-Element als Zwischenebene zu verwenden, um die Regel zu erfüllen stets nur ein einzelnes Root-Element aus einer Komponente zurückzugeben. In diesem Fall kommt das Fragment ins Spiel und würde angewendet auf das obige Beispiel folgende Änderung bedeuten um valides JSX zu erzeugen:
+Innerhalb einiger Elemente \(`table`, `ul`, `ol`, `dl`, …\) ist es aber nicht erlaubt bspw. ein `div`-Element als Zwischenebene zu verwenden, um die Regel zu erfüllen stets nur ein einzelnes Root-Element aus einer Komponente zurückzugeben. In diesem Fall kommt das **Fragment** ins Spiel und würde angewendet auf das obige Beispiel folgende Änderung bedeuten, um valides JSX zu erzeugen:
 
 ```jsx
 render() {
@@ -189,7 +189,7 @@ render() {
 }
 ```
 
-Dabei gilt auch hier die Regel, dass iterativ, also durch eine Schleife, erzeugte Ausgabe eine key-Prop besitzen muss. Mit der Fragment Helper-Komponente ist dies möglich. Schauen wir uns ein weiteres, etwas umfassenderes und praxisnäheres Beispiel an:
+Dabei gilt auch hier die Regel, dass iterativ, also durch eine Schleife erzeugte Ausgabe eine `key`-Prop besitzen muss. Mit der `Fragment`-Komponente ist dies möglich. Schauen wir uns ein weiteres, etwas umfassenderes und praxisnäheres Beispiel an:
 
 ```jsx
 import React from 'react';
@@ -250,9 +250,23 @@ Hier wäre es beispielsweise nicht möglich ein `div` oder `span` oder ein sonst
 </dl>
 ```
 
-… und wäre damit ungültiges HTML, da ein `dl`-Element nur `dt` und `dd` als Kind-Element erlaubt. Das Fragment hilft uns hier also gültiges JSX zu erzeugen, ohne dabei gleichzeitig das HTML ungültig werden zu lassen. Dies war in React bis zur Einführung von Fragments in Version 16.3. ein Problem was dazu führte, dass Komponenten unnötig kompliziert implementiert werden mussten um weder gegen JSX- noch gegen HTML-Regeln zu verstoßen.
+… und wäre damit ungültiges HTML, da ein `dl`-Element nur `dt` und `dd` als Kind-Element erlaubt. Das **Fragment** hilft uns hier also gültiges JSX zu erzeugen, ohne dabei gleichzeitig das HTML ungültig werden zu lassen. Dies war in React bis zur Einführung von Fragments in Version 16.3. ein Problem was dazu führte, dass Komponenten unnötig kompliziert implementiert werden mussten um weder gegen JSX- noch gegen HTML-Regeln zu verstoßen.
 
-_\[**TODO**: sprachlich eine Katastrophe. Vielleicht nochmal den einen oder anderen Satz glatt ziehen und Beispiele und Erklärungen zur Short Syntax &lt;&gt;&lt;/&gt; einfügen\]_
+Die Fragment komponente kann auch als benannter Import direkt aus React importiert werden:
+
+```javascript
+import React, { Fragment } from 'react';
+```
+
+Bei der Verwendung kann dann `<Fragment>` geschrieben werden statt `<React.Fragment>`. Dies kann insbesondere wenn viele `Fragment`-Elemente verwendet werden noch etwas Schreibarbeit sparen.
+
+Wer es noch etwas kürzer möchte, der sollte Babel 7 zur Transpilierung des Codes verwenden. Hier ist außerdem eine Kurzform der Fragment-Syntax möglich. Dazu wird lediglich ein _leeres_ Element erzeugt:
+
+```jsx
+<>Fragment in Kurzform-Syntax</>
+```
+
+Eine komfortable Möglichkeit um sich noch etwas mehr Schreibarbeit zu ersparen. Doch aufgepasst: die Verwendung der Fragment-Kurzform in einer Schleife ist hier nicht möglich, da die Kurzform-Syntax von Fragment keine Props besitzen kann, alle Elemente die in einer Schleife verwendet werden jedoch eben eine `key`-Prop besitzen müssen. In diesem Fall muss dann doch wieder auf `<React.Fragment>` zurückgegriffen werden.
 
 ## Conditional Rendering
 
