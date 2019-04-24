@@ -10,3 +10,15 @@ Dieses Buch deckt außerdem nur das Thema **Einstieg in React** ab und bietet ke
 
 **Aber keine Sorge:** das klingt komplizierter als es am Ende eigentlich ist. Jeder Leser der in der Vergangenheit bereits bspw. mit jQuery gearbeitet hat, sollte beim größten Teil dieses Buches keine Verständnisprobleme haben und meinen Erklärungen folgen können.
 
+### Ein paar Worte zu diesem Buch
+
+Ich habe dieses Buch im **Selbstverlag** veröffentlicht, da ich die volle Kontrolle über alle Veröffentlichungskanäle, das Preismodell, sowie sämtliche Rechte und Freiheiten über das Buch behalten möchte. Mir geht es nicht darum „den großen Reibach“ zu machen, sondern ich möchte dieses Buch in erster Linie möglichst vielen Leuten zugänglich machen. Zu diesem Zweck gibt es eine kostenlose Online-Version dieses Buches, die ihr unter der URL [https://lernen.react-js.dev/](https://lernen.react-js.dev/) findet. Mit dem Kauf der ePub oder PDF-Version über iBooks, Google Play Books, Amazon Kindle oder Leanpub kannst du meine Arbeit am Buch finanziell etwas unterstützen und bekommst statt der HTML-Version auch noch ein schönes E-Book zum Download.
+
+Da **Selbstverlag** auch den Begriff „selbst“ beinhaltet, bin ich aber auch komplett auf mich allein gestellt gewesen. Kein Verlag, der mir einen Lektor oder seine Vertriebsinfrastruktur zur Verfügung gestellt hat. Ein Lektor ist aber bereits beauftragt \(stand Ende April\), das dauert allerdings noch eine Weile bis dieser mit dem Lektorat fertig ist. Aus diesem Grund ist dieses Buch vielleicht an einigen Ecken nicht so rund wie man es von anderen Fachbüchern mit einem Verlag im Rücken gewohnt ist. Dafür bitte ich um Verzeihung. Solltet ihr einen Fehler finden, egal ob inhaltlich, grammatikalisch oder auch nur einen Tippfehler, könnt ihr mir jederzeit gern ein [Ticket auf GitHub](https://github.com/manuelbieh/react-book/issues) erstellen. 
+
+Das Buch ist komplett im Markdown-Format geschrieben und liegt ebenfalls [vollständig öffentlich auf GitHub](https://github.com/manuelbieh/react-book). Zum Schreiben habe ich [Gitbook.com](https://www.gitbook.com/) verwendet. Grundsätzlich habe ich es geliebt, an einigen Tagen gehasst. Der Sevice eignet sich fantastisch zum Schreiben technischer Dokumentation, weniger tatsächlich um damit ganze Bücher zu schreiben, auch wenn der Name dies suggeriert.
+
+Wenn euch das Buch gefällt oder ihr eine Frage habt, erreicht ihr mich am Besten via Twitter. Hier freue ich mich über jede Rückmeldung, egal ob aufmunternde positive Worte oder konstruktive Kritik!
+
+Und nun wünsche ich euch viel Spaß mit dem Buch!
+
