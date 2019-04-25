@@ -43,6 +43,11 @@ console.log(i);
 
 Nun einmal dasselbe Beispiel mit `let`
 
+```javascript
+for (let j = 0; j < 10; j++) { }
+console.log(j);
+```
+
 **Ausgabe:**
 
 {% hint style="danger" %}
