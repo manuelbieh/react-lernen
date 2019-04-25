@@ -499,11 +499,7 @@ Event Listener. Gutes Stichwort. Darum kümmern wir uns im nächsten Kapitel, de
 
 ### Diagramm der Lifecycle-Methoden
 
-![Diagram der verschiedenen Lifecycle-Methods in ihren jeweiligen Phasen \(CC0 Dan Abramov\)](../.gitbook/assets/lifecycle-methods-2.png)
-
-
-
-
+![Diagram der verschiedenen Lifecycle-Methods in ihren jeweiligen Phasen \(CC0 Dan Abramov\)](../.gitbook/assets/lifecycle-methods-2.jpg)
 
 
 
