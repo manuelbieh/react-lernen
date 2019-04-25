@@ -145,17 +145,7 @@ function(arg1, arg2) {}
 **Arrow Functions** vereinfachen uns das ungemein, indem sie erst einmal das `function` Keyword überflüssig machen:
 
 ```javascript
-const logWinners = (athletes) => {
-  const gold = athletes[0];
-  const silver = athletes[1];
-  const bronze = athletes[2];
-  console.log(
-    'Winners of Gold, Silver and Bronze are', 
-    gold, 
-    silver, 
-    bronze
-  );
-}
+(arg1, arg2) => {}
 ```
 
 Haben wir zudem nur einen Parameter, sind sogar die Klammern bei den Argumenten optional. Aus unserer Funktion
@@ -263,6 +253,10 @@ Zurückgegeben wird jeweils ein Boolean, also `true` oder `false.` Möchte ich w
 
 Analog verhält es sich mit `startsWith`:
 
+```javascript
+'Beispiel'.startsWith('Bei')
+```
+
 … wie auch mit `endsWith`:
 
 ```javascript
@@ -298,6 +292,11 @@ Array.from('Example'); // ['E', 'x', 'a', 'm', 'p', 'l', 'e']
 ```
 
 `Array.of()` erstellt eine neue Array-Instanz aus einer beliebigen Anzahl an Parametern, unabhängig von deren Typen. `Array.from()` erstellt ebenfalls eine Array-Instanz, allerdings aus einem „Array-ähnlichen“ iterierbaren Objekt. Das wohl griffigste Beispiel für ein solches Objekt ist eine `HTMLCollection` oder eine `NodeList`. Solche erhält man bspw. bei der Verwendung von DOM-Methoden wie `getElementsByClassName()` oder dem moderneren `querySelectorAll()`. Diese besitzen selbst keine Methoden wie `.map()` oder `.filter()`. Möchte man über eine solche also iterieren, muss man sie erst einmal in einen Array konvertieren. Dies geht mit ES2015 nun ganz einfach durch die Verwendung von `Array.from()`.
+
+```javascript
+const links = Array.from(document.querySelectorAll('a'));
+Array.isArray(links); // true
+```
 
 #### Methoden auf dem Array-Prototypen
 
@@ -437,13 +436,12 @@ console.log(user);
 **ES2015** erlaubt uns nun, Ausdrücke direkt als Objekt-Eigenschaft zu nutzen, indem wir sie in eckige Klammern `[]` setzen. Dadurch sparen wir uns den Umweg nachträglich noch Eigenschaften zum Bereits erstellten Objekt hinzuzufügen:
 
 ```javascript
+const nationality = 'german';
 const user = {
-  firstName: 'Manuel',
-  lastName: 'Bieh',
-  job: 'JavaScript Developer',
-  image: 'manuel.jpg',
+  name: 'Manuel',
 };
-const { firstName } = user;
+console.log(user);
+// -> { name: 'Manuel', german: true };
 ```
 
 Das Beispiel ist aus Gründen der einfacheren Verständlichkeit ein simples, doch die Verwendungsmöglichkeiten werden später mitunter noch deutlich komplexer und schaffen uns viele Möglichkeiten um sauberen und gut verständlichen Code zu schreiben, insbesondere wenn es um **JSX** geht.
@@ -645,16 +643,11 @@ console.log(allSettings);
 
 **Ausgabe:**
 
-```javascript
-const UserPersona = (props) => {
-  return (
-    <div>
-      <img src={props.image} alt="User Image" />
-      {props.firstName} {props.lastName}<br />
-      <strong>{props.job}</strong>
-    </div>
-  );
-};
+```text
+{
+  language: 'de-DE',
+  timezone: 'Berlin/Germany',
+}
 ```
 
 Das zuletzt genannte `userSettings` Objekt überschreibt hier die gleichnamige Eigenschaft `language`, die sich auch im `globalSettings` Objekt befindet. Der Spread Operator funktioniert hier ganz ähnlich wie die in ES2015 neu eingeführte Objekt-Methode `Object.assign()`. Auch diese wird in ES2015+ basierten Anwendungen gelegentlich genutzt.
@@ -848,1771 +841,539 @@ const UserPersona = (props) => {
 };
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Damit wirkt unsere Komponente schon deutlich aufgeräumter uns lesbarer. Doch es geht noch einfacher. Wie auch bei Arrays ist es auch möglich Objekte direkt bei der Übergabe als Funktionsargument zu destrukturieren. Statt des `props` Arguments nutzen wir dafür das **Destructuring Assignment** direkt:
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+const UserPersona = ({ firstName, lastName, image, job }) => (
+  <div>
+    <img src={image} alt="User Image" />
+    {firstName} {lastName}<br />
+    <strong>{job}</strong>
+  </div>
+);
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Als Bonus nutzen wir hier sogar die direkte Rückgabe aus der Funktion ohne geschweifte Klammern und explizites `return` Statement aus dem Kapitel über Arrow Functions, da wir ja nun mit unserem auf 5 Zeilen reduzierten **JSX** einen Ausdruck haben, den wir direkt aus der **Arrow Function** zurückgeben können.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Während der Arbeit mit React trifft man ständig auf derartige Syntax in **SFCs**, auch bei **Class Components** findet man sehr häufig zu Beginn der `render()`-Methode einer Komponente ein ähnliches Destructuring Assignment in der Form:
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+render() {
+  const { firstName, lastName, image, job } = this.props;
+  // weiterer Code
+}
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Auch wenn das euch natürlich hinterher freigestellt ist ob ihr das so macht oder innerhalb der Funktion einfach weiterhin direkt auf `this.props.firstName` zugreift. Dieses Muster hat sich aber mittlerweile zu einer Art Best Practice entwickelt und wurde in den meisten Projekten so gehandhabt, da es den Code am Ende in den meisten Fällen lesbarer werden lässt und auch leichter verständlich ist.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+**Umbenennung von Eigenschaften beim Destructuring**
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Manchmal ist es notwendig Eigenschaften umzubenennen, entweder weil es bereits Variablen mit dem selben Namen gibt oder die Eigenschaften kein gültiger Variablenname wäre. All das ist denkbar und möglich. Und ES2015 bietet uns auch eine Lösung dafür.
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+const passenger = {
+  name: 'Manuel Bieh',
+  class: 'economy',
+}
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Das obige `passenger` Objekt enthält die Eigenschaft class, die als Name für eine Eigenschaft gültig ist, als Name für eine Variable jedoch nicht. Ein direktes Destructuring wäre hier also nicht möglich und würde zu einem Fehler führen:
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+const { name, class } = passenger;
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+{% hint style="danger" %}
+Uncaught SyntaxError: Unexpected token }
+{% endhint %}
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Um hier den Namen der Variable umzubenennen muss der Eigenschaft der neue Namen getrennt durch einen Doppelpunkt `:` übergeben werden. Ein korrektes **Destructuring Assignment** wäre also in diesem Fall in etwa folgendes:
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+const { name, class: ticketClass } = passenger;
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Hier schreiben wir den Wert der `class` Eigenschaft in eine Variable `ticketClass`, was anders als `class` ein gültiger Name für eine Variable ist. Der Name des Passagiers landet dabei ganz gewöhnlich in einer Variable mit dem Namen `name`.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+**Standardwerte beim Destructuring vergeben**
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Auch die Vergabe von Standardwerten beim **Destructuring** ist möglich! Ist im Objekt welches destrukturiert wird eine Eigenschaft nicht definiert, wird stattdessen der Default verwendet. Ähnlich wie bei der Umbenennung wird dabei die jeweilige Eigenschaft wie gehabt vorangestellt, jedoch gefolgt von einem Gleich-Zeichen und dem entsprechenden Standardwert:
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+const { name = 'Unknown passenger' } = passenger;
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Der Wert von `name` wäre nun `Unknown passenger` wenn im `passenger` Objekt keine Eigenschaft `name` existiert oder deren Wert `undefined` ist. Existiert diese hingegen, ist aber leer \(also bspw. ein leerer String oder `null`\) wird der Standardwert **nicht** an dessen Stelle verwendet!
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+**Kombination von Umbenennung und Standardwerten**
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Jetzt wird es verrückt, denn auch das ist möglich. Die Umbenennung von Eigenschaften in Variablennamen bei gleichzeitiger Verwendung von Standardwerten. Die Syntax dafür ist allerdings etwas, wo man bei der ersten Begegnung sicherlich einen Moment länger hinschauen muss. Wir bleiben wieder bei unserem `passenger` Objekt aus den Beispielen zuvor. Anforderung ist nun die Zuweisung der `name` Eigenschaft zu einer Variable mit dem Namen `passengerName`, die den Wert `Unknown Passenger` tragen soll, wenn kein Name vorhanden ist. Außerdem möchten wir weiterhin `class` in `ticketClass` umbenennen und den Passagier gleichzeitig in `Economy` einordnen, sollte es im entsprechenden Objekt keine `class` Eigenschaft geben.
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+const {
+  name: passengerName = 'Unknown passenger',
+  class: ticketClass = 'economy',
+} = passenger;
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Hier besitzen die Variablen `passengerName` und `ticketClass` die werte `Unknown passenger` und `economy` wenn diese nicht im destrukturierten Objekt existieren. Doch Vorsicht: das Objekt selbst darf nicht null sein, andernfalls bekommen wir vom JavaScript Interpreter einen unschönen Fehler geworfen:
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+const {
+  name: passengerName = 'Unknown passenger',
+  class: ticketClass = 'economy',
+} = null;
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+{% hint style="danger" %}
+Uncaught TypeError: Cannot destructure property \`name\` of 'undefined' or 'null'.
+{% endhint %}
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Hier gibt es einen unsauberen aber doch oft praktischen Trick um sicherzustellen, dass das Objekt selbst nicht `null` oder `undefined` ist. Dazu machen wir uns den **Logical OR Operator** zu nutze und verwenden ein leeres Objekt als Fallback, falls unser eigentliches Objekt eben `null` oder `undefined` ist:
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+const {
+  name: passengerName = 'Unknown passenger',
+  class: ticketClass = 'economy',
+} = passenger || {};
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Mit dem angehängten `|| {}` sagen wir: ist das `passenger` Objekt **falsy**, nutze stattdessen ein leeres Objekt. Die vermutlich „sauberere“ Variante wäre es vorab zu prüfen ob `passenger` auch wirklich ein Objekt ist und das Destructuring nur dann auszuführen. Die Variante mit dem **Logical OR** Fallback ist allerdings schön kurz und dürfte in vielen Fällen ausreichen.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+**Destructuring** kann übrigens auch problemlos mit dem **Spread Operator** zusammen verwendet werden:
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+const globalSettings = { language: 'en-US' };
+const userSettings = { timezone: 'Berlin/Germany' };
+const { language, timezone } = { ...globalSettings, ...userSettings };
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Hier wird zuerst der **Spread Operator** aufgelöst, also ein Objekt mit allen Eigenschaften aus den beiden Objekten `globalSettings` und `userSettings` erzeugt und anschließend per **Destructuring Assignment** entsprechenden Variablen zugewiesen.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+### Rest Operator
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Der Rest Operator dient dazu, um sich um die verbliebenen Elemente aus einem **Destructuring** und in **Funktionsargumenten** zu kümmern. Daher der Name: der Operator kümmert sich um den verbliebenen **„Rest“**. Wie auch schon der **Spread Operator** wird auch der **Rest Operator** mit drei Punkten `…` eingeleitet, jedoch nicht auf der **rechten** Seite einer Zuweisung, sondern auf der **linken**. Anders als beim Spread Operator kann es pro Ausdruck jedoch nur jeweils **einen** Rest Operator geben!
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Schauen wir uns zuerst einmal den **Rest Operator** bei Funktionsargumenten an. Sagen wir, wir möchten nun eine Funktion schreiben, die beliebig viele Argumente empfängt. Hier möchten wir natürlich auch auf all diese Argumente zugreifen können, egal ob das 2, 5 oder 25 sind. In ES5 Standardfunktionen gibt es das Keyword `arguments`mittels dessen auf ein Array aller übergebenen Funktionsargumente zugegriffen werden kann innerhalb der Funktion:
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+function Example() {
+  console.log(arguments);
+}
+Example(1, 2, 3, 4, 5);
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+**Ausgabe:**
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+{% hint style="info" %}
+`Arguments(5) [1, 2, 3, 4, 5, callee: ƒ]`
+{% endhint %}
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+**Arrow Functions** bieten diese Möglichkeit nicht mehr und werfen stattdessen einen Fehler:
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+const Example = () => {
+  console.log(arguments);
+}
+Example(1, 2, 3, 4, 5);
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+**Ausgabe:**
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+{% hint style="danger" %}
+Uncaught ReferenceError: arguments is not defined
+{% endhint %}
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Hier kommt nun erstmals der **Rest Operator** ins Spiel. Dieser schreibt uns sämtliche übergebene Funktionsargumente die wir nicht bereits in benannte Variablen geschrieben haben in eine weitere Variable mit einem beliebigen Namen:
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+const Example = (...rest) => {
+  console.log(rest);
+}
+Example(1, 2, 3, 4, 5);
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+**Ausgabe:**
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+{% hint style="info" %}
+`[1, 2, 3, 4, 5]`
+{% endhint %}
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Dies funktioniert nicht nur als einzelnes Funktionsargument sondern auch wenn wir vorher bereits benannte Parameter definiert haben. Hier kümmert sich der **Rest Operator** dann buchstäblich um den letzten verbliebenen **Rest:**
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+const Example = (first, second, third, ...rest) => {
+  console.log('first:', first);
+  console.log('second:', second);
+  console.log('third:', third);
+  console.log('rest:', rest);
+}
+Example(1, 2, 3, 4, 5);
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+**Ausgabe:**
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+{% hint style="info" %}
+`first: 1  
+second: 2  
+third: 3  
+rest: [4, 5]`
+{% endhint %}
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Der **Rest Operator** sammelt hier also die restlichen, verbliebenen Elemente aus einem **Destructuring** ein und speichert diese in einer Variable mit dem Namen, der hinter den drei Punkten angegeben wird. Dieser muss dabei nicht wie im obigen Beispiel `rest` heißen sondern kann jeden gültigen JavaScript-Variablennamen annehmen.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Das funktioniert aber nicht nur bei Funktionen sondern ebenso bei **Array Destructuring**:
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+const athletes = [
+  'Usain Bolt',
+  'Andre De Grasse',
+  'Christophe Lemaitre',
+  'Adam Gemili',
+  'Churandy Martina',
+  'LaShawn Merritt',
+  'Alonso Edward',
+  'Ramil Guliyev',
+];
+const [gold, silver, bronze, ...competitors] = athletes;
+console.log(gold);
+console.log(silver);
+console.log(bronze);
+console.log(competitors);
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+**Ausgabe:**
 
+{% hint style="info" %}
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+'Usain Bolt'
+'Andre De Grasse'    
+'Christophe Lemaitre'`  
+[  
+  'Adam Gemili',
+  'Churandy Martina',
+  'LaShawn Merritt',
+  'Alonso Edward',
+  'Ramil Guliyev'  
+]
 ```
+{% endhint %}
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+… wie auch beim **Object Destructuring:**
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+const user = {
+  firstName: 'Manuel',
+  lastName: 'Bieh',
+  job: 'JavaScript Developer',
+  hair: 'Brown',
+}
+const { firstName, lastName, ...other } = user;
+console.log(firstName);
+console.log(lastName);
+console.log(other);
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+**Ausgabe:**
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+{% hint style="info" %}
+`Manuel`  
+`Bieh`  
+`{ job: 'JavaScript Developer', hair: 'Brown' }`
+{% endhint %}
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+All die Werte, die dabei nicht explizit in eine Variable geschrieben wurden während eines **Destructuring Assignments** können dann in der als **Rest** deklarierten Variable abgerufen werden.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+## Template Strings
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+**Template Strings** in ES2015 sind eine „dritte Schreibweise“ für Strings in JavaScript. Bisher konnten Strings entweder in einfache Anführungszeichen \(`'Beispiel'`\) oder in doppelte Anführungszeichen \(`"Beispiel"`\) gesetzt werden. Nun kommt auch die Möglichkeit hinzu, diese in Backticks \(`Beispiel`\) zu setzen.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+**Template Strings** können in zwei Varianten auftreten. Als gewöhnliche **Template Strings**, die JavaScript Ausdrücke enthalten können, sowie in erweiterter Form als sog. **Tagged Template Strings**.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+**Tagged Template Strings** sind eine deutlich mächtigere Form von **Template Strings**. Mit ihnen kann die Ausgabe von **Template Strings** mittels einer speziellen Funktion modifiziert werden. Das ist bei der gewöhnlichen Arbeit mit React erst einmal weniger wichtig.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Wollte man sie mit JavaScript-Ausdrücken oder Werten mischen, griff man in ES5 meist zu einfacher **String Concatenation:**
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+var age = 7;
+var text = 'Meine Tochter ist ' + age + ' Jahre alt';
 ```
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+var firstName = 'Manuel';
+var lastName = 'Bieh';
+var fullName = firstName + ' ' + lastName;
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Mit **Template Strings** wurde nun eine Variante von String eingeführt, die selbst wiederum **JavaScript-Ausdrücke** enthalten kann. Diese werden dazu innerhalb eines **Template Strings** in eine Zeichenkette in der Form `${ }` gesetzt. Um bei den obigen Beispielen zu bleiben:
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+const age = 7;
+const text = `Meine Tochter ist ${age} Jahre alt`;
 ```
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+const firstName = 'Manuel';
+const lastName = 'Bieh';
+const fullName = `${firstName} ${lastName}`;
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Dabei können innerhalb der geschweiften Klammern sämtliche JavaScript Ausdrücke verwendet werden. Also auch Funktionsaufrufe:
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+console.log(`Das heutige Datum ist ${new Date().toISOString()}`);
+console.log(`${firstName.toUpperCase()} ${lastName.toUpperCase()}`);
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+## Promises und async/await
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Promises \(dt. _Versprechen_\) sind kein grundsätzlich neues Konzept in JavaScript, in ES2015 haben sie aber erstmals Einzug in den Standard erhalten und können nativ ohne eine andere Library \(z.B. q, Bluebird, rsvp.js, …\) verwendet werden. Ganz grob erlauben Promises es, die asynchrone Entwicklung durch Callbacks zu _linearisieren_. Ein Promise bekommt eine **Executor-Funktion** übergeben, die ihrerseits die zwei Argumente `resolve` und `reject` übergeben bekommen, und kann einen von insgesamt drei verschiedenen Zuständen annehmen: als Initialwert ist dieser Zustand `pending` und je nachdem ob eine Operation erfolgreich oder fehlerhaft war, die Executor-Funktion also das erste \(`resolve`\) oder das zweite \(`reject`\) Argument ausgeführt hat, wechselt dieser Zustand zu `fulfilled` oder `rejected`. Auf die beiden Endzustände kann dann mittels der Methoden `.then()` und `.catch()` reagiert werden. Wird `resolve` aufgerufen, wird der `then()`-Teil ausgeführt, wird `reject` aufgerufen, werden **sämtliche** `then()` Aufrufe übersprungen und der `catch()`\` Teil wird stattdessen ausgeführt.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Eine Executor-Funktion **muss** dabei zwangsweise eine der beiden übergebenen Methoden ausführen, andernfalls bleibt das Promise dauerhaft _unfulfilled_, was zu fehlerhaften Verhalten und in bestimmten Fällen sogar zu Memory Leaks innerhalb einer Anwendung führen kann.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Um den Unterschied zwischen Promises und Callbacks einmal zu demonstrieren werfen wir einen Blick auf das folgende fiktive Beispiel:
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
+const errorHandler = (err) => {
+  console.error('An error occured:', err.message);
 };
-```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+getUser(id, (user) => {
+  user.getFriends((friends) => {
+    friends[0].getSettings((settings) => {
+      if (settings.notifications === true) {
+        email.send('You are my first friend!', (status) => {
+          if (status === 200) {
+            alert('User has been notified via email!');
+          }
+        }, errorHandler);
+      }
+    }, errorHandler);
+  }, errorHandler)
+}, errorHandler)
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Wir rufen über die asynchrone `getUser()`-Funktion einen User zu einer entsprechenden `id` ab. Von diesem User besorgen wir uns mittels der asynchronen `getFriends()`-Methode eine Liste aller seiner Freunde. Vom ersten Freund \(`friends[0]`\) rufen wir mittels der asynchronen `getSettings()`-Methode die Benutzereinstellungen ab. Erlaubt der Benutzer E-Mail-Benachrichtigungen, schicken wir ihm eine E-Mail und reagieren, ebenfalls wieder asynchron, auf den Response des Mailservers.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Dabei ist das Beispiel noch ein relativ simples, es gibt keinerlei explizite Fehlerbehandlung und es gibt auch keine nennenswerten Ausnahmefälle. Dennoch ist der Code im Beispiel bereits **6 Ebenen** tief verschachtelt. Das Arbeiten mit Callbacks kann daher schnell unübersichtlich werden, insbesondere wenn innerhalb einer Callback-Funktion weitere Callback-Funktionen ausgeführt werden, wie in unserem Beispiel. So kommt es schnell zu der oft auch als **Pyradmid of Doom** bezeichneten Verschachtelung von Callbacks.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Nun schreiben wir das Beispiel einmal um und gehen davon aus, unsere fiktiven API-Methoden geben jeweils ein Promise zurück:
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
+const errorHandler = (err) => {
+  console.error('An error occured:', err.message);
 };
-```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+getUser(id)
+.then((user) => user.getFriends())
+.then((friends) => friends[0].getSettings())
+.then((settings) => {
+  if (settings.notifications === true) {
+    return email.send('You are my first friend!');
+  }
+})
+.then((status) => {
+  if (status === 200) {
+    alert('User has been notified via email');
+  }
+})
+.catch(errorHandler);
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Wir reagieren hier nach jedem Schritt mittels `then()` auf das zurückgegebene Promise, erreichen das gleiche Resultat wie vorher bei der Callback-Version, haben aber an der tiefsten Stelle lediglich eine Verschachtelung die 2 Ebenen tief ist.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Dabei ist es relativ simpel bestehenden, Callback basierenden Code in Promises umzuschreiben. Das möchte ich kurz anhand der Geolocation API und konkret deren `getCurrentPosition()`-Methode demonstrieren. Wer es nicht kennt: die Methode existiert auf dem `navigator.geolocation` Objekt, öffnet eine Benachrichtigung im Browser und fragt den Benutzer um Erlabnis ihn orten zu dürfen. Sie erwartet zwei Callbacks als Argument: das erste, der Success-Callback, bekommt ein Objekt mit der Position des Benutzers übergeben, falls dieser der Ortung zustimmt. Der zweite, der Error-Callback, bekommt ein Fehler-Objekt übergeben, falls der Benutzer einer Ortung entweder nicht zugestimmt hat oder eine Ortung aus anderen Gründen nicht möglich ist.
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+navigator.geolocation.getCurrentPosition((position) => {
+  console.log(`User position is at ${position.coords.latitude}, ${position.coords.longitude}`);
+}, () => {
+  console.log('Unable to locate user');
+});
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Und so wird der Callback in ein Promise umgewandelt:
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
+const getCurrentPositionPromise = () => {
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
 };
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Jap. Das war es wirklich schon. Nun können wir statt mittels der Callback-Syntax über folgenden Aufruf auf die Position des Benutzers zugreifen:
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+getCurrentPositionPromise()
+.then((position) => {
+  console.log(`User position is at ${position.coords.latitude}, ${position.coords.longitude}`);
+})
+.catch(() => {
+  console.log('Unable to locate user');
+});
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Einige neuere JavaScript APIs im Browser sind bereits diesem Ansatz folgend implementiert worden. Wer mehr über Promises und deren Funktionsweise erfahren möchte, dem empfehle ich [den entsprechenden Artikel bei den MDN Web Docs](https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Promise) zu lesen. Die Erklärung zu Promises sollte nur einleitend sein um auf ein deutlich spannenderes neues Feature vorzubereiten, nämlich:
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+### Asynchrone Funktionen mit `async` und `await`
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Asynchrone Funktionen mit den Schlüsselwörtern `async` und `await` kann vielleicht ein Bisschen als die „nächste Evolutionsstufe“ in der asynchronen Entwicklung nach Callbacks und Promises gesehen werden. Sie haben Einzug in die JavaScript-Spezifikation in ES2016 erhalten. Unter der Haube nutzen sie zwar noch immer Promises, machen diese aber weitgehend unsichtbar. Sie erlauben es uns asynchronen Code so zu schreiben, dass er nahezu wie synchroner Code aussieht. Keine Callbacks mehr und auch kein `then()` oder `catch()` mehr.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Dazu wird einem asynchronen Funktionsaufruf das Schlüsselwort `await` vorangestellt. Um `await` nutzen zu können, muss die umgebende Funktion das zweite Schlüsselwort `async` vorangestellt werden, um dem JavaScript-Interpreter mitzuteilen, dass es sich um eine solche asynchrone Funktion handelt. Bei der Nutzung von `await` ohne eine Funktion als `async` zu markieren kommt es zu einer Exception.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Werfen wir also nochmal einen Blick auf das Beispiel unseres Users, der eine E-Mail an seinen ersten Freund schicken möchte. Diesmal mit asynchronen Funktionen:
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+(async () => {
+  try {
+    const user = await getUser(id);
+    const friends = await user.getFriends();
+    const settings = await friends[0].getSettings();
+    if (settings.notifications === true) {
+      const status = await email.send('You are my first friend!');
+      if (status === 200) {
+          alert('User has been notified via email');
+      }
+    }
+  } catch (err) {
+    console.error('An error occured:', err.message);
+  }
+})();
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Asynchrone Funktionen mit `async` und `await` sind für mich persönlich eine der nennenswertesten Veränderungen von JavaScript in den vergangenen Jahren, da sie das Arbeiten mit asynchronen Daten fast zum Kinderspiel werden lassen, verglichen mit komplexen und unübersichtlichen Callbacks. Und auch Promises, die bereits eine große Erleichterung ggü. herkömmlichen Callbacks waren, wirken im direkten Vergleich mit asynchronen Funktionen schon beinahe komplex.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+## import-Syntax und Javascript-Module
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Module in JavaScript sind so eine Sache. Offiziell gab es sie bisher nicht, aber es gab immer wieder Versuche, Module in JavaScript einzuführen. Wer schon etwas länger dabei ist wird vielleicht noch **AMD** \(Asynchronous Module Definition\) kennen, wer mal mit Node.js gearbeitet hat, dem sollten außerdem CommonJS-Module \(d.h. `module.exports` und `require('./myModule')`\) ein Begriff sein. Lange gab es dann ausführliche Diskussionen darüber, auf welchen Modul-Standard man sich einigt, wie die Syntax aussieht und wie letztendlich die Implementierung auf Interpreter-Seite aussieht. Die Wahl fiel auf Modulen, die mittels `import` und `export` Keywords untereinander kommunizieren.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Babel ist dann vorangegangen und hat eine Lösung implementiert, die auf dem damaligen Stand der offiziellen Spezifikation basierte. Diese Umsetzung wurde dann zwischendurch mal geändert, weil es Updates am entsprechenden Standard gab, dann kam noch Webpack und implementierte einen eigenen Mechanismus zum Auflösen und Laden von JavaScript-Modulen, der sich am nun verabschiedeten Standard orientiert. Ebenso wie TypeScript.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Mittlerweile ist man sich nach gerade einmal **10** Jahren bei der Spezifikation einig und die Umsetzung auf Seiten der JavaScript-Engines ist im vollen Gange. Klingt kompliziert, ist es zwischendrin auch mal gewesen, inzwischen gibt es aber Konsens und für uns Entwickler herrscht allmählich Klarheit. Aber dennoch gibt es auch noch immer einige Fallstricke, durch die wir auch in Zukunft auf Webpack, Babel oder TypeScript setzen müssen \(oder eher: sollten\), um komfortabel mit Modulen zu arbeiten. Dazu später mehr.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Soviel zur Historie. Also wie funktionieren jetzt Imports und was sind Module überhaupt?
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+### Module in JavaScript
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Das Ziel von Modulen ist es, Scopes in JavaScript auf einer **per Modul-Ebene zu kapseln**. Ein Modul in diesem Sinne ist tatsächlich ein einzelnes **File**. Sofern man sie nicht explizit durch das Erstellen eines neuen Scopes begrenzt, z.B. indem man es in eine **IIFE** \(_Immediately Invoked Function Expression_\) einschließt, ist jede Funktion, jede Variable, die in JavaScript definiert wird erst einmal global verfügbar. Module wirken dem entgegen, indem sämtlicher Code erst einmal nur **innerhalb des Moduls** verfügbar ist. Dadurch vermeidet man Komplikationen, bspw. wenn zwei Libraries die gleiche Variable nutzen, außerdem schafft man auf einfache Art wiederverwendbaren Code, ohne auf der anderen Seite Angst haben zu müssen, dass dieser an anderer Stelle bereits existierende Variablen oder Funktionen ungewollt überschreibt.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Module können die in ihnen definierten Funktionen, Klassen oder Variablen **exportieren**, andere Module können diese Exports dann bei Bedarf importieren. Für den Export von Funktionen und Variablen gibt es ein `export`-Keyword, um diese Exports dann später an anderer Stelle zu importieren gibt es, ihr denkt es euch, das entsprechende `import`-Keyword. Exports können zwei Formen annehmen, nämlich zum Einen die eines **Named Exports** \(dt. **benannte Exporte**\) und auf der anderen Seite den, des **Default Export** \(dt. **Standard Export**\).
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+#### Named Exports
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Nehmen wir an wir haben ein Modul `calc.mjs`, das allerhand Funktionen für uns bereitstellt, um Berechnungen verschiedener Art auszuführen. Das Modul könnte bspw. den folgenden Inhalt haben:
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+export const double = (number) => number * 2;
+export const square = (number) => number * number;
+export const divideBy = (number, divisor) => number / divisor;
+export const divideBy5 = (number) => divideBy(number, 5);
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Wir kündigen hier also einen **Export** an, definieren direkt danach eine Variable der wir eine Arrow Function zuweisen, die einen Parameter bekommt \(oder zwei\) und direkt das Ergebnis der Berechnung zurückgibt. Alternativ geht das auch in zwei separaten Schritten:
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+const double = (number) => number * 2;
+export double;
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+An anderer Stelle innerhalb unserer Anwendung können wir diese Funktionen nun mittels `import`-Keyword **importieren**. Dazu nutzen wir `import` gefolgt von den Exports, die wir importieren wollen, in geschweiften Klammern, gefolgt von `from` und dem Pfad zum Modul.
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+import { double, square, divideBy5 } from './calc.mjs';
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+const value = 5;
+console.log(double(value));     // 10
+console.log(square(value));     // 25
+console.log(divideBy5(value));  // 1
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Ein File kann dabei theoretisch **unbegrenzt viele benannte Exports** haben, sie müssen sich jedoch in ihrem Namen unterscheiden und ein bereits exportierter Name **darf nicht ein weiteres Mal exportiert werden.**
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+#### Default Export
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Zusätzlich zu den \(Plural\) sog. **Named Exports** aus dem obigen Beispiel gibt es noch den \(Singular\) `Default Export`. Eine spezielle Form eines Exports, der innerhalb eines jeden Moduls nur **ein einziges Mal** vorkommen darf und der mit dem Keyword `default` gekennzeichnet wird. Wird eine Variable oder eine Funktion als `default` gekennzeichnet ist es möglich, diesen Export auch ohne geschweifte Klammern zu importieren. Der **Default Export** kann z.B. dazu dienen, um mehrere benannte Exporte zu bündeln, um diese anschließend nicht einzeln importieren zu müssen.
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+export const double = (number) => number * 2;
+export const square = (number) => number * number;
+export const divideBy = (number, divisor) => number / divisor;
+export const divideBy5 = (number) => divideBy(number, 5);
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+export default {
+   double, square, divideBy, divideBy5
+}
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Unsere Anwendung müsste dann stattdessen lediglich das Modul selbst importieren, also dessen **Default Export** und einer Variable zuweisen:
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+import Calc from './calc.mjs';
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+console.log(Calc.double(value));    // 10
+console.log(Calc.square(value));    // 25
+console.log(Calc.divideBy5(value)); // 1
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Grundsätzlich ist es in vielen Fällen sinnvoll, dass ein Modul auch einen Default Export hat. Insbesondere bei Komponenten basierten Libraries wie React oder auch Vue.js ist es üblich nur einen Export pro Modul zu haben, dieser sollte dann der **Default Export** sein. Auch wenn dies syntaktisch nicht zwingend notwendig wäre, ist dies inzwischen de-facto Standard bei der Arbeit mit React.
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+export default class MyComponent extends React.Component {
+  // ...
+}
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+### Fallstricke: Browser vs. Node.js
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Wer aufmerksam war und gut aufgepasst hat, dem wird vielleicht aufgefallen sein, dass wir oben aus einem File mit dem Namen `calc.mjs` importieren, nicht `calc.js` \(`.mjs` statt `.js`\). Dies ist die Konvention, auf die man sich im langwierigen, oben beschriebenen Standardisierungsprozess geeinigt hat bei der Verwendung von JavaScript-Modulen in Node.js.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Wollt ihr also universelles JavaScript schreiben, also JavaScript das sowohl serverseitig mit Node.js ausgeführt werden kann, als auch clientseitig im Browser funktioniert, und wollt ihr das tun ohne einen Compiler-Zwischenschritt durch bspw. Babel, Webpack oder TypeScript einzulegen, **müsst** ihr zwangsweise die `.mjs`-Endung für eure Files verwenden.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Das Laden von Modulen funktioniert in Node.js also etwas anders als im Browser. Während es dem Browser egal ist welche Datei-Endung ein Modul hat \(solange der Server den Content-Type `text/javascript` mitsendet\), benötigt Node.js zwangsweise die `.mjs` Datei-Endung um JavaScript-Module als solche zu identifizieren.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Um JavaScript-Module im Browser zu nutzen, muss das `type`-Attribut auf dem `<script></script>`-Element den Wert `module` erhalten. Also:
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+```markup
+<script src="./myApp.mjs" type="module"></script>
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Browser die den `type="module"` unterstützen, unterstützen auch gleichzeitig das `nomodule`-Attribut zur Auslieferung von Fallbacks für Browser ohne Module-Unterstützung und ignorieren dieses.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+```markup
+<script src="./myApp.mjs" type="module"></script>
+<script src="./myApp.bundle.js" nomodule></script>
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Ein Browser mit Module-Support würde hier die `myApp.mjs` laden, während alle anderen stattdessen ein gebundletes \(bspw. durch Webpack\) `myApp.bundle.js` laden würden.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Doch das ist noch nicht alles, denn Node.js besitzt einen sehr eigenen Mechanismus zum Finden und Laden von Dateien. So werden bspw. Module die keinen relativen Pfad haben, also nicht mit `./` oder `../` beginnen, z.B. in `node_modules` oder `node_libraries` gesucht. Außerdem lädt Node.js standardmäßig eine darin befindliche index.js wenn Node.js einen Ordner mit dem angegebenen Namen findet.
 
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+import MyModule from 'myModule';
 ```
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Node.js würde also nach diesem Import u.a. im Ordner `./node_modules/myModule` suchen, dort eine `index.js` laden oder alternativ im `main`-Feld der `package.json` nach dem korrekten File suchen. Der Browser kann hingegen nicht nach belieben verschiedene Pfade ausprobieren um das richtige File zu finden, da dies jedesmal einen teuren Netzwerkrequest und möglicherweise viele 404 Responses verusachen würde.
 
-```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
-```
+Hinzu kommt, dass **Import Specifier**, das ist der Part hinter dem `from`, also das Modul aus dem ihr importieren wollt, im Browser geschützt sind und aus einer gültigen URL oder einem relativen Pfad bestehen müssen.
 
+Imports wie der folgende, sind damit im Browser momentan gar nicht möglich:
+
 ```javascript
-const UserPersona = (props) => {
-  const { firstName, lastName, image, job } = props;
-  return (
-    <div>
-      <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
-      <strong>{job}</strong>
-    </div>
-  );
-};
+import React from 'react';
 ```
+
+Abhilfe schaffen sollen hier später einmal die **Package Name Maps**, ein Proposal, also ein Vorschlag, für kommende ECMAScript Versionen, das aber momentan noch ganz am Anfang der Diskussion steht. Darum kommen wir wie eingangs erwähnt in absehbarer Zeit nicht drum herum auch weiterhin einen Module Bundler wie Webpack zu benutzen, um komfortabel mit ES-Modules arbeiten zu können wenn wir JavaScript-Module gleichzeitig sowohl serverseitig als auch clientseitig nutzen wollen.
+
+## Fazit
+
+ES2015 und die nachfolgenden Versionen bieten eine Menge nützliche neue Funktionen die es bisher in JavaScript nicht gab. Viele davon sind bei der Arbeit mit React nahezu nicht wegzudenken. Zu den wichtigsten Neuerungen gehören die hier beschriebenen:
+
+* Variablendeklarationen mit `let` und `const`
+* **Arrow Functions**, um Funktionen zu erstellen die kein eigenes `this` binden
+* **Klassen**. Machen vieles einfacher und sind die Basis von **React Class Components**
+* Die **Rest und Spread Operatoren**, die das Lesen und Schreiben von Daten in Arrays und Objekten deutlich vereinfachen
+* **Template Strings**, um die Arbeit mit JavaScript-Ausdrücken in Strings einfacher zu machen
+* **Promises** und **Asynchrone Funktionen** mittels `async`/`await` um die Arbeit mit asynchronen Daten deutlich zu vereinfachen
+* **Import** und **Export** für die Kapselung von wiederverwendbarem JavaScript auf Module-Ebene
 
