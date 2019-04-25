@@ -43,11 +43,6 @@ console.log(i);
 
 Nun einmal dasselbe Beispiel mit `let`
 
-```javascript
-for (let j = 0; j < 10; j++) { }
-console.log(j);
-```
-
 **Ausgabe:**
 
 {% hint style="danger" %}
@@ -1014,9 +1009,9 @@ Example(1, 2, 3, 4, 5);
 **Ausgabe:**
 
 {% hint style="info" %}
-`first: 1    
-second: 2    
-third: 3    
+`first: 1  
+second: 2  
+third: 3  
 rest: [4, 5]`
 {% endhint %}
 
@@ -1050,11 +1045,11 @@ console.log(competitors);
 'Andre De Grasse'    
 'Christophe Lemaitre'`  
 [  
-'Adam Gemili',
-'Churandy Martina',
-'LaShawn Merritt',
-'Alonso Edward',
-'Ramil Guliyev'  
+  'Adam Gemili',
+  'Churandy Martina',
+  'LaShawn Merritt',
+  'Alonso Edward',
+  'Ramil Guliyev'  
 ]
 ```
 {% endhint %}
@@ -1139,17 +1134,17 @@ const errorHandler = (err) => {
 };
 
 getUser(id, (user) => {
-    user.getFriends((friends) => {
-        friends[0].getSettings((settings) => {
-            if (settings.notifications === true) {
-                email.send('You are my first friend!', (status) => {
-                    if (status === 200) {
-                        alert('User has been notified via email!');
-                    }
-                }, errorHandler);
-            }
+  user.getFriends((friends) => {
+    friends[0].getSettings((settings) => {
+      if (settings.notifications === true) {
+        email.send('You are my first friend!', (status) => {
+          if (status === 200) {
+            alert('User has been notified via email!');
+          }
         }, errorHandler);
-    }, errorHandler)
+      }
+    }, errorHandler);
+  }, errorHandler)
 }, errorHandler)
 ```
 
@@ -1168,14 +1163,14 @@ getUser(id)
 .then((user) => user.getFriends())
 .then((friends) => friends[0].getSettings())
 .then((settings) => {
-    if (settings.notifications === true) {
-        return email.send('You are my first friend!');
-    }
+  if (settings.notifications === true) {
+    return email.send('You are my first friend!');
+  }
 })
 .then((status) => {
-    if (status === 200) {
-        alert('User has been notified via email');
-    }
+  if (status === 200) {
+    alert('User has been notified via email');
+  }
 })
 .catch(errorHandler);
 ```
