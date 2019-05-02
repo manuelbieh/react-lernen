@@ -315,7 +315,7 @@ class App extends React.Component {
 }
 ```
 
-In diesem Fall erzeugen wir bei jedem neuen Aufruf der render\(\)-Methode ein neues Objekt `{color: this.state.color}` welches wird als Wert für den Context-Provider benutzen. Da React lediglich überprüft ob die Referenz zum entsprechenden `value` im aktuellen `render()`-Aufruf der aus dem vorherigen `render()`-Aufruf entspricht, dies hier jedoch niemals der Fall ist, da ja ein neues Objekt an Ort und Stelle erzeugt wird, werden hier sämtliche Consumer-Komponenten neu gerendert.
+In diesem Fall erzeugen wir bei jedem neuen Aufruf der render\(\)-Methode ein neues Objekt `{color: this.state.color}` welches wir als Wert für den Context-Provider benutzen. Da React lediglich überprüft ob die Referenz zum entsprechenden `value` im aktuellen `render()`-Aufruf der aus dem vorherigen `render()`-Aufruf entspricht, dies hier jedoch niemals der Fall ist, da ja ein neues Objekt an Ort und Stelle erzeugt wird, werden hier sämtliche Consumer-Komponenten neu gerendert.
 
 Das obige Beispiel lässt sich jedoch sehr einfach so umschreiben, dass die Performance-Optimierungen von React hier greifen:
 
