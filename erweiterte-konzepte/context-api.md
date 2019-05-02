@@ -35,7 +35,7 @@ import LanguageContext from './LanguageContext';
 
 const App = () => (
   <LanguageContext.Provider value={'en'}>
-    {/* innerhalb dieses Baums steht uns nun der Wert 'de' zur Verfügung */}
+    {/* innerhalb dieses Baums steht uns nun der Wert 'en' zur Verfügung */}
   </LanguageContext.Provider>
 );
 
@@ -58,7 +58,7 @@ const DisplaySelectedLanguage = () => (
 export default DisplaySelectedLanguage;
 ```
 
-Wir können nun an einer beliebigen Stelle innerhalb unserer Anwendung die `SelectedLanguage` Komponente verwenden und haben dort immer den jeweils vom Provider bereitgestellten Wert verfügbar. Ändert sich der Wert im **Provider** werden auch alle **Consumer-**Komponenten unterhalb des entsprechenden Providers mit dem aktualisierten Wert neu gerendert!
+Wir können nun an einer beliebigen Stelle innerhalb unserer Anwendung die `SelectedLanguage` Komponente verwenden und haben dort immer den jeweils vom Provider bereitgestellten Wert verfügbar. Ändert sich der Wert im **Provider** werden auch alle **Consumer-** Komponenten unterhalb des entsprechenden Providers mit dem aktualisierten Wert neu gerendert!
 
 Ein vollständiges, wenn auch recht konstruiertes Beispiel kann dann wie folgt aussehen:
 
@@ -315,7 +315,7 @@ class App extends React.Component {
 }
 ```
 
-In diesem Fall erzeugen wir bei jedem neuen Aufruf der render\(\)-Methode ein neues Objekt `{color: this.state.color}` welches wird als Wert für den Context-Provider benutzen. Da React lediglich überprüft ob die Referenz zum entsprechenden `value` im aktuellen `render()`-Aufruf der aus dem vorherigen `render()`-Aufruf entspricht, dies hier jedoch niemals der Fall ist, da ja ein neues Objekt an Ort und Stelle erzeugt wird, werden hier sämtliche Consumer-Komponenten neu gerendert.
+In diesem Fall erzeugen wir bei jedem neuen Aufruf der render\(\)-Methode ein neues Objekt `{color: this.state.color}` welches wir als Wert für den Context-Provider benutzen. Da React lediglich überprüft ob die Referenz zum entsprechenden `value` im aktuellen `render()`-Aufruf der aus dem vorherigen `render()`-Aufruf entspricht, dies hier jedoch niemals der Fall ist, da ja ein neues Objekt an Ort und Stelle erzeugt wird, werden hier sämtliche Consumer-Komponenten neu gerendert.
 
 Das obige Beispiel lässt sich jedoch sehr einfach so umschreiben, dass die Performance-Optimierungen von React hier greifen:
 
