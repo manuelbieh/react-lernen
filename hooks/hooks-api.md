@@ -26,13 +26,13 @@ const [state, setState] = useState(initialState);
 
 Dieser Hook gibt uns einen **Wert** zurück und eine **Funktion** um selbigen zu aktualisieren. Während des ersten Renderings einer Komponente, die den `useState()`-Hook nutzt, entspricht dieser Wert dem als `initialState` übergebenen Parameter. Ist der übergebene Parameter eine Funktion nutzt React den Rückgabewert der Funktion als initialen Wert.
 
-Bei der Update-Funktion stellt React sicher, dass diese stets die selbe **Identität** hat, erstellt die Funktion als nicht bei jedem Aufruf des Hooks neu. Dies ist wichtig, um unnötige Re-Renderings zu verhindern und führt außerdem dazu, dass sie nicht als **Dependency** an andere **Hooks** wie `useEffect()` oder `useCallback()` übergeben werden muss.
+Bei der Update-Funktion stellt React sicher, dass diese stets die selbe **Identität** hat, erstellt die Funktion also nicht bei jedem Aufruf des Hooks neu. Dies ist wichtig, um unnötige Re-Renderings zu verhindern und führt außerdem dazu, dass sie nicht als **Dependency** an andere **Hooks** wie `useEffect()` oder `useCallback()` übergeben werden muss.
 
 Ganz konkret gibt `useState()` ein **Array** zurück in dem das erste Element immer der **Wert** des States ist und das zweite Element immer eine **Funktion**, um diesen Wert zu aktualisieren. Für die Benennung von Wert und Funktion gibt es durch die Array Destructuring Syntax keine formellen Einschränkungen. Jedoch hat es sich schnell herauskristallisiert, dass in den deutlich überwiegenden Fällen die Form `value`/`setValue` eingehalten werden. Also etwa `user` und `setUser`. Aber auch andere Namen wie `changeUser` oder `updateUserState` wären natürlich denkbar.
 
 Der Mechanismus zum Aktualisieren des States funktioniert hier ansatzweise ähnlich wie `this.setState()` in Klassen-Komponenten. So kann der Funktion entweder ein **neuer Wert** übergeben werden, der dann an die Stelle des alten Werts tritt oder eine **Updater-Funktion**. Diese bekommt den letzten Wert übergeben und nutzt den **Rückgabewert** aus der Funktion als neuen State.
 
-Doch Achtung, es gibt einen entscheidenden Unterschied: anders als bei `this.setState()` werden Objekte **nicht zusammengeführt** mit dem bestehenden State, ****sondern der State wird **komplett** durch den neuen State **ersetzt!**
+Doch Achtung, es gibt einen entscheidenden Unterschied: anders als bei `this.setState()` werden Objekte **nicht zusammengeführt** mit dem bestehenden State, sondern der State wird **komplett** durch den neuen State **ersetzt!**
 
 Um diesen Unterschied zu illustrieren schauen wir uns einmal den direkten Vergleich an:
 
@@ -84,7 +84,7 @@ ReactDOM.render(<App />, document.getElementById("root"));
 
 Während die `StateClass` die Daten aller Aufrufe von `this.setState()` sammelt und mit dem bestehenden State zusammenführt, überschreibt die `setState()`-Funktion im `StateHook` jeweils den kompletten State und ersetzt den kompletten alten Wert mit dem neuen Wert. Die Ausgabe ist also in der **Klassen-Komponente**: `{a: 1, b: 2, c: 3, d: 4}` und in der **Function Component** mit dem Hook ein einfaches `{d: 4}`, da dieses zuletzt in den State geschrieben wurde.
 
-Gibt die Update-Funktion als neuen State exakt gleichen Wert zurück wie den vorherigen kommt das dem Abbruch eines State-Updates gleich und es wird kein Rerendering ausgelöst und auch keine Seiten-Effekte ausgelöst.
+Gibt die Update-Funktion als neuen State exakt den gleichen Wert zurück wie den vorherigen, kommt das dem Abbruch eines State-Updates gleich und es wird kein Rerendering ausgelöst und auch keine Seiten-Effekte ausgelöst.
 
 ## useEffect
 
@@ -128,7 +128,7 @@ const Clock = () => {
 ReactDOM.render(<Clock />, document.getElementById("root"));
 ```
 
-Im obigen Beispiel installieren wir einen Intervall beim **Mounting** der Komponente. Beim **Unmounting** der Komponente halten wir den Timer an, da wir sonst den State einer Komponente ändern würden, die sich nicht mehr im Seitenbaum befindet. Dies würde uns React mit einer Fehlermeldung quittieren, vor Memory Leaks warnen und uns darauf hinweisen, dass Subscriptions und andere asnychrone Tasks in der **Cleanup**-Funktion aufgeräut werden müssen:
+Im obigen Beispiel installieren wir einen Intervall beim **Mounting** der Komponente. Beim **Unmounting** der Komponente halten wir den Timer an, da wir sonst den State einer Komponente ändern würden, die sich nicht mehr im Seitenbaum befindet. Dies würde uns React mit einer Fehlermeldung quittieren, vor Memory Leaks warnen und uns darauf hinweisen, dass Subscriptions und andere asynchrone Tasks in der **Cleanup**-Funktion aufgeräumt werden müssen:
 
 {% hint style="danger" %}
 Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function.
@@ -138,7 +138,7 @@ Indem wir eine Aufräum-Funktion aus der Effekt-Funktion zurückgeben, können w
 
 ### Bedingte Aufrufe der Effekt-Funktion
 
-Standardmäßig wird der `useEffect()`-Hook bzw. dessen Effekt-Funktion nach jedem Rendering der Komponente erneut ausgeführt. Damit ist sichergestellt das der Effekt jedesmal ausgeführt wird wenn sich einige der von ihn verwendeten Abhängigkeiten \(_Dependencies_\) ändern. Greifen wir also innerhalb der Effekt-Funktion bspw. auf den State oder die Props einer Komponente zu, soll auch der Seiteneffekt erneut ausgeführt werden wenn sich eine dieser Dependencies ändert. Möchten wir etwa Profildaten zu einem Benutzer anzeigen und beziehen diese über eine API, so soll der API Request natürlich auch initiiert werden wenn der Benutzer dessen Profil wir anschauen wollen sich ändert während die Komponente gemounted ist.
+Standardmäßig wird der `useEffect()`-Hook bzw. dessen Effekt-Funktion nach jedem Rendering der Komponente erneut ausgeführt. Damit ist sichergestellt, dass der Effekt jedesmal ausgeführt wird wenn sich einige der von ihm verwendeten Abhängigkeiten \(_Dependencies_\) ändern. Greifen wir also innerhalb der Effekt-Funktion bspw. auf den State oder die Props einer Komponente zu, soll auch der Seiteneffekt erneut ausgeführt werden wenn sich eine dieser Dependencies ändert. Möchten wir etwa Profildaten zu einem Benutzer anzeigen und beziehen diese über eine API, so soll der API Request natürlich auch initiiert werden wenn der Benutzer dessen Profil wir anschauen wollen sich ändert während die Komponente gemounted ist.
 
 Dies führt aber mitunter zu sehr vielen unnötigen Aufrufen der Funktion und führt auch dazu, dass die Funktion unter gewissen Umständen auch ausgeführt wird, wenn sich gar keine Daten seit dem letzten Rendering geändert haben, die für den Seiteneffekt relevant sind. Zu diesem Zweck bietet uns React die Möglichkeit ein **Dependency Array** als zweiten Parameter zu definieren. Dort können und sollen wir alle Werte eintragen, die eine erneute Ausführung der Effekt-Funktion herbeiführen sollen. Nur wenn sich mind. ein Wert im **Dependency Array** geändert hat, wird die Funktion erneut ausgeführt. Um am Beispiel unseres Benutzerprofils zu bleiben, wäre das hier etwa der Benutzername oder die ID, über die wir die Benutzerdaten von der API abrufen.
 
@@ -192,7 +192,7 @@ useEffect(async () => {
 }, []);
 ```
 
-Dies ist **nicht erlaubt**, da die Effekt-Funktion mit dem `async` Schlüsselwort als _asynchron_ deklariert wird. Wie also lösen wir das Problem? Nun, die Lösung ist in diesem Fall relativ simpel: wir verschieben den asynchrone Teil der Funktion in eine eigenen, asynchronen Funktion **innerhalb der Effekt-Funktion** und rufen diese Funktion dann lediglich auf:
+Dies ist **nicht erlaubt**, da die Effekt-Funktion mit dem `async` Schlüsselwort als _asynchron_ deklariert wird. Wie also lösen wir das Problem? Nun, die Lösung ist in diesem Fall relativ simpel: wir verschieben den asynchrone Teil der Funktion in eine eigene, asynchrone Funktion **innerhalb der Effekt-Funktion** und rufen diese Funktion dann lediglich auf:
 
 ```jsx
 import React, { useEffect, useState } from "react";
@@ -228,7 +228,7 @@ ReactDOM.render(
 );
 ```
 
-In diesem Fall ist nicht mehr die Effekt-Funktion selbst asynchron, sondern die asynchrone Funktionalität wird an die asynchrone Funktion `fetchGitHubAccount()` ausgelagert, die wir **innerhalb** des `useEffect()`-Hooks definieren. 
+In diesem Fall ist nicht mehr die Effekt-Funktion selbst asynchron, sondern die asynchrone Funktionalität wird in die asynchrone Funktion `fetchGitHubAccount()` ausgelagert, die wir **innerhalb** des `useEffect()`-Hooks definieren. 
 
 Die asynchrone Funktion muss dabei nicht zwingend **in** der Effekt-Funktion erzeugt werden. Die Effekt-Funktion selbst darf nur eben nicht selbst asynchron sein.
 
@@ -250,7 +250,7 @@ Die Verwendung des Hooks ist optional und so ist es auch weiterhin möglich Cont
 const [state, dispatch] = useReducer(reducerFunc, initialState, initFunc)
 ```
 
-Der `useReducer()`-Hook ist eine Alternative zu `useState()`, die es erlaubt auch komplexeren States zu managen. Der Hook ist angelehnt an die Flux-Architektur, bei der, kurz gesagt, eine **Reducer-**Funktion einen **neuen State erzeugt**, indem sie den **letzten State** und eine sog. **Action** übergeben bekommt. 
+Der `useReducer()`-Hook ist eine Alternative zu `useState()`, die es erlaubt auch komplexere States zu managen. Der Hook ist angelehnt an die Flux-Architektur, bei der, kurz gesagt, eine **Reducer-** Funktion einen **neuen State erzeugt**, indem sie den **letzten State** und eine sog. **Action** übergeben bekommt. 
 
 Die **Reducer**-Funktion wird durch den Aufruf einer **Dispatch**-Funktion aufgerufen, die wiederum eine **Action** übergeben bekommt. Die **Action** selbst ist dabei ein Objekt, das zwingend eine `type` Eigenschaft und oftmals \(optional\) eine `payload`-Eigenschaft besitzt. Aus dieser **Action** und dem **letzten State** erzeugt die **Reducer**-Funktion dann den **neuen State**. Die **Reducer**-Funktion hat also die Form `(oldState, action) => newState`.
 
@@ -290,13 +290,13 @@ const Counter = () => {
 ReactDOM.render(<Counter />, document.getElementById("root"));
 ```
 
-Wir definieren zunächst den initialen State \(`initialState`\) und die Reducer-Funktion \(`reducerFunction`\). Der **initiale State** besteht lediglich aus einem Objekt mit einer `count`-Eigenschaft, die initial `0` ist. Die **Reducer**-Funktion erwartet einen `state` und eine `action`. die von React später über den Aufruf der **Dispatch**-Funktion an den Reducer übergeben werden. Aus diesen beiden Parametern erzeugen wir dann den neuen State. **Wichtig:** Hier müssen wir stets einen neuen State zu erzeugen statt den bestehenden zu mutieren, da eine Mutation des bestehenden States zu ungewünschten Seiteneffekten und fehlerhafter Darstellung führen kann. Eine **Reducer**-Funktion muss also eine **Pure Function** sein!
+Wir definieren zunächst den initialen State \(`initialState`\) und die Reducer-Funktion \(`reducerFunction`\). Der **initiale State** besteht lediglich aus einem Objekt mit einer `count`-Eigenschaft, die initial `0` ist. Die **Reducer**-Funktion erwartet einen `state` und eine `action`. die von React später über den Aufruf der **Dispatch**-Funktion an den Reducer übergeben werden. Aus diesen beiden Parametern erzeugen wir dann den neuen State. **Wichtig:** Hier müssen wir stets einen neuen State erzeugen statt den bestehenden zu mutieren, da eine Mutation des bestehenden States zu ungewünschten Seiteneffekten und fehlerhafter Darstellung führen kann. Eine **Reducer**-Funktion muss also eine **Pure Function** sein!
 
 Die **Reducer**-Funktion und den initialen State geben wir dann in den `useReducer()`-Hook hinein, der uns daraufhin ähnlich wie der `useState()`-Hook einen Tupel zurückgibt in dem das erste Element immer der **aktuelle State** in der aktuellen Rendering-Phase ist, das zweite Element ist dann die besagte **Dispatch**-Funktion.
 
 Möchten wir nun den State verändern, rufen wir in der Komponente die `dispatch`-Funktion auf und übergeben ihr eine **Action**. Dies passiert in unserer Beispiel-Komponente per Klick auf einen der beiden Buttons, die dann die Action `{type: "INCREMENT"}` \(zum Raufzählen\) oder `{type: "DECREMENT"}` \(zum Runterzählen\) „dispatchen“.
 
-Wird eine Action _dispatched_ und wird dabei ein neuer State erzeugt, löst React ein Rerendering aus und der neu erzeugte State steht in der von der Reducer-Funktion zurückgegebenen `state` Variablen zur Verfügung. Wird hingegen der gleiche State von der **Reducer**-Funktion zurückgegeben wird **kein** Rerendering ausgelöst!
+Wird eine Action _dispatched_ und wird dabei ein neuer State erzeugt, löst React ein Rerendering aus und der neu erzeugte State steht in der von der Reducer-Funktion zurückgegebenen `state` Variable zur Verfügung. Wird hingegen der gleiche State von der **Reducer**-Funktion zurückgegeben wird **kein** Rerendering ausgelöst!
 
 ### Der dritte Parameter
 
@@ -340,11 +340,11 @@ const Counter = (props) => {
 ReactDOM.render(<Counter startValue={3} />, document.getElementById("root"));
 ```
 
-In diesem Beispiel erweitern wir den `useReducer()`-Hook um den dritten, optionalen Parameter: der **Init-**Funktion. Aus dem `initialState` im ersten Beispiel wird ein Argument für die **Init-**Funktion. Der Wert für dieses Funktions-Argument wird der Komponente hier als `startValue` über die Props übergeben.
+In diesem Beispiel erweitern wir den `useReducer()`-Hook um den dritten, optionalen Parameter: der **Init-** Funktion. Aus dem `initialState` im ersten Beispiel wird ein Argument für die **Init-** Funktion. Der Wert für dieses Funktions-Argument wird der Komponente hier als `startValue` über die Props übergeben.
 
 ### Reducer in der Praxis
 
-Das Prinzip von **Reducern** dürfte einem großen Teil der React-Community wohl erstmals durch den Aufstieg von **Redux** nahe gebracht worden sein. **Redux** ist ein Paket um globalen State komfortabel managen zu können und wurde in der Vergangenheit häufig verwendet wenn das Handling von lokalen States in React zu unübersichtlich wurde oder über über zu viele Komponenten hinweg durch sog. „Props Drilling“ \(also dem Weiterreichen von Props über mehrere Hierarchie-Ebenen hinweg\) zu umständlich wurde. 
+Das Prinzip von **Reducern** dürfte einem großen Teil der React-Community wohl erstmals durch den Aufstieg von **Redux** nahe gebracht worden sein. **Redux** ist ein Paket um globalen State komfortabel managen zu können und wurde in der Vergangenheit häufig verwendet wenn das Handling von lokalen States in React zu unübersichtlich wurde oder über zu viele Komponenten hinweg durch sog. „Props Drilling“ \(also dem Weiterreichen von Props über mehrere Hierarchie-Ebenen hinweg\) zu umständlich wurde. 
 
 **Redux** \(und daher der Name\) besteht in seinem Kern darin, Reducer-Funktionen zu verwalten und deren State und Dispatch-Funktion in den Komponenten verfügbar zu machen, die den globalen State lesen oder verändern sollen. Mit dem `useReducer()`-Hook bekommt React nun eine eigene Funktion um komplexes State-Management mittels Reducer-Funktionen zu bewerkstelligen.
 
@@ -452,7 +452,7 @@ Wir benutzen wieder den `useReducer()`-Hook und übergeben ihm die `accountReduc
 
 Der `initialState` besteht aus einem Objekt mit einer leeren `data`-Eigenschaft, den beiden Flags `isFetching` und `isError`, die unserer Komponente später mitteilen ob Daten geladen werden oder ob ein Fehler aufgetreten ist, sowie einer `lastUpdated`-Eigenschaft, in der wir den Zeitpunkt des letzten erfolgreichen Requests speichern. Diese können wir später nutzen um etwa Requests nur einmal pro Minute auszuführen oder dem Benutzer zu signalisieren, dass er Daten sieht, die schon für längere Zeit nicht aktualisiert wurden.
 
-Wir nutzen außerdem einen `useEffect()`-Hook um das Laden der Daten zu veranlassen sobald sich der in den **Props** übergebene GitHub-Benutzername ändert. Ist dies der Fall, wird zu aller erst die `REQUEST_START` **Action** dispatched. Der **Reducer** erzeugt daraufhin den folgenden neuen State:
+Wir nutzen außerdem einen `useEffect()`-Hook um das Laden der Daten zu veranlassen sobald sich der in den **Props** übergebene GitHub-Benutzername ändert. Ist dies der Fall, wird zuallererst die `REQUEST_START` **Action** dispatched. Der **Reducer** erzeugt daraufhin den folgenden neuen State:
 
 ```diff
 {
@@ -520,7 +520,7 @@ Der **neue State** der vom **Reducer** erzeugt wird unterscheidet sich dann folg
 }
 ```
 
-Unsere `data`-Eigenschaft enthält nun die Daten, die wir von der API bekommen haben. Der `isLoading`-Status wird wiede auf `false` zurückgesetzt, die `lastUpdated`-Eigenschaft setzen wir auf den Zeitpunkt wann wir auch die Daten in den State geschrieben haben. In unserer Komponente sollte nun die gewünschte Ausgabe erzeugt werden:
+Unsere `data`-Eigenschaft enthält nun die Daten, die wir von der API bekommen haben. Der `isLoading`-Status wird wieder auf `false` zurückgesetzt, die `lastUpdated`-Eigenschaft setzen wir auf den Zeitpunkt wann wir auch die Daten in den State geschrieben haben. In unserer Komponente sollte nun die gewünschte Ausgabe erzeugt werden:
 
 ```jsx
 return (
@@ -605,7 +605,7 @@ const changeHandler = useCallback((e) => {
 }, []);
 ```
 
-Hier nutzen wir nun die Optimierungsmöglichkeiten von `React.memo()` \(oder in Klassen-Komponenten `PureComponent`\) und lösen nicht mehr ungewollt ein Rerendering der jeweiligen Kind-Komponenten aus.
+Hier nutzen wir nun die Optimierungsmöglichkeiten von `React.memo()` \(oder in Klassen-Komponenten `PureComponent`\) und lösen nicht mehr ungewollt ein Rerendering der jeweiligen Kind-Komponente aus.
 
 Beruht die Funktion auf Werten die sich während der Lebensdauer der Komponente ändern können, können diese wie auch schon beim `useEffect()`-Hook in einem **Dependency Array** als zweiter Parameter von `useCallback()` angegeben werden. React erstellt dann eine neue Funktion mit neuer Referenz, sobald sich eine Dependency ändert.
 
@@ -795,7 +795,7 @@ Hier implementieren wir einen eigenen kleinen **Hook** um den Seitentitel im Bro
 
 Eben erwähnte ich, dass der `useDebugValue()`-Hook keinen direkten **Nutzen** für den Benutzer hat. Dies bedeutet allerdings nicht, dass er auch keinen direkten **Einfluss** auf die User Experience haben. Denn eine langsame Berechnung bei der Anzeige des Debug Values hat durchaus Einfluss auf die Rendering-Performance einer Anwendung.
 
-Aus disem Grund ist es möglich dem Hook als zweiten Parameter eine Formatierungsfunktion zu übergeben. Die Formatierung des Werts wird in diesem Fall dann erst ausgeführt wenn ein Wert auch tatsächlich in den Devtools inspiziert wird. Diese hat folgende Form:
+Aus diesem Grund ist es möglich dem Hook als zweiten Parameter eine Formatierungsfunktion zu übergeben. Die Formatierung des Werts wird in diesem Fall dann erst ausgeführt wenn ein Wert auch tatsächlich in den Devtools inspiziert wird. Diese hat folgende Form:
 
 ```javascript
 useDebugValue(value, (value) => formattedValue);
@@ -840,7 +840,7 @@ Um es Vorweg zu nehmen: dieser Hook hat mir einige graue Haare bereitet, denn es
 
 ![Dan Abramov weist mich auf Twitter freundlich darauf hin, alles richtig zu machen](../.gitbook/assets/useimperativehandle.png)
 
-Nun habe ich mich tatsächlich lange mit diesem Hook beschäftigt und muss sagen: ja, wer den `useImperativeHandle()`-Hook nutzt, der sollte schauen ob das wirklich alles so sinnvoll ist und ob es nicht einen anderen Weg gibt, der die Verwendung genau dieses Hook nicht beinhaltet. Auch die offizielle Doku spricht an dieser Stelle davon den Hook zu verwenden, da er, wie der Name bereits erahnen lässt, für imperativen Code ausgelegt ist und damit dem in React vorherrschenden deklarativen Stil entgegensteht. Manchmal ist dies aber eben notwendig, insbesondere wenn mit Klassen und Objekten gearbeitet wird, was häufig auch bei externen Libraries der Fall ist.
+Nun habe ich mich tatsächlich lange mit diesem Hook beschäftigt und muss sagen: ja, wer den `useImperativeHandle()`-Hook nutzt, der sollte schauen ob das wirklich alles so sinnvoll ist und ob es nicht einen anderen Weg gibt, der die Verwendung genau dieses Hooks nicht beinhaltet. Auch die offizielle Doku spricht an dieser Stelle davon den Hook nicht zu verwenden, da er, wie der Name bereits erahnen lässt, für imperativen Code ausgelegt ist und damit dem in React vorherrschenden deklarativen Stil entgegensteht. Manchmal ist dies aber eben notwendig, insbesondere wenn mit Klassen und Objekten gearbeitet wird, was häufig auch bei externen Libraries der Fall ist.
 
 Hier daher ein mit Vorsicht zu genießendes Beispiel, die die Verwendung des **Hooks** illustriert. Im Beispiel erstellen wir eine eigene `FancyForm` Formular-Komponente. Diese gibt ihre **Kind-Elemente** aus und stellt einige Methoden bereit, die in der konsumierenden Eltern-Komponente aufgerufen werden können. So implementieren wir hier beispielhaft eine Methode `focusFirstInput` um das erste Eingabefeld innerhalb unseres `FancyForm`-Formulars fokussieren zu können. Außerdem erweitern wir das Formular um eine eigene Methode `getFormValues`, mit der wir die aktuell eingegebenen Daten als JSON zurückgegeben bekommen. Weiterhin ermöglichen wir das Formular programmatisch abzusenden und zurückzusetzen, indem wir der weitergeleiteten **ForwardRef** die Methoden `reset()` und `submit()` vom HTML `<form>`-Element als imperative Methode zuweisen:
 
