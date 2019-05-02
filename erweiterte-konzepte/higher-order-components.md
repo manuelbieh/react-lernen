@@ -97,13 +97,13 @@ Hierzu erstellen wir eine möglichst generische `PriceTable`-Komponente, die sel
 ```jsx
 const PriceTable = ({ isLoading, items, loadData }) => {
   if (isLoading) {
-    return <p>Loading prices. Please be patient.</p>;
+    return <p>Preise werden geladen. Bitte warten.</p>;
   }
 
   if (!items || items.length === 0) {
     return (
       <p>
-        No data available. <button onClick={loadData}>Try again</button>
+        Keine Daten vorhanden. <button onClick={loadData}>Erneut versuchen</button>
       </p>
     );
   }
@@ -120,7 +120,7 @@ const PriceTable = ({ isLoading, items, loadData }) => {
       ))}
       <tr>
         <td colSpan="2">
-          <button onClick={loadData}>Refresh</button>
+          <button onClick={loadData}>Neu laden</button>
         </td>
       </tr>
     </table>
@@ -154,13 +154,13 @@ Weiter haben wir nun eben die Möglichkeit auch andere Layout-Komponenten mit de
 ```jsx
 const PriceCSV = ({ isLoading, items, loadData, separator=";" }) => {
   if (isLoading) {
-    return <p>Loading prices. Please be patient.</p>;
+    return <p>Preise werden geladen. Bitte warten.</p>;
   }
 
   if (!items || items.length === 0) {
     return (
       <p>
-        No data available. <button onClick={loadData}>Try again</button>
+        Keine Daten vorhanden. <button onClick={loadData}>Erneut versuchen</button>
       </p>
     );
   }
