@@ -154,13 +154,13 @@ Weiter haben wir nun eben die Möglichkeit auch andere Layout-Komponenten mit de
 ```jsx
 const PriceCSV = ({ isLoading, items, loadData, separator=";" }) => {
   if (isLoading) {
-    return <p>Loading prices. Please be patient.</p>;
+    return <p>Preise werden geladen. Bitte warten.</p>;
   }
 
   if (!items || items.length === 0) {
     return (
       <p>
-        No data available. <button onClick={loadData}>Try again</button>
+        Keine Daten vorhanden. <button onClick={loadData}>Erneut versuchen</button>
       </p>
     );
   }
