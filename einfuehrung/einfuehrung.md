@@ -6,7 +6,7 @@ Zitieren wir hier an erster Stelle mal die React-Dokumentation, denn die bringt 
 
 > \[React is\] a library for building user interfaces.
 
-Auch wenn die Erklärung sehr kurz ist kann man aus ihr alle essentiellen Dinge ableiten die wichtig sind für die Arbeit mit React und um zu verstehen worum es sich dreht. React ist erst einmal nur eine _Library_, kein vollständiges Framework mit unzähligen Funktionen, mit dem ihr ohne weitere Abhängigkeiten komplexe Web-Anwendungen entwickeln könnt. Und da kommen wir auch schon zum zweiten Teil des Satzes: _for building user interfaces_.
+Auch wenn die Erklärung sehr kurz ist, kann man aus ihr alle essentiellen Dinge ableiten, die wichtig sind für die Arbeit mit React und um zu verstehen, worum es sich dreht. React ist erst einmal nur eine _Library_, kein vollständiges Framework mit unzähligen Funktionen, mit dem ihr ohne weitere Abhängigkeiten komplexe Web-Anwendungen entwickeln könnt. Und da kommen wir auch schon zum zweiten Teil des Satzes: _for building user interfaces_.
 
 React ist also erst einmal lediglich eine **Library** die es euch einfach macht **Benutzerinterfaces** zu entwickeln. Keine Services oder Methoden um API-Calls zu machen, keine built-in Models oder ORM. Nur User Interfaces. Sozusagen nur der View-Layer eurer Anwendung. That’s it! In diesem Zusammenhang liest man gelegentlich, dass React das „V“ in **MVC** \(_Model-View-Controller_\) oder **MVVM** \(_Model-View-ViewModel_\) darstellt. Das trifft es in meinen Augen ganz gut.
 
