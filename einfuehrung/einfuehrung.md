@@ -2,7 +2,7 @@
 
 ## Was ist React eigentlich und was ist es nicht?
 
-Zitieren wir hier an erster Stelle mal die React-Dokumentation, denn die bringen es sehr prägnant auf den Punkt:
+Zitieren wir hier an erster Stelle mal die React-Dokumentation, denn die bringt es sehr prägnant auf den Punkt:
 
 > \[React is\] a library for building user interfaces.
 
