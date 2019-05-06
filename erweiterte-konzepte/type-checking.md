@@ -14,12 +14,12 @@ TypeError: Cannot read property 'settings' of undefined
 
 ## PropTypes
 
-**PropTypes** reichen zurück bis in ganz frühe Versionen von React, lange bevor React seine heutige Popularität erreicht hat und wurden in React 15.5. aus dem Core heraus und in ein eigenes `prop-types` Package ausgelagert. Während man seine **PropTypes** vorher mittels bspw. `React.PropTypes.string` direkt in der Core-Library definieren konnte, erfolgt der Zugriff nun über das zuvor importierte `PropTypes` Modul: `PropTypes.string`. 
+**PropTypes** reichen zurück bis in ganz frühe Versionen von React, lange bevor React seine heutige Popularität erreicht hat und wurden in React 15.5. aus dem Core heraus und in ein eigenes `prop-types` Package ausgelagert. Während man seine **PropTypes** vorher mittels bspw. `React.PropTypes.string` direkt in der Core-Library definieren konnte, erfolgt der Zugriff nun über das zuvor importierte `PropTypes` Modul: `PropTypes.string`.
 
 Das bedeutet auch, dass das Modul zuerst als `devDependency` installiert werden muss. Auf der Kommandozeile reicht dafür ein simples:
 
-```text
-yarn add --dev prop-types
+```bash
+yarn flow init
 ```
 
 oder:
@@ -30,9 +30,9 @@ npm install --save-dev prop-types
 
 **PropTypes** dienen dabei als eine Art Interface und legen fest, welche Form bzw. welchen Typen eine Prop annehmen darf und ob diese optional ist oder erforderlich ist. Gibt es Abweichungen, weist uns React **im Development-Modus** darauf hin. Bei einer korrekt veröffentlichten Anwendung, die die Production-Version von React nutzt und/oder mit der Umgebungsvariable `process.env.NODE_ENV=production` gebaut wurde, bekommen wir diese Warnungen **nicht** mehr zu sehen!
 
-Doch wie sieht die Verwendung von **PropTypes** nun aus? Hier müssen wir unterscheiden zwischen der **Class Component** und der **Stateless Functional Component**. 
+Doch wie sieht die Verwendung von **PropTypes** nun aus? Hier müssen wir unterscheiden zwischen der **Class Component** und der **Stateless Functional Component**.
 
-Bei der **Class Component** sind die **PropTypes**  eine statische Eigenschaft `propTypes` der Komponente:
+Bei der **Class Component** sind die **PropTypes** eine statische Eigenschaft `propTypes` der Komponente:
 
 ```jsx
 import React from 'react';
@@ -118,10 +118,6 @@ Greeting.defaultProps = {
 
 Wir markieren die `name`-Prop der Komponente als `string.isRequired`, wir erwarten also, dass die Prop immer übergeben wird und dass sie auch immer ein String ist. Anschließend definieren wir einen Standardwert für die `name`-Prop. Dieser wird immer dann verwendet, wenn kein Wert für die entsprechende Prop übergeben wird.
 
-```jsx
-<Greeting name="Manuel" />
-```
-
 Verursacht also die Ausgabe: **Hallo Manuel!**
 
 ```jsx
@@ -136,8 +132,8 @@ Nutzt wegen der fehlenden bzw. undefinierten `name`-Prop hingegen den `defaultVa
 {% hint style="info" %}
 Beim **Deployment in Production** lohnt es sich das **Babel-Plugin-Transform-React-Remove-Prop-Types** zu verwenden. Dies spart noch einmal ein paar Bytes Bandbreite, da die `propType`-Definitionen aus dem Build entfernt werden, da diese ohnehin **nur im Development-Modus** berücksichtigt werden.
 
-Das Plugin findet ihr unter:   
-https://github.com/oliviertassinari/babel-plugin-transform-react-remove-prop-types
+Das Plugin findet ihr unter:  
+[https://github.com/oliviertassinari/babel-plugin-transform-react-remove-prop-types](https://github.com/oliviertassinari/babel-plugin-transform-react-remove-prop-types)
 
 Installieren könnt ihr es auf der Kommandzeile mittels:  
 `npm install --save-dev babel-plugin-transform-react-remove-prop-types` bzw.  
@@ -230,7 +226,7 @@ ReactDOM.render(
 );
 ```
 
-Anders als bei den **PropTypes** definieren wir hier zuerst eine **Type Definition** mit dem Namen `PropsT`. Der Name kann hier grundsätzlich frei gewählt werden. Oft werden `T` oder `Type` an den Namen der Type-Definitions angehängt, um es für Entwickler gleich ersichtlich zu machen, dass es sich dabei um eben solche handelt. Aber rein aus technischer Sicht ist das nicht notwendig. Den eben definierten Type übergeben wir dann in Form eines sogenannten „Generic Type“ an die Komponente: 
+Anders als bei den **PropTypes** definieren wir hier zuerst eine **Type Definition** mit dem Namen `PropsT`. Der Name kann hier grundsätzlich frei gewählt werden. Oft werden `T` oder `Type` an den Namen der Type-Definitions angehängt, um es für Entwickler gleich ersichtlich zu machen, dass es sich dabei um eben solche handelt. Aber rein aus technischer Sicht ist das nicht notwendig. Den eben definierten Type übergeben wir dann in Form eines sogenannten „Generic Type“ an die Komponente:
 
 ```jsx
 class EventOverview extends React.Component<PropsT>

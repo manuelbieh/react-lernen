@@ -1,6 +1,6 @@
 # Context API
 
-Die **Context API** wurde in React sehr lange Zeit eher stiefmütterlich behandelt und wurde erst einmal nur prototypisch implementiert und als experimentell bezeichnet ehe sie in React **16.3.** in grundlegend überarbeiteter Form offizieller Teil von React wurde. 
+Die **Context API** wurde in React sehr lange Zeit eher stiefmütterlich behandelt und wurde erst einmal nur prototypisch implementiert und als experimentell bezeichnet ehe sie in React **16.3.** in grundlegend überarbeiteter Form offizieller Teil von React wurde.
 
 Sie wurde dafür konzipiert, um Daten innerhalb einer Komponenten-Hierarchie an sog. _Konsumenten_ zu verteilen ohne dabei Props an jede einzelne Komponente explizit übergeben zu müssen. Dies kann in einigen Fällen sehr mühsam sein wenn es sich um Daten handelt die von vielen Komponenten innerhalb des Baumes gemeinsam immer wieder verwendet werden. Dazu gehören bspw. Sprach-Einstellungen oder ein globales Style-Schema \(„Theme“\).
 
@@ -8,7 +8,7 @@ In solchen Fällen bietet sich die **Context API** an, die jeweils aus einem **C
 
 Die Datenstruktur kann dabei durchaus auch sehr komplex sein und ist nicht bspw. auch einfache Datentypen wie Strings oder Arrays beschränkt. Eine Anwendung kann dabei auch beliebig viele Contexts besitzen \(bspw. einen für die vom Benutzer eingestellte Sprache, einen für das Style-Schema, etc.\) und auch ein Provider selbst kann mit wechselnden Werten mehrfach verwendet werden. Aber eins nach dem anderen.
 
-### API
+## API
 
 Zur Erstellung eines neuen **Contexts** stellt React die Methode `createContext` bereit:
 
@@ -84,7 +84,7 @@ const App = () => (
 ReactDOM.render(<App />, document.getElementById('#root'));
 ```
 
-Obwohl wir keinerlei **Props** an die `DisplaySelectedLanguage`-Komponente übergeben hat diese dennoch Kenntnis von der aktuell ausgewählten Sprache und zeigt korrekt an: 
+Obwohl wir keinerlei **Props** an die `DisplaySelectedLanguage`-Komponente übergeben hat diese dennoch Kenntnis von der aktuell ausgewählten Sprache und zeigt korrekt an:
 
 ```markup
 <p>Die ausgewählte Sprache ist en</p>
@@ -92,7 +92,7 @@ Obwohl wir keinerlei **Props** an die `DisplaySelectedLanguage`-Komponente über
 
 Ändert sich der `value` einer Provider-Komponente werden alle Consumer-Komponenten die sich innerhalb dieses Providers befinden neu gerendert!
 
-Erweitern wir das Beispiel können wir uns so eine relativ simple kleine Komponentenstruktur aufbauen, um bspw. Mehrsprachigkeit in einer Anwendung zu realisieren. 
+Erweitern wir das Beispiel können wir uns so eine relativ simple kleine Komponentenstruktur aufbauen, um bspw. Mehrsprachigkeit in einer Anwendung zu realisieren.
 
 Im folgenden Beispiel legen wir ein Objekt mit Übersetzungen an und geben ein relativ umfangreiches Objekt mit verschiedenen Datentypen \(bestehend aus einem Array, einem String, einer Funktion um die Sprache zu wechseln und einem Objekt mit den eigentlichen Übersetzungen\) in den Context herein:
 
@@ -196,7 +196,7 @@ Zuerst definieren wir ein Objekt `defaultLanguageContextValue` welches den Defau
 
 Die `changeLanguage()`-Funktion kann erst später in der Komponente selbst implementiert werden, da React ansonsten keine Möglichkeit hätte mit Bordmitteln den State \(also in diesem konkreten Fall die Sprache und die Übersetzungen\) zu ändern, da State für React nur **innerhalb einer Komponente** existiert. So könnten wir zwar die aktuelle Spracheinstellung bspw. in einer globalen Variable speichern, React würde die Komponente dann bei einer Änderung aber nicht neu rendern, da sich weder Props noch State geändert haben, dies aber eine Bedingung ist, um React den Seitenbaum neu rendern zu lassen.
 
-Die `Localized`-Komponente dient nun als Wrapper-Komponente für unseren neu erstellten Context. In ihr speichern \(und ändern!\) wir die vom Benutzer ausgewählte Sprache, indem wir den State entsprechend setzen. Wir speichern dazu das `defaultLanguageContextValue` Objekt im State der Komponente und implementieren hier zusätzlich die `changeLanguage()`-Methode. Diese empfängt eine Sprache \(also `de` oder `en`\), modifiziert den State entsprechend und holt sich die Übersetzungen für die neu ausgewählte Sprache aus dem `translationStore` Objekt und schreibt diese als `translations` neu in den State. Wechselt der User bspw. die Sprache von Deutsch \(Voreinstellung\) zu Englisch, überschreibt die Funktion alle deutschen Übersetzungen im State mit den englischen Übersetzungen. Durch den Aufruf von `this.setState()` wird ein Re-Rendering ausgelöst und alle Context-Consumer innerhalb des Komponenten-Baums werden mit dem aktualisierten Wert, den wir in der render\(\)-Methode der Komponente an den Context-Provider übergeben, neu gerendert. 
+Die `Localized`-Komponente dient nun als Wrapper-Komponente für unseren neu erstellten Context. In ihr speichern \(und ändern!\) wir die vom Benutzer ausgewählte Sprache, indem wir den State entsprechend setzen. Wir speichern dazu das `defaultLanguageContextValue` Objekt im State der Komponente und implementieren hier zusätzlich die `changeLanguage()`-Methode. Diese empfängt eine Sprache \(also `de` oder `en`\), modifiziert den State entsprechend und holt sich die Übersetzungen für die neu ausgewählte Sprache aus dem `translationStore` Objekt und schreibt diese als `translations` neu in den State. Wechselt der User bspw. die Sprache von Deutsch \(Voreinstellung\) zu Englisch, überschreibt die Funktion alle deutschen Übersetzungen im State mit den englischen Übersetzungen. Durch den Aufruf von `this.setState()` wird ein Re-Rendering ausgelöst und alle Context-Consumer innerhalb des Komponenten-Baums werden mit dem aktualisierten Wert, den wir in der render\(\)-Methode der Komponente an den Context-Provider übergeben, neu gerendert.
 
 Das ganze klingt jetzt erstmal kompliziert, ist in der Praxis aber tatsächlich gar nicht so schwierig. Ich möchte an dieser Stelle daher dringend dazu ermutigen das obige Beispiel einmal live auszuprobieren.
 
@@ -234,7 +234,7 @@ Die `Headline` und `Greeting` Komponenten aus dem vorherigen Beispiel können wi
 
 Hier macht uns React aber einen Strich durch die Rechnung, da `key` ein reservierter Name in JSX ist und zur Identifizierung von Elementen dient wenn diese Elemente in einem Array verwendet werden. Die genauen Gründe dazu sind im Kapitel über „Listen, Refs, Fragments und Conditional Rendering“ in „Die Grundlagen“ nachzulesen, dort konkret im Abschnitt „Listen“.
 
-### Verwendung mehrerer Contexts
+## Verwendung mehrerer Contexts
 
 Es ist kein Problem auch mehrere Context-Provider innerhalb einer Komponenten-Hierarchie zu haben. Das Verschachteln von mehreren Provider-Komponenten ist also kein Problem. Selbst Provider vom selben Context-Typen können ineinander verschachtelt werden. Dabei wird den Consumer-Komponenten stets der Context-Value des nächst höheren Providers übergeben:
 
@@ -254,17 +254,17 @@ Das obige Beispiel wäre also problemlos möglich. Die Ausgabe wäre hier:
 <p>Der Wert ist 2</p>
 ```
 
-Die **Consumer-Komponente** bezieht ihre daten hier nach aus dem nächsthöheren **Context-Provider**, dieser hat im obigen Beispiel den Wert "2". 
+Die **Consumer-Komponente** bezieht ihre daten hier nach aus dem nächsthöheren **Context-Provider**, dieser hat im obigen Beispiel den Wert "2".
 
 Ergibt das Verschachteln von gleichen **Context-Providern** meist relativ wenig Sinn so ist es dennoch keine unübliche oder gar schlechte Praktik verschiedene **Context-Provider** ineinander zu verschachteln. So kann eine Anwendung sehr einfach aus einem Theme-Provider, einem Language-Provider und einem Account-Provider bestehen. Letzterer würde sich dann bspw. um das Daten-Handling des eingeloggten Benutzers kümmern, ggf. Access Tokens oder benutzerspezifische Einstellungen verwalten.
 
-### Abkürzung: contextType
+## Abkürzung: contextType
 
-Bei der Verwendung von Klassen-Komponenten können wir uns eines Tricks bedienen und auf die Verwendung einer Consumer-Komponente verzichten die unseren Komponenten-Baum weiter aufbläht. 
+Bei der Verwendung von Klassen-Komponenten können wir uns eines Tricks bedienen und auf die Verwendung einer Consumer-Komponente verzichten die unseren Komponenten-Baum weiter aufbläht.
 
 Der `contextType` ist hier das Stichwort. Dieser kann einer Klassen-Komponente in Form einer gleichnamigen statischen Eigenschaft zugewiesen werden, anschließend kann dann innerhalb der Komponente mittels `this.context` auf den Wert des jeweiligen Contexts zugegriffen werden. Als Wert bekommt die `contextType`-Eigenschaft einen Context zugewiesen, der zuvor mittels `React.createContext()` erzeugt wurde.
 
-Allerdings ist es nur möglich jeder Klasse lediglich **einen einzigen Context-Typen** zuzuweisen. Möchten wir auf den Wert zweier oder mehrerer Contexts müssen wir unser JSX wieder in Consumer-Komponenten wrappen. Bei der Verwendung der _Public Class Fields Syntax_ aus ES2015+ reicht es dazu eine statische Klassen-Eigenschaft `contextType` zu definieren und dieser einen Context zuzuweisen. 
+Allerdings ist es nur möglich jeder Klasse lediglich **einen einzigen Context-Typen** zuzuweisen. Möchten wir auf den Wert zweier oder mehrerer Contexts müssen wir unser JSX wieder in Consumer-Komponenten wrappen. Bei der Verwendung der _Public Class Fields Syntax_ aus ES2015+ reicht es dazu eine statische Klassen-Eigenschaft `contextType` zu definieren und dieser einen Context zuzuweisen.
 
 Als Beispiel, angewendet auf die Translated-Komponente von weiter oben, sähe das dann etwa so aus:
 
@@ -293,9 +293,9 @@ Translated.contextType = LanguageContext;
 
 Wir würden den `contextType` also außerhalb der Komponente definieren und nicht mehr innerhalb. Im Grunde genommen ist das aber letztendlich Geschmackssache und hat sonst keine Implikationen oder Nachteile. Es ist allein eine andere Syntax-Variante, die erst in späteren ECMAScript-Versionen oder eben durch Transpiling mittels Babel möglich ist. Möglich gemacht wird sie durch das Babel-Plugin `@babel/plugin-proposal-class-properties`.
 
-### Performance Fallstrick
+## Performance Fallstrick
 
-React optimiert **Context** unter der Haube massiv um unnötiges Re-Rendering von Komponenten oder gar  ganzen Komponenten-Hierarchien bestmöglich zu vermeiden. Zu diesem Zweck wird bei jedem Rendering der alte Context-Wert des Providers mit dem neuen Wert verglichen und **Consumer-Komponenten** anschließend nur dann neu gerendert wenn sich der Wert ihres **Context-Providers** geändert hat.
+React optimiert **Context** unter der Haube massiv um unnötiges Re-Rendering von Komponenten oder gar ganzen Komponenten-Hierarchien bestmöglich zu vermeiden. Zu diesem Zweck wird bei jedem Rendering der alte Context-Wert des Providers mit dem neuen Wert verglichen und **Consumer-Komponenten** anschließend nur dann neu gerendert wenn sich der Wert ihres **Context-Providers** geändert hat.
 
 Was in der Theorie ausnahmsweise mal relativ einfach klingt, bringt aber einen kleinen Stolperstein mit sich. Und zwar betrifft das Consumer-Provider, deren Value innerhalb der `render()`-Methode einer Komponente stets neu on-the-fly erzeugt werden. Daher empfiehlt es sich normalerweise den Context-Wert außerhalb der render\(\)-Methode zu erzeugen und eine _Referenz zum Wert_ statt eines _stets neu erzeugten Werts_ zu übergeben.
 
