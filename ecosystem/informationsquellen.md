@@ -21,6 +21,7 @@ Keine Angst, hier meine ich nicht die Werbeschleudern die jeder von uns ständig
 * [React.js Newsletter](http://reactjsnewsletter.com/) \(Tyler McGinnis\) 
 * [Fullstack React](http://newsletter.fullstackreact.com) \(Sophia Shoemaker\)
 * [React Digest](https://reactdigest.net/) \(Jakub Chodounsky / Bonobopress\) 
+* [Tiny React](https://tinyreact.email/) \(Siddharth Kshetrapal\)
 
 ### Communities
 

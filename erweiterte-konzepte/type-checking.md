@@ -18,8 +18,8 @@ TypeError: Cannot read property 'settings' of undefined
 
 Das bedeutet auch, dass das Modul zuerst als `devDependency` installiert werden muss. Auf der Kommandozeile reicht dafür ein simples:
 
-```bash
-yarn flow init
+```text
+yarn add --dev prop-types
 ```
 
 oder:
@@ -117,6 +117,10 @@ Greeting.defaultProps = {
 ```
 
 Wir markieren die `name`-Prop der Komponente als `string.isRequired`, wir erwarten also, dass die Prop immer übergeben wird und dass sie auch immer ein String ist. Anschließend definieren wir einen Standardwert für die `name`-Prop. Dieser wird immer dann verwendet, wenn kein Wert für die entsprechende Prop übergeben wird.
+
+```jsx
+<Greeting name="Manuel" />
+```
 
 Verursacht also die Ausgabe: **Hallo Manuel!**
 
