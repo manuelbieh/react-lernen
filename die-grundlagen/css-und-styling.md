@@ -1,10 +1,10 @@
 # CSS und Styling
 
-Styling in React ist ein relativ eigenes Thema. So bietet React keine Hausmittel an, um das Styling von Anwendungen mittels CSS zu erleichtern, mit CSS-in-JS hat sich jedoch eine ganz eigene, teilweise sehr kontrovers diskutierte Bewegung zu der Thematik gebildet. Dabei wird der Styling-Teil ebenfalls in JavaScript umgesetzt um nicht mit dem Paradigma der komponentenbasierten Entwicklung zu brechen. Doch eins nach dem anderen, starten wir erst einmal mit den Basics und arbeiten uns dann Stück für Stück an das Thema heran.
+Styling in React ist ein relativ eigenes Thema. So bietet React keine Hausmittel an, um das Styling von Anwendungen mittels CSS zu erleichtern, mit CSS-in-JS hat sich jedoch eine ganz eigene, teilweise sehr kontrovers diskutierte Bewegung zu der Thematik gebildet. Dabei wird der Styling-Teil ebenfalls in JavaScript umgesetzt, um nicht mit dem Paradigma der komponentenbasierten Entwicklung zu brechen. Doch eins nach dem anderen, starten wir erst einmal mit den Basics und arbeiten uns dann Stück für Stück an das Thema heran.
 
 ### Styling mittels style-Attribut
 
-Die wahrscheinlich einfachste Möglichkeit um Komponenten zu stylen in React ist durch die Verwendung des `style`-Attributs auf HTML-Elementen. Dieses funktioniert jedoch etwas anders als in HTML und so erwartet React ein **Objekt** in der Form `Eigenschaft: Wert`, wobei als Eigenschaft die JavaScript-Schreibweise einer CSS-Eigenschaft erwartet wird. Also etwa `zIndex` statt `z-index`, `backgroundColor` statt `background-color` oder `marginTop` statt `margin-top`. Bei Werten die Pixel-Angaben akzeptieren ist die Verwendung von `px` als Einheit optional:
+Die wahrscheinlich einfachste Möglichkeit um in React Komponenten zu stylen, ist durch die Verwendung des `style`-Attributs auf HTML-Elementen. Dieses funktioniert jedoch etwas anders als in HTML und so erwartet React ein **Objekt** in der Form `Eigenschaft: Wert`, wobei als Eigenschaft die JavaScript-Schreibweise einer CSS-Eigenschaft erwartet wird. Also etwa `zIndex` statt `z-index`, `backgroundColor` statt `background-color` oder `marginTop` statt `margin-top`. Bei Werten, die Pixel-Angaben akzeptieren, ist die Verwendung von `px` als Einheit optional:
 
 ```jsx
 <div style={{border: '1px solid #ccc', marginBottom: 10}}>
@@ -12,7 +12,7 @@ Die wahrscheinlich einfachste Möglichkeit um Komponenten zu stylen in React ist
 </div>
 ```
 
-Werte die ohne Einheit verwendet werden \(bspw. `z-index`, `flex` oder `fontWeight`\) sind davon nicht betroffen, sie können bedenkenlos benutzt werden, ohne dass React sie um `px` ergänzt. 
+Werte, die ohne Einheit verwendet werden \(bspw. `z-index`, `flex` oder `fontWeight`\) sind davon nicht betroffen, sie können bedenkenlos benutzt werden, ohne dass React sie um `px` ergänzt. 
 
 Durch die Verwendung eines Objekts anstelle eines Strings ist React konsistent zur `style`-Eigenschaft von DOM-Elementen \(`document.getElementById('root').style` ist ebenfalls ein Objekt!\) und sorgt außerdem dafür, dass keine Sicherheitslücken durch XSS entstehen können.
 
@@ -32,7 +32,7 @@ React rendert hier schließlich gewohnte Syntax mit der jeweiligen HTML-Entsprec
 <div class="item">...</div>
 ```
 
-Wie in JSX üblich kann der Wert für die `className`-Prop auch dynamisch zusammengesetzt werden:
+Wie in JSX üblich kann, der Wert für die `className`-Prop auch dynamisch über String Concatenation zusammengesetzt werden:
 
 ```jsx
 render() {
@@ -50,7 +50,7 @@ render() {
 
 Hier wäre der Wert für `className` in jedem Fall `item` und für den Fall, dass das ausgewählte Item dem aktuellen Item entspricht `item item--selected`.
 
-Als de facto Standard für derartige Fälle hat sich das Paket `classnames` etabliert. Mit diesem ist es möglich Klassen abhängig von einer Bedingung zu machen. Installiert werden kann es über die CLI, mittels:
+Als de facto Standard für derartige Fälle hat sich das Paket `classnames` etabliert. Mit diesem ist es möglich, Klassen abhängig von einer Bedingung zu machen. Installiert werden kann es über die CLI, mittels:
 
 ```bash
 npm install classnames
@@ -66,7 +66,7 @@ Anschließend müssen wir es nur noch in den Komponenten importieren, in denen w
 import classNames from 'classnames';
 ```
 
-Damit importieren die Funktion und weisen ihr den Namen `classNames` zu. Die Funktion erwartet dann beliebig viele Parameter die entweder ein String sein können oder ein Objekt in der Form `{ Klasse: true|false }`. Die Funktionsweise ist dabei ebenfalls recht simpel: ist der Wert für eine Eigenschaft `true`, setzt `classNames` eine Klasse mit dem selben Eigenschaftsnamen. Im obigen Beispiel wäre das also:
+Damit importieren wir die Funktion und weisen ihr den Namen `classNames` zu. Die Funktion erwartet dann beliebig viele Parameter die entweder ein String sein können oder ein Objekt in der Form `{ Klasse: true|false }`. Die Funktionsweise ist dabei ebenfalls recht simpel: Ist der Wert für eine Eigenschaft `true`, setzt `classNames` eine Klasse mit dem selben Eigenschaftsnamen. Im obigen Beispiel wäre das also:
 
 ```jsx
 render() {
@@ -80,7 +80,7 @@ render() {
 }
 ```
 
-Auch die Verwendung eines Objekts mit mehreren Eigenschaften ist möglich, hier werden dann sämtliche Eigenschaften deren Wert `true` ist als Klasse gesetzt:
+Auch die Verwendung eines Objekts mit mehreren Eigenschaften ist möglich, hier werden dann sämtliche Eigenschaften als Klasse gesetzt, deren Wert `true` ist:
 
 ```jsx
 render() {
@@ -99,11 +99,11 @@ Bei der Verwendung von Klassen sollte natürlich sichergestellt sein, dass das S
 
 ### Modulares CSS mit CSS Modules
 
-**CSS Modules** sind eine Art Vorstufe zu **CSS-in-JS** und vereinen einige Eigenschaften von CSS und JavaScript-Modulen in sich. Wie der Name es suggeriert befindet sich das CSS hier in eigenen importierbaren **Modulen**, die jedoch aus reinem CSS bestehen und zumeist unmittelbar zu einer Komponente gehören. Entwickeln wir etwa eine Komponente um ein Profilbild darzustellen in `ProfileImage.js`, existiert beim **CSS Modules** Ansatz oft auch eine `ProfileImage.module.css`  dazu. Beim Import eines solchen CSS Moduls wird dann sichergestellt, dass ein einmaliger, oftmals etwas kryptischer Klassenname generiert wird, um so sicherzustellen, dass diese Klasse nur in der jeweiligen Komponente verwendet wird. Konflikte mit anderen Komponenten die gleiche Klassennamen verwenden sollen so ausgeschlossen werden.
+**CSS Modules** sind eine Art Vorstufe zu **CSS-in-JS** und vereinen einige Eigenschaften von CSS und JavaScript-Modulen in sich. Wie der Name es suggeriert, befindet sich das CSS hier in eigenen importierbaren **Modulen**, die jedoch aus reinem CSS bestehen und zumeist unmittelbar zu einer Komponente gehören. Entwickeln wir etwa eine Komponente um ein Profilbild darzustellen in einer Datei mit dem Namen `ProfileImage.js`, existiert beim **CSS Modules** Ansatz oft auch eine Datei mit dem Namen `ProfileImage.module.css`. Beim Import eines solchen CSS Moduls wird dann sichergestellt, dass ein einmaliger, oftmals etwas kryptischer Klassenname generiert wird, um so sicherzustellen, dass diese Klasse nur in der jeweiligen Komponente verwendet wird. Konflikte mit anderen Komponenten, die gleiche Klassennamen verwenden, sollen so ausgeschlossen werden.
 
-Dabei sind **CSS Modules** selbst sind jedoch erstmal nur ein **Konzept** und noch keine konkrete Implementierung. Die Implementierung übernehmen dann Tools wie bspw. `css-loader` für Webpack.
+Dabei sind **CSS Modules** selbst jedoch erstmal nur ein **Konzept** und noch keine konkrete Implementierung. Die Implementierung übernehmen dann Tools wie bspw. `css-loader` für Webpack.
 
-Die Endung `.module.css` ist dabei keineswegs zwingend und auch ein bloßes `.css` wäre möglich, `.module.css` hat sich aber bei einigen bekannten Tools mit großer Reichweite als Konvention entwickelt und wird auch von **Create React App** ohne die Notwendigkeit weitere Konfigurationseinstellungen vorzunehmen unterstützt. CRA greift dabei auf die eben angesprochene `css-loader` Implementierung für Webpack zurück.
+Die Endung `.module.css` ist dabei keineswegs zwingend und auch ein bloßes `.css` wäre möglich, `.module.css` hat sich aber bei einigen bekannten Tools mit großer Reichweite als Konvention entwickelt und wird auch von **Create React App** ohne die Notwendigkeit des Vornehmens weiterer Konfigurationseinstellungen unterstützt. CRA greift dabei auf die eben angesprochene `css-loader`-Implementierung für Webpack zurück.
 
 In den CSS-Dateien befindet sich reguläres, **standardkonformes CSS** in seiner gewohnten Schreibweise. Dieses kann dann in einer Komponente wie ein JavaScript-Modul importiert werden:
 
@@ -127,7 +127,7 @@ Und das Resultat beim Rendering wäre:
 
 Nutzen wir nun die Klasse `image` noch in einer anderen Komponente und importieren dort ebenfalls eine CSS-Datei mit einer `image`-Klasse würde es hier, anders als in gewöhnlichem CSS, **nicht** zu einem Konflikt kommen, da der _generierte_ Klassenname ein anderer wäre. 
 
-Dabei ist alles erlaubt was auch in CSS erlaubt ist und auch die Kaskade \(also das **C** in **Cascading Style Sheets**\) bleibt dabei intakt:
+Dabei ist alles erlaubt, was auch in CSS erlaubt ist und auch die Kaskade \(also das **C** in **Cascading Style Sheets**\) bleibt dabei intakt:
 
 ```css
 .imageWrapper img {
@@ -155,7 +155,7 @@ Der Hintergrund für **CSS Modules** ist eben der, dass mögliche Konflikte bei 
 
 ### CSS-in-JS – die Verlagerung von Styles ins JavaScript
 
-In der Einleitung hatte ich es bereits angesprochen: **CSS-in-JS** wird in einigen Entwicklerkreisen mitunter sehr rege und kontrovers diskutiert. Gegner führen das Argument ins Feld, dass die Befürworter von **CSS-in-JS** einfach nicht verstanden hätten die Kaskade zu verwenden, um skalierbares CSS zu schreiben, während Befürworter meist dagegen argumentieren dass es nicht um die Kaskade geht, sondern man ganz einfach einen sicheren Weg benötige, um höchstmögliche Isolation von Komponenten sicherzustellen. Nun, ich persönlich bin da eher diplomatisch und denke, dass es für beide Seiten Argumente gibt, doch vor allem glaube ich, dass **CSS-in-JS** durchaus seine Daseinsberechtigung hat. Doch worum geht es überhaupt genau?
+In der Einleitung hatte ich es bereits angesprochen: **CSS-in-JS** wird in einigen Entwicklerkreisen mitunter sehr rege und kontrovers diskutiert. Gegner führen das Argument ins Feld, dass die Befürworter von **CSS-in-JS** einfach nicht verstanden hätten, die Kaskade zu verwenden, um skalierbares CSS zu schreiben. Befürworter argumentieren dagegen meist, dass es nicht um die Kaskade geht, sondern man ganz einfach einen sicheren Weg benötige, um höchstmögliche Isolation von Komponenten sicherzustellen. Nun, ich persönlich bin da eher diplomatisch und denke, dass es für beide Seiten Argumente gibt, doch vor allem glaube ich, dass **CSS-in-JS** durchaus seine Daseinsberechtigung hat. Doch worum geht es überhaupt genau?
 
 Beim **CSS-in-JS**-Ansatz wird der Styling-Teil, der in der klassischen Web-Entwicklung immer die Aufgabe von CSS war, in den JavaScript-Teil verschoben. Wie auch bei der **CSS Modules** „Hybrid“-Lösung steht hier vor allem die Isolation und konfliktfreie Wiederverwendbarkeit von JavaScript-Komponenten im Vordergrund. Anders als bei **CSS Modules** findet das Styling in **CSS-in-JS** jedoch vollständig in JavaScript-Dateien statt, allerdings noch immer unter Verwendung von CSS oder zumindest CSS-naher Syntax. 
 
@@ -199,7 +199,7 @@ const App = () => {
 ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
-Durch die Verwendung von `const Button = styled.button` erzeugt **Styled Components** dabei eine neue `Button`-Komponente und weist der Komponente die CSS-Eigenschaften zu, die wir im darauf folgenden **Template Literal** definieren. Innerhalb dieses **Template Literals** wird dann wiederum herkömmliches CSS verwendet. 
+Durch die Verwendung von `const Button = styled.button` erzeugt **Styled Components** dabei eine neue `Button`-Komponente und weist der Komponente die CSS-Eigenschaften zu, die wir im darauffolgenden **Template Literal** definieren. Innerhalb dieses **Template Literals** wird dann wiederum herkömmliches CSS verwendet. 
 
 Möchten wir Pseudo-Selektoren oder -Elemente verwenden, nutzen wir diese einfach ohne vorangestellten Selektor. Im obigen Beispiel sieht das für einen `:hover`-Status etwa so aus:
 
@@ -230,21 +230,21 @@ const Button = styled.button`
 `;
 ```
 
-Hier würde etwa der Mauszeiger zu einem `not-allowed` Symbol werden wenn der Button eine `disabled`-Eigenschaft besitzt. Darüber hinaus bietet Styled Components auch Unterstützung für Themes, serverseitiges Rendering, CSS Animationen und vieles mehr. Für eine \(sehr\) detaillierte Übersicht empfehle ich an dieser Stelle einen Blick auf die [gute und umfassende Dokumentation](https://www.styled-components.com/docs/basics) zu werfen.
+Hier würde etwa der Mauszeiger zu einem `not-allowed` Symbol werden, wenn der Button eine `disabled`-Eigenschaft besitzt. Darüber hinaus bietet Styled Components auch Unterstützung für Themes, serverseitiges Rendering, CSS-Animationen und vieles mehr. Für eine \(sehr\) detaillierte Übersicht empfehle ich an dieser Stelle, einen Blick auf die [gute und umfassende Dokumentation](https://www.styled-components.com/docs/basics) zu werfen.
 
 Die positiven Seiten von **CSS-inJS** generell und **Styled Components** im Speziellen liegen hier auf der Hand und die Dokumentation fasst sie ziemlich gut zusammen:
 
-* kritisches CSS, also das, was für die aktuell aufgerufene Seite relevant ist wird automatisch generiert, da **Styled Components** genau weiß, welche Komponenten auf einer Seite verwendet werden und welche Styles diese benötigen
+* kritisches CSS, also das, was für die aktuell aufgerufene Seite relevant ist, wird automatisch generiert, da **Styled Components** genau weiß, welche Komponenten auf einer Seite verwendet werden und welche Styles diese benötigen
 * durch die automatische Generierung von Klassennamen wird das Risiko von Konflikten auf ein Minimum reduziert
-* dadurch, dass CSS unmittelbar an eine Komponente gebunden wird, ist es sehr einfach nicht mehr benutztes CSS zu finden. Wird die erzeugte **Styled Component** nicht mehr in einer Anwendung verwendet, wird auch das CSS nicht mehr benötigt und die Komponente kann mitsamt ihres CSS sicher gelöscht werden
-* Komponenten-Logik \(JavaScript\) und Komponenten-Styling \(CSS-in-JS\) befindet sich unmittelbar am selben Ort, teilweise sogar in der gleichen Datei. Der Entwickler muss nicht erst mühsam die Stelle finden, die er ändern muss bei einer Style-Änderung
+* dadurch, dass CSS unmittelbar an eine Komponente gebunden wird, ist es sehr einfach, nicht mehr benutztes CSS zu finden. Wird die erzeugte **Styled Component** nicht mehr in einer Anwendung verwendet, wird auch das CSS nicht mehr benötigt und die Komponente kann mitsamt ihres CSS sicher gelöscht werden
+* Komponenten-Logik \(JavaScript\) und Komponenten-Styling \(CSS-in-JS\) befinden sich unmittelbar am selben Ort, teilweise sogar in der gleichen Datei. Der Entwickler muss nicht erst mühsam die Stelle finden, die er ändern muss bei einer Style-Änderung
 * **Styled Components** erzeugt ohne jede weitere Konfiguration automatisch CSS, das Vendor-Prefixes für alle Browser enthält
 
-Nun ist **Styled Components** nur eine von wie bereits angesprochen sehr vielen Implementierungen des Konzepts **CSS-in-JS**. Sie ist ohne Zweifel die bekannteste und am weitesten adaptierte und auch für mich hat sie ihren Job tadellos erfüllt, in einigen meiner vergangenen Projekte. Dennoch schlage ich vor, vielleicht einen Blick auf andere, verfügbare Alternativen zu werfen um die für den jeweiligen eigenen Verwendungszweck optimale Lösung zu finden. Zu den ebenfalls bekannteren, erwähnenswerten Beispielen gehören:
+Nun ist **Styled Components** nur eine von wie bereits angesprochen sehr vielen Implementierungen des Konzepts **CSS-in-JS**. Sie ist ohne Zweifel die bekannteste und am weitesten adaptierte und auch in einigen meiner vergangenen Projekte hat sie ihren Job tadellos erfüllt. Dennoch schlage ich vor, vielleicht einen Blick auf andere, verfügbare Alternativen zu werfen, um die für den jeweiligen eigenen Verwendungszweck optimale Lösung zu finden. Zu den ebenfalls bekannteren, erwähnenswerten Beispielen gehören:
 
 * [emotion](https://github.com/emotion-js/emotion)
 * [styled-jsx](https://github.com/zeit/styled-jsx)
 * [react-jss](https://github.com/cssinjs/jss/tree/master/packages/react-jss)
-* r[adium](https://github.com/FormidableLabs/radium)
-* l[inaria](https://github.com/callstack/linaria)
+* [radium](https://github.com/FormidableLabs/radium)
+* [linaria](https://github.com/callstack/linaria)
 
