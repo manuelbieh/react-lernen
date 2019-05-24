@@ -87,7 +87,7 @@ Auch wenn man in der Gestaltung seiner JavaScript-Klassen natürlich vollkommen 
 React.createElement()
 ```
 
-Wie erwähnt gibt die `render()`-Methode einer React-**Komponente** in den meisten Fällen ein React-**Element** zurück. React-**Elemente** sind sozusagen die kleinsten aber dennoch gleichzeitig auch die wesentlichen Bausteine in einer React-Anwendung und beschreiben, was der Benutzer letztendlich auf seinem Bildschirm sieht. Neben `React.cloneElement()` und `React.isValidElement()` war `React.createElement()` sehr lange eine eine von lediglich 3 Top-Level API-Methoden. Mittlerweile kamen einige weitere dazu, die aber vorrangig zur Performance-Optimierung dienen.
+Wie erwähnt gibt die `render()`-Methode einer React-**Komponente** in den meisten Fällen ein React-**Element** zurück. React-**Elemente** sind sozusagen die kleinsten aber dennoch gleichzeitig auch die wesentlichen Bausteine in einer React-Anwendung und beschreiben, was der Benutzer letztendlich auf seinem Bildschirm sieht. Neben `React.cloneElement()` und `React.isValidElement()` war `React.createElement()` sehr lange eine von lediglich 3 Top-Level API-Methoden. Mittlerweile kamen einige weitere dazu, die aber vorrangig zur Performance-Optimierung dienen.
 
 Die `createElement()-`Methode erwartet 1-n Parameter:
 

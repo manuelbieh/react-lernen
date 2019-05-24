@@ -25,7 +25,7 @@ oder einfach kurz:
 npm i -g yarn
 ```
 
-Wir haben gerade außerdem unser erstes Package installiert. Easy! Das Commandline-Flag `--global` \(bzw. `-g`\) sorgt dabei dafür, dass die `yarn` Executable global installiert wird und von überall auf eurem Gerät auf der Kommandozeile ausgeführt werden kann, indem ihr `yarn` auf der Kommandozeile eingebt.
+Wir haben gerade außerdem unser erstes Package installiert. Easy! Das Commandline-Flag `--global` \(bzw. `-g`\) sorgt dabei dafür, dass die `yarn`-Executable global installiert wird und von überall auf eurem Gerät auf der Kommandozeile ausgeführt werden kann, indem ihr `yarn` auf der Kommandozeile eingebt.
 
 ### Babel
 
@@ -63,7 +63,7 @@ bzw.
 yarn add --dev [paket]
 ```
 
-Die `--dev` Flag gibt hier an, dass es sich um eine `devDependency` handelt, also nur für die Entwicklung relevant ist und nicht Teil des Produktionscodes sein soll.
+Die `--dev`-Flag gibt hier an, dass es sich um eine `devDependency` handelt, also nur für die Entwicklung relevant ist und nicht Teil des Produktionscodes sein soll.
 
 ### Webpack
 
@@ -103,7 +103,7 @@ Für den Browser empfehle ich dringend, jeweils die **React-Devtools** für [Chr
 
 ![Chrome mit installierten Devtools-Plugins f&#xFC;r React und Redux](../.gitbook/assets/image.png)
 
-So lässt sich bspw. der State direkt im Browser manipulieren und die Auswirkungen live beobachten. Ich würde soweit gehen zu behaupten, dass ein effizientes Debugging ohne die Devtools-Erweiterungen kaum oder sogar gar nicht möglich ist.
+So lässt sich bspw. der State direkt im Browser manipulieren und die Auswirkungen live beobachten. Ich würde so weit gehen zu behaupten, dass ein effizientes Debugging ohne die Devtools-Erweiterungen kaum oder sogar gar nicht möglich ist.
 
 ## Zero Config Setup
 
