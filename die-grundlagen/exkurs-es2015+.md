@@ -438,7 +438,7 @@ console.log(user);
 ```javascript
 const nationality = 'german';
 const user = {
-  name: 'Manuel',
+  name: 'Manuel', [nationality]: true
 };
 console.log(user);
 // -> { name: 'Manuel', german: true };
