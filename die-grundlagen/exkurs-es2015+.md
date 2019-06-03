@@ -162,7 +162,7 @@ arg => {}
 
 Jap, das ist eine gültige Funktion in ES2015!
 
-Und es wird noch wilder. Soll unsere Funktion lediglich einen Ausdruck  als `return`-Wert zurückgeben, sind auch noch die Klammern optional. Vergleichen wir einmal eine Funktion, die eine Zahl als einziges Argument entgegennimmt, diese verdoppelt und als `return`-Wert wieder aus der Funktion zurückgibt. Einmal in ES5:
+Und es wird noch wilder. Soll unsere Funktion lediglich einen Ausdruck als `return`-Wert zurückgeben, sind auch noch die Klammern optional. Vergleichen wir einmal eine Funktion, die eine Zahl als einziges Argument entgegennimmt, diese verdoppelt und als `return`-Wert wieder aus der Funktion zurückgibt. Einmal in ES5:
 
 ```javascript
 function double(number) {
@@ -263,9 +263,9 @@ Analog verhält es sich mit `startsWith`:
 'Beispiel'.endsWith('spiel')
 ```
 
-Die Methode arbeitet dabei case-sensitive, unterscheidet also  zwischen Groß- und Kleinschreibung.
+Die Methode arbeitet dabei case-sensitive, unterscheidet also zwischen Groß- und Kleinschreibung.
 
-Zwei weitere hilfreiche Methoden, die mit ES2015 Einzug in JavaScript erhalten haben, sind `String.prototype.padStart()` und `String.prototype.padEnd()`. Diese Methoden könnt ihr nutzen, um einen String auf eine gewisse Länge zu bringen, indem ihr am Anfang   \(`.padStart()`\) oder am Ende \(`.padEnd()`\) Zeichen hinzufügt bis die angegebene Länge erreicht ist. Dabei gibt der erste Parameter die gewünschte Länge an, der optionale zweite Parameter das Zeichen mit dem ihr den String bis zu dieser Stelle auffüllen wollt. Gebt ihr keinen zweiten Parameter an, wird standardmäßig ein Leerzeichen benutzt.
+Zwei weitere hilfreiche Methoden, die mit ES2015 Einzug in JavaScript erhalten haben, sind `String.prototype.padStart()` und `String.prototype.padEnd()`. Diese Methoden könnt ihr nutzen, um einen String auf eine gewisse Länge zu bringen, indem ihr am Anfang \(`.padStart()`\) oder am Ende \(`.padEnd()`\) Zeichen hinzufügt bis die angegebene Länge erreicht ist. Dabei gibt der erste Parameter die gewünschte Länge an, der optionale zweite Parameter das Zeichen mit dem ihr den String bis zu dieser Stelle auffüllen wollt. Gebt ihr keinen zweiten Parameter an, wird standardmäßig ein Leerzeichen benutzt.
 
 Hilfreich ist das bspw. wenn ihr Zahlen auffüllen wollt, so dass diese immer einheitlich dreistellig sind:
 
@@ -1014,9 +1014,9 @@ Example(1, 2, 3, 4, 5);
 **Ausgabe:**
 
 {% hint style="info" %}
-`first: 1  
-second: 2  
-third: 3  
+`first: 1    
+second: 2    
+third: 3    
 rest: [4, 5]`
 {% endhint %}
 
