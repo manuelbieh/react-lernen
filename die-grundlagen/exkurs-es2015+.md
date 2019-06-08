@@ -303,7 +303,7 @@ Array.isArray(links); // true
 Die Methoden auf dem Array-Prototypen können **direkt auf eine Array-Instanz** angewendet werden. Die gängigsten während der Arbeit mit React und insbesondere später mit Redux sind:
 
 ```javascript
-Array.find(function);,
+Array.find(function);
 Array.findIndex(function);
 Array.includes(value);
 ```
@@ -319,7 +319,9 @@ const users = [
   {id: 2, name: 'Bianca'}, 
   {id: 3, name: 'Brian'}
 ];
-const userWithId2 = users.find((user) => user.id === 2); // { id: 2, name: 'Bianca'}
+
+const userWithId2 = users.find((user) => user.id === 2);
+// { id: 2, name: 'Bianca'}
 ```
 
 Die `Array.findIndex()`-Methode folgt der gleichen Signatur, liefert aber anders als die `Array.find()`-Methode nicht das gefundene Element selbst zurück, sondern nur dessen Index im Array. In den obigen Beispielen wären dies also `3` sowie `1`.
