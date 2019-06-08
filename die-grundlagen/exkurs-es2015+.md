@@ -303,8 +303,8 @@ Array.isArray(links); // true
 Die Methoden auf dem Array-Prototypen können **direkt auf eine Array-Instanz** angewendet werden. Die gängigsten während der Arbeit mit React und insbesondere später mit Redux sind:
 
 ```javascript
-Array.find(function);
-Array.findIndex(function);
+Array.find(func);
+Array.findIndex(func);
 Array.includes(value);
 ```
 
