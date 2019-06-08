@@ -10,7 +10,7 @@ Dieses Buch deckt außerdem nur das Thema **Einstieg in React** ab und bietet ke
 
 **Aber keine Sorge:** das klingt komplizierter als es am Ende eigentlich ist. Jeder Leser, der in der Vergangenheit bereits bspw. mit jQuery gearbeitet hat, sollte beim größten Teil dieses Buches keine Verständnisprobleme haben und meinen Erklärungen folgen können.
 
-### Ein paar Worte zu diesem Buch
+## Ein paar Worte zu diesem Buch
 
 Ich habe dieses Buch im **Selbstverlag** veröffentlicht, da ich die volle Kontrolle über alle Veröffentlichungskanäle, das Preismodell, sowie sämtliche Rechte und Freiheiten über das Buch behalten möchte. Mir geht es nicht darum „den großen Reibach“ zu machen, sondern ich möchte dieses Buch in erster Linie möglichst vielen Leuten zugänglich machen. Zu diesem Zweck gibt es eine kostenlose Online-Version dieses Buches, die ihr unter der URL [https://lernen.react-js.dev/](https://lernen.react-js.dev/) findet. Mit dem Kauf der ePub oder PDF-Version über iBooks, Google Play Books, Amazon Kindle oder Leanpub kannst du meine Arbeit am Buch finanziell etwas unterstützen und bekommst statt der HTML-Version auch noch ein schönes E-Book zum Download.
 
