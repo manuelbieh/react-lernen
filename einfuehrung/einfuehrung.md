@@ -46,5 +46,5 @@ Vor dem Release von Major- oder Minor-Releases gibt es regelmäßig auch Alpha-,
 
 ![Beispiel f&#xFC;r eine Deprecation Warning](../.gitbook/assets/deprecation-warning.png)
 
-Dies ist sicher dem Umstand geschuldet, dass eben auch bei Facebook sehr viele React-Komponenten im Einsatz sind und man dort nicht einfach mal eben tiefgreifende Änderungen vornehmen kann, ohne Probleme zu verursachen. Die Gedanken und Begründungen der Entwickler lassen sich dabei jederzeit ausführlich im GitHub Issue-Tracker verfolgen, alle wichtigen Änderungen werden dabei in sog.[ Umbrella-Tickets](https://github.com/facebook/react/issues?utf8=%E2%9C%93&q=is%3Aissue%20is%3Aopen%20umbrella) zusammengefasst.
+Dies ist sicher dem Umstand geschuldet, dass eben auch bei Facebook sehr viele React-Komponenten im Einsatz sind und man dort nicht einfach mal eben tiefgreifende Änderungen vornehmen kann, ohne Probleme zu verursachen. Die Gedanken und Begründungen der Entwickler lassen sich dabei jederzeit ausführlich im GitHub Issue-Tracker verfolgen, alle wichtigen Änderungen werden dabei in sog. [Umbrella-Tickets](https://github.com/facebook/react/issues?utf8=%E2%9C%93&q=is%3Aissue%20is%3Aopen%20umbrella) zusammengefasst.
 
