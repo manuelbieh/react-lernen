@@ -1,4 +1,4 @@
-# Table of contents
+# Inhaltsverzeichnis
 
 * [React lernen und verstehen](README.md)
 * [Vorwort](vorwort.md)
