@@ -219,7 +219,7 @@ function TimeButton() {
   this.showTime = function() {
     document.getElementById('time').innerHTML = new Date();
   }
-  button.addEventListener('click', () {
+  button.addEventListener('click', () => {
     this.showTime();
   });
 }
@@ -317,7 +317,7 @@ const biggerThan10 = numbers.find((number) => number > 10); // 13
 const users = [
   {id: 1, name: 'Manuel'}, 
   {id: 2, name: 'Bianca'}, 
-  {id: 3, name: 'Steve'}
+  {id: 3, name: 'Brian'}
 ];
 const userWithId2 = users.find((user) => user.id === 2); // { id: 2, name: 'Bianca'}
 ```
