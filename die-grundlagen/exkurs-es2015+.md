@@ -554,7 +554,7 @@ Der Spread Operator sorgt dafür, Werte sozusagen „auszupacken“. Wollte man 
 
 ```javascript
 function sumAll(number1, number2, number3) {
-  return number1, number2, number3
+  return number1 + number2 + number3;
 }
 var myArray = [1, 2, 3];
 sumAll.apply(null, myArray);
@@ -570,7 +570,7 @@ Mit dem Spread Operator, der aus drei Punkten \(...\) besteht, kann ich diese Ar
 
 ```javascript
 function sumAll(number1, number2, number3) {
-  return number1, number2, number3
+  return number1 + number2 + number3;
 }
 var myArray = [1, 2, 3];
 sumAll(...myArray);
