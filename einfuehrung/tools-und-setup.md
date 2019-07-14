@@ -192,6 +192,6 @@ Mit `yarn eject` können wir uns von Create React App „verabschieden“. Dabei
 {% hint style="info" %}
 Um die Code-Beispiele in diesem Buch nachzuvollziehen, empfehle ich an dieser Stelle, **Create React App** zu installieren. Die große Mehrzahl der Beispiele können dann per Copy and Paste in die `App.js`-Datei aus Create React App übertragen und ausgeführt werden. Um den Lern-Effekt zu erhöhen, würde ich sogar empfehlen, die Beispiele nicht zu kopieren, sondern tatsächlich abzutippen.
 
-Wer CRA nicht installieren möchte oder es eilig hat, dem sei [CodeSandbox](https://codesandbox.io/) ans Herz gelegt. Hier kann in einer per Knopfdruck ein neues Setup mit Create React App als Basis erstellt und dann in einer Browser-Entwicklungsumgebung herumprobiert werden.
+Wer CRA nicht installieren möchte oder es eilig hat, dem sei [CodeSandbox](https://codesandbox.io/) ans Herz gelegt. Hier kann per Knopfdruck ein neues [Setup mit **Create React App**](https://codesandbox.io/s/new) als Basis erstellt und dann in einer Browser-Entwicklungsumgebung herumprobiert werden.
 {% endhint %}
 
