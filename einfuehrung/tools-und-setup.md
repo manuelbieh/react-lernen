@@ -12,7 +12,7 @@ Statt **Node** direkt zu installieren, empfehle ich [**nvm**](https://github.com
 
 ### Yarn
 
-Während **Node** mit **npm** bereits einen guten und soliden Package-Manager mitbringt, geht **yarn** noch ein Stück weiter. Es bietet besseres Caching, dadurch auch bessere Performance, einfachere Kommandos und kommt darüber hinaus, wie React, ebenfalls aus dem Hause Facebook und wurde dort entwickelt, u.a. um die Arbeit mit React noch etwas angenehmer zu gestalten. Während alles, was hier im weiteren Verlauf des Buches beschrieben wird, auch mit **npm** ausgeführt werden kann, würde ich dennoch empfehlen, **Yarn** zu installieren. Dies gewinnt gerade im React-Umfeld mehr und mehr an Gewicht, insbesondere wegen seiner Einfachheit und seiner verbesserten Performance ggü. **npm**.   
+Während **Node** mit **npm** bereits einen guten und soliden Package-Manager mitbringt, geht **yarn** noch ein Stück weiter. Es bietet besseres Caching, dadurch auch bessere Performance, einfachere Kommandos und kommt darüber hinaus, wie React, ebenfalls aus dem Hause Facebook und wurde dort entwickelt, u.a. um die Arbeit mit React noch etwas angenehmer zu gestalten. Während alles, was hier im weiteren Verlauf des Buches beschrieben wird, auch mit **npm** ausgeführt werden kann, würde ich dennoch empfehlen, **Yarn** zu installieren. Dies gewinnt gerade im React-Umfeld mehr und mehr an Gewicht, insbesondere wegen seiner Einfachheit und seiner verbesserten Performance ggü. **npm**.  
 Sind **Node** und **npm** erst einmal installiert, lässt sich **yarn** als globales Package über **npm** installieren:
 
 ```bash
@@ -37,7 +37,7 @@ Babel ist ein Tool, das für gewöhnlich lediglich als Dependency \(Abhängigkei
 
 Babel besteht aus einem Core-Modul \(`@babel/core`\), das lediglich einige APIs bereitstellt, die dann von **Plugins** für das entsprechende **Transpiling** verwendet werden. Diese Plugins werden oft zu sog. **Presets** zusammengefasst, die dann wiederum mehrere **Plugins** gleichzeitig installieren. Die in React-basierten Projekten üblichsten Presets sind `@babel/preset-react` \(um **JSX** zu lesen und zu übersetzen\) und `@babel/preset-env`, welches abhängig von einer Ziel-Umgebung modernes JavaScript so umschreibt, dass es eben auch ältere Browser verstehen.
 
-Das `@`-Zeichen vor dem Namen bedeutet dabei, dass es sich um eine Organisation innerhalb der npm Registry \(dem npm-Paketverzeichnis\) handelt und kann als eine Art Namespace betrachtet werden. Im Fall von Babel findet man dort die offiziellen Pakete, die von den Babel-Maintainern dort veröffentlicht werden. Bevor Babel in der Version 7 erschien gab es diese Organisation noch nicht und die Pakete wurden mit einem Bindestrich im Namen getrennt. So hieß `@babel/preset-react` eben `babel-preset-react`, `@babel/core` war `babel-core` usw. 
+Das `@`-Zeichen vor dem Namen bedeutet dabei, dass es sich um eine Organisation innerhalb der npm Registry \(dem npm-Paketverzeichnis\) handelt und kann als eine Art Namespace betrachtet werden. Im Fall von Babel findet man dort die offiziellen Pakete, die von den Babel-Maintainern dort veröffentlicht werden. Bevor Babel in der Version 7 erschien gab es diese Organisation noch nicht und die Pakete wurden mit einem Bindestrich im Namen getrennt. So hieß `@babel/preset-react` eben `babel-preset-react`, `@babel/core` war `babel-core` usw.
 
 Also nicht verwirren lassen, sollte euch in einem Projekt mal `babel-core` statt `@babel/core` begegnen. In diesem Fall handelt es sich also einfach um Babel 6 \(oder eine ältere Version\). Allerdings kommt es gelegentlich vor, dass Entwickler deren Plugins oder Presets nicht offizieller Teil von Babel sind, diese ebenfalls mit `babel-` prefixen, während die Pakete dennoch mit Babel 7 arbeiten. Hier hilft in der Regel nur ein Blick in die Readme des jeweiligen Pakets.
 
@@ -49,7 +49,7 @@ Die **Presets**, die ich bei der Arbeit mit React verwende \(und gleichzeitig au
 * `@babel/plugin-proposal-class-properties` 
 * `@babel/plugin-syntax-dynamic-import` 
 
-Wer mit Flow oder TypeScript als statischen Type Checkern arbeiten möchte benötigt darüber hinaus noch `@babel/preset-flow` für Flow bzw. `@babel/preset-typescript` für TypeScript. 
+Wer mit Flow oder TypeScript als statischen Type Checkern arbeiten möchte benötigt darüber hinaus noch `@babel/preset-flow` für Flow bzw. `@babel/preset-typescript` für TypeScript.
 
 Installiert werden alle erwähnten Pakete via:
 
@@ -93,7 +93,7 @@ Es mag anfangs etwas gewöhnungsbedürftig sein und auch wer länger mit **Prett
 
 ### IDE-/Editor-Plugins
 
-Alle bekannten Editoren und IDEs wie bspw. Webstorm, Atom, Visual Studio Code oder Sublime \(aber auch so ziemlich jeder andere moderne Editor oder IDE\) bietet Plugins oder inzwischen sogar bereits nativ integrierte Funktionen für die bessere Unterstützung von **React** und **JSX**. Hier rate ich dringend zur Installation dieser Plugins, da diese in der Regel für deutlich besseres Syntax-Highlighting sorgen und teilweise Code-Vervollständigung sowie andere Nettigkeiten bieten. 
+Alle bekannten Editoren und IDEs wie bspw. Webstorm, Atom, Visual Studio Code oder Sublime \(aber auch so ziemlich jeder andere moderne Editor oder IDE\) bietet Plugins oder inzwischen sogar bereits nativ integrierte Funktionen für die bessere Unterstützung von **React** und **JSX**. Hier rate ich dringend zur Installation dieser Plugins, da diese in der Regel für deutlich besseres Syntax-Highlighting sorgen und teilweise Code-Vervollständigung sowie andere Nettigkeiten bieten.
 
 In **Atom** ist das etwa [language-babel](https://atom.io/packages/language-babel), in **VS Code** gibt es hier u.a. [Babel ES6/ES7](https://marketplace.visualstudio.com/items?itemName=dzannotti.vscode-babel-coloring) und in **Sublime** lohnt sich in Blick auf [babel-sublime](https://github.com/babel/babel-sublime). Nutzt ihr **Webstorm**, habt ihr seit Version 10 native Unterstützung für React Syntax-Highlighting. Auch Plugins für die eben erwähnten **ESLint** oder **Prettier** sind überaus sinnvoll. Dazu am Besten im Plugin-Manager eurer IDE oder eures Editors einfach nach ESLint oder Prettier suchen und das Plugin mit den meisten Installationen auswählen. Dies ist für gewöhnlich jeweils das offizielle ESLint- oder Prettier-Plugin.
 

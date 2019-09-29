@@ -1155,6 +1155,110 @@ const store = createStore(rootReducer, __REDUX_DEVTOOLS_EXTENSIONS__());
 
 Dabei muss sichergestellt sein, dass im verwendeten Browser die Redux Devtools installiert sind.
 
+### Redux mit React Hooks
+
+In React-Redux v7.1.0 haben endlich auch Hooks ihren Weg in die offiziellen React Bindings für Redux gefunden. Hooks vereinfachen die Verwendung von Redux in React enorm. Während bei der Erstellung des Stores alles beim Alten bleibt, kann durch die Verwendung von Hooks gänzlich auf die `connect()` HOC verzichtet werden. Jeglicher Zugriff, egal ob lesend, oder schreibend durch das Auslösen von Actions, kann von innerhalb einer Komponente und durch die Verwendung der entsprechenden Hooks realisiert werden.
+
+Im Wesentlichen geht es hier um die beiden Hooks `useSelector` und `useDispatch`, die man **grob** mit `mapStateToProps` und `mapDispatchToProps` vergleichen kann. Der `useSelector` Hook wird zum _Lesen_ von Daten aus dem Store verwendet, `useDispatch` wird verwendet, um Actions zu _dispatchen_, um somit in den Store _schreiben_ zu können. Es gibt noch einen dritten offiziellen Hook `useStore`, dessen Verwendung ist in der Praxis aber eher selten bis unüblich und dient lediglich als letzter Ausweg, sollte wirklich der Zugriff auf das Store-Objekt notwendig werden.
+
+Importiert werden die Hooks als benannte Imports aus dem react-redux Paket:
+
+```javascript
+import { useSelector, useDispatch, useStore } from 'react-redux';
+```
+
+Zu beachten ist hier, dass die Redux Hooks, wie alle Hooks, lediglich in Function Components verwendet werden können, nicht jedoch in Class Components. Für Class Components steht auch weiterhin die `connect()` HOC bereit.
+
+#### useSelector\(selectorFn, equalityFn\)
+
+Der `useSelector` Hook dient zum Auslesen von Werten aus dem Store und erwartet eine sog. Selector-Funktion als ersten Parameter. Diese Funktion bekommt den kompletten Store übergeben und liefert dann einen einfachen oder berechneten Wert oder auch einen ganzen Baum von Daten als Rückgabewert:
+
+```jsx
+import React from 'react';
+import { useSelector } from 'react-redux';
+
+const TodoList = () => {
+  const openTodos = useSelector(
+    (state) => state.todos.filter((todo) => todo.completed !== true)
+  );
+  const completedTodos = useSelector(
+    (state) => state.todos.filter((todo) => todo.completed === true)
+  );
+  const allTodos = useSelector((state) => state.todos);
+
+  return (
+    <div>
+      <p>
+        {allTodos.length} Todos. Davon {completedTodos.length} abgeschlossen 
+        und {openTodos.length} noch offen.
+      </p>
+    </div>
+  );
+}
+```
+
+Die Selector-Funktionen können dabei zur besseren Übersicht und gleichzeitig zur besseren Wiederverwendbarkeit auch ausgelagert werden und müssen nicht Teil der Komponente sein:
+
+```jsx
+import { useSelector } from 'react-redux';
+
+const selectOpenTodos = (state) => state.todos.filter(
+  (todo) => todo.completed !== true
+);
+
+const selectCompletedTodos = (state) => state.todos.filter(
+  (todo) => todo.completed === true
+);
+
+const selectAllTodos = (state) => state.todos;
+
+const TodoList = () => {
+  const openTodos = useSelector(selectOpenTodos);
+  const completedTodos = useSelector(selectCompletedTodos);
+  const allTodos = useSelector(selectAllTodos);
+
+  return (
+    <div>
+      <p>
+        {allTodos.length} Todos. Davon {completedTodos.length} abgeschlossen 
+        und {openTodos.length} noch offen.
+      </p>
+    </div>
+  );
+}
+```
+
+Wann immer eine Komponente gerendert wird, wird auch die Selector-Funktion aufgerufen. Diese kann einen zwischengespeicherten Wert zurückgeben, wenn die Selector-Funktion bereits einmal aufgerufen wurde und der Wert sich seitdem nicht geändert hat. Redux nutzt hierzu einen _Strict Reference Equality_ Check, vergleicht also mittels `===`, ob der Wert des aktuellen Render-Durchlaufs die selbe Referenz hat wie die, des vorherigen Durchlaufs.
+
+Wird eine Action _dispatched_, löst `useSelector` immer dann ein Rerendering der Komponente aus, wenn der Wert nicht strikt identisch ist. Dies kann zu vermehrten Rerenderings führen, verglichen mit der `connect()`-Methode. So wird die Selector-Funktion auch aufgerufen wenn eine Komponente neu gerendert wird, ohne dass sich jedoch ihre Props geändert haben. Wer hier auf Performance-Probleme stößt und diese in der Verwendung des `useSelector` Hooks begründet vermutet hat einige Möglichkeiten. 
+
+* Die Komponente selbst kann in ein `React.memo` eingeschlossen werden. Unnötige Rerenderings in denen sich die Props der Komponente gar nicht geändert haben, werden so verhindert.
+* Der `useSelector`-Hook kann auf einen shallowEqual Vergleich umgestellt werden, bei dem nicht strikt per `===` auf referentielle Gleichheit geprüft wird sondern nur auf oberflächliche Gleichheit \(Vergleich mittels `==`\). Dazu kann `shallowEqual` aus `react-redux` importiert und an den Hook übergeben werden: `useSelector(selectorFn, shallowEqual)`.
+* Auch die Verwendung von [Reselect](https://github.com/reduxjs/reselect) kann hier sinnvoll sein, da Reselect strikt gleiche Werte zurückgibt, solange sich im State nichts geändert hat.
+
+#### useDispatch\(\)
+
+Der `useDispatch`-Hook gibt eine Referenz zur `dispatch`-Funktion des Stores zurück. Diese ganz anschließend verwendet werden um Actions zu _dispatchen_, ähnlich wie das in der `connect()`-HOC mit `mapDispatchToProps` realisiert wird.
+
+```javascript
+import React from 'react';
+import { useDispatch } from 'react-redux';
+
+const addTodoAction = (text) => ({
+    type: "ADD_TODO",
+    payload: { text },
+});
+
+const TodoApp = () => {
+  const dispatch = useDispatch();
+  const addTodo = () => dispatch(addTodoAction('Ein neues Todo-Element'));
+  
+  return <button onClick={addTodo}>Todo hinzufügen</button>
+};
+```
+
+Die Action wird also ausgelöst durch den Aufruf der `dispatch`-Funktion. Jedoch muss diese nicht, wie bei der `connect()`-HOC, erst umständlich über `mapDispatchToProps` in die Komponente herein gegeben werden.
+
 ### Fazit
 
 Ich muss gestehen, dass ich die Komplexität dieses Kapitels bei weitem unterschätzt habe. **Redux** gehört für mich in vielen Projekten seit Jahren zum Alltagsgeschäft und so fühlt sich die Verwendung von **Redux** mittlerweile ein Stück weit sehr _natürlich_ an, also wie etwas, über dass ich nicht viel nachdenken muss. Grundsätzlich würde ich **Redux** als Tool beschreiben, dass es schafft, sehr komplexes State Management sehr einfach, nachvollziehbar und eben _vorhersehbar_ zu machen.
