@@ -2,11 +2,11 @@
 
 Eine Funktionalität, die in nahezu allen **Single Page Applikationen** \(SPA\) früher oder später \(meist früher als später\) benötigt wird, ist das **Routing**. Also das Zuordnen einer URL in der Anwendung zu einer bestimmten Funktion. Rufe ich bspw. die URL `/users/manuel` auf, möchte ich dort sehr wahrscheinlich das Benutzerprofil des Users `manuel` anzeigen.
 
-Hier hat sich der **React Router** in den vergangenen Jahren als de facto Standard etabliert. Entwickelt von Michael Jackson \(ja, der Kerl heißt wirklich so!\) und Ryan Florence \(der laut eigener Aussage inzwischen über 10 verschiedene Router für diverse Zwecke entwickelt hat\) bringt er es auf mittlerweile über 35.000 Stars bei GitHub. Er wird regelmäßig gepflegt, hat eine Community bestehend aus über 500 Contributors auf GitHub und passt sich durch seine deklarative Natur wunderbar die React-Prinzipien an. Darüber hinaus ist er kompatibel sowohl mit dem Web \(client- und serverseitig!\) wie auch React Native. Er ist also sehr universell einsetzbar, sehr gut getestet und durch seine weite Verbreitung auch bewährt.
+Hier hat sich der **React Router** in den vergangenen Jahren als de facto Standard etabliert. Entwickelt von Michael Jackson \(ja, der Kerl heißt wirklich so!\) und Ryan Florence \(der laut eigener Aussage inzwischen über 10 verschiedene Router für diverse Zwecke entwickelt hat\) bringt er es auf mittlerweile über 35.000 Stars bei GitHub. Das Paket wird regelmäßig gepflegt, hat eine Community bestehend aus über 500 Contributors auf GitHub und passt sich durch seine deklarative Natur wunderbar an die React-Prinzipien an. Darüber hinaus ist er kompatibel sowohl mit dem Web \(client- und serverseitig!\) wie auch React Native. Er ist also sehr universell einsetzbar, sehr gut getestet und durch seine weite Verbreitung auch bewährt.
 
-Dabei ist sein Interface selbst ziemlich simpel. In ca. 95% der Zeit wird man mit lediglich fünf Komponenten in Berührung kommen: `BrowserRouter`, `Link`, `Route`, `Redirect` und `Switch`. Darüber hinaus gibt es noch die imperative History API die auf dem gleichnamigen `history` Package basiert und die HOC `withRouter`, um für das Routing relevante Daten aus dem Router in eine Komponente herein zu reichen. 
+Dabei ist sein Interface selbst ziemlich simpel. In ca. 95% der Zeit wird man mit lediglich fünf Komponenten in Berührung kommen: `BrowserRouter`, `Link`, `Route`, `Redirect` und `Switch`. Darüber hinaus gibt es noch die imperative History API, die durch das `history`-Package, einem dünnen Layer über der nativen Browserimplementierung, wodurch diese cross-browser fähig gemacht wird, sowie die Higher Order Component `withRouter`, um für das Routing relevante Daten aus dem Router in eine Komponente hinein zu reichen. 
 
-Installiert wird er via:
+Installiert wird der **React Router** via:
 
 ```bash
 npm install --save react-router-dom
@@ -428,4 +428,112 @@ withRouter(connect()(MyComponent));
 ```
 
 Dies wurde mit der Verwendung der neuen **Context API** aus **React 16.3.0** im **React Router** ab Version **5.0.0** behoben und ist daher in erster Linie für Projekte relevant, in denen noch ältere Versionen zum Einsatz kommen.
+
+### React Router und Hooks
+
+Seit React-Router **v5.1.0** bringt auch die beliebte Routing-Bibliothek eine Reihe eigener Hooks mit. Dadurch ist es nun erstmals möglich, Router bezogene Informationen in **Function Components** ohne die `withRouter()`-HOC zu verwenden, wenn diese nicht direkt als Komponente eines `<Route />`-Elements verwendet werden \(also etwa `<Route component={MyComponent} />`\).
+
+Wie für die meisten Hooks üblich, ist die Verwendung der React Router Hooks ziemlich schnörkellos und gradlinig. Es existieren vier Hooks die den Zugriff auf das `location`-Objekt, die `history`-Instanz, die Route-Parameter oder das `match`-Objekt erlauben. Die Hooks heißen entsprechend `useLocation`, `useHistory`, `useParams` und `useRouteMatch`. Voraussetzung für die Verwendung der Hooks ist, dass sich die Komponente in der der Hook verwendet werden soll innerhalb eines `<Router>` Baumes befindet. Das muss aber nicht auf oberster Ebene und direkt unterhalb des `Router`-Elements sein. Die Hooks greifen jeweils auf den Router-Context zu und können sich so an beliebiger Stelle in einer Anwendung befinden.
+
+#### useLocation\(\)
+
+Schauen wir uns einmal den vermutlich simpelsten Hook an: `useLocation`. Diesen importieren wir zuerst als benannten Import aus dem `react-router-dom`-Paket. Anschließend können wir auf die Location-Daten zugreifen indem wir den Rückgabewert des Hooks verwenden:
+
+```jsx
+import React from 'react';
+import { useLocation } from 'react-router-dom';
+
+const ShowLocationInfo = () => {
+  const location = useLocation();
+  return <pre>{JSON.stringify(location, null, 2)}</pre>;
+}
+```
+
+In diesem Fall würde die `ShowLocationInfo`-Komponente bei ihrer Verwendung etwa eine Ausgabe wie die folgende verursachen:
+
+```javascript
+{
+  "pathname": "/",
+  "search": "",
+  "hash": ""
+}
+```
+
+#### useHistory\(\)
+
+Der `useHistory()`-Hook erlaubt uns den Zugriff auf die verwendete `history`-Instanz des React Routers. Dieses bietet uns die Möglichkeit, die URL über die bereits beschriebenen `push()` und `replace()` Methoden zu verändern \(und dabei ein Rerendering der Anwendung auszulösen\) oder über `go()`, `goBack()`, `goForward()` durch die Browser-History zu navigieren.
+
+```jsx
+import React from 'react';
+import { useHistory } from 'react-router-dom';
+
+const NavigateHomeButton = () => {
+  const history = useHistory();
+  
+  const goHome = () => {
+    history.push('/');
+  };
+  
+  return <button onClick={goHome}Take me home</button>;
+}
+```
+
+Hier implementieren wir einen simplen Button, der uns zur Startseite führt, sobald er gedrückt wird.
+
+**useParams**
+
+Dieser Hook ist ein Shortcut um auf die Parameter zuzugreifen, die sich bisher unter `match.params` etwas versteckt haben. Definiere ich eine Route mit Platzhaltern, also etwa `/users/:userid` und rufe dann eine URL auf wie `/users/123` enthalt das params-Objekt ein key/value Paar in der Form `{ "userid": "123" }`. 
+
+Der useParams-Hook erlaubt es uns nun, direkt auf dieses Objekt zuzugreifen:
+
+```jsx
+import React from 'react';
+import { useParams, useLocation } from 'react-router-dom';
+
+const ShowParams = () => {
+  const params = useParams();
+  const location = useLocation();
+  return <pre>{JSON.stringify({ location, params }, null, 2)}</pre>;
+};
+```
+
+Diese Komponente würde beim einer entsprechend angelegten Route \(`/users/:userid`\) und dem Aufruf etwa von `/users/123` folgende Ausgabe erzeugen:
+
+```javascript
+{
+  "location": {
+    "pathname": "/users/123",
+    "search": "",
+    "hash": ""
+  },
+  "params": {
+    "userid": "123"
+  }
+}
+```
+
+#### useRouteMatch\(\)
+
+Der letzte Hook, `useRouteMatch()`, gibt dem Entwickler Zugriff auf das komplette `match`-Objekt zu einer Route, bestehend aus den `params`, der `url`, dem `path` und `isExact`, also der Information, ob die komplette URL mit dem `path` der Route übereinstimmt. 
+
+Der Funktion kann ein Pfad übergeben werden, dann gibt sie das `match`-Objekt zu dieser Route zurück. Wird kein Pfad übergeben wird der Pfad der aktuellen Route verwendet. Bleiben wir beim obigen Beispiel mit einem Pfad `/users/:userid` , ergibt die Route `<Route path="/users/:userid">` beim Aufruf der URL `/users/123` und dem Aufruf des Hooks ohne Parameter etwa folgendes Match-Objekt:
+
+```javascript
+{
+  "path": "/users/:userid",
+  "url": "/users/123",
+  "isExact": true,
+  "params": {
+    "userid": "123"
+  }
+}
+```
+
+Wird der Hook mit einem Pfad aufgerufen, zu dem die aktuelle Route nicht passt, wird `null` aus der Funktion zurückgegeben:
+
+```jsx
+useRouteMatch('/orders/:orderid')
+```
+
+Der obige Funktionsaufruf würde beim Aufruf der URL `/users/:userid` also `null` zurückgeben.
 
