@@ -324,7 +324,7 @@ const userWithId2 = users.find((user) => user.id === 2);
 // { id: 2, name: 'Bianca'}
 ```
 
-Die `Array.findIndex()`-Methode folgt der gleichen Signatur, liefert aber anders als die `Array.find()`-Methode nicht das gefundene Element selbst zurück, sondern nur dessen Index im Array. In den obigen Beispielen wären dies also `3` sowie `1`.
+Die `Array.findIndex()`-Methode folgt der gleichen Signatur, liefert aber anders als die `Array.find()`-Methode nicht das gefundene Element selbst zurück, sondern nur dessen Index im Array. In den obigen Beispielen wären dies also `4` sowie `1`.
 
 Die in ES2016 neu dazu gekommene Methode `Array.includes()` prüft, ob ein Wert innerhalb eines Array existiert und gibt uns **endlich** einen Boolean zurück. Wer selbiges in der Vergangenheit mal mit `Array.indexOf()` realisiert hat, wird sich erinnern wie umständlich es war. Nun also ein simples `Array.includes()`:
 
