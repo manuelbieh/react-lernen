@@ -844,7 +844,7 @@ const UserPersona = (props) => {
 };
 ```
 
-Damit wirkt unsere Komponente schon deutlich aufgeräumter uns lesbarer. Doch es geht noch einfacher. Wie auch bei Arrays ist es auch möglich Objekte direkt bei der Übergabe als Funktionsargument zu destrukturieren. Statt des `props` Arguments nutzen wir dafür das **Destructuring Assignment** direkt:
+Damit wirkt unsere Komponente schon deutlich aufgeräumter und lesbarer. Doch es geht noch einfacher. Wie auch bei Arrays ist es möglich, Objekte direkt bei der Übergabe als Funktionsargument zu destrukturieren. Statt des `props`-Arguments nutzen wir dafür das **Destructuring Assignment** direkt:
 
 ```javascript
 const UserPersona = ({ firstName, lastName, image, job }) => (
