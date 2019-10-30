@@ -1379,4 +1379,3 @@ ES2015 und die nachfolgenden Versionen bieten eine Menge nützliche neue Funktio
 * **Template Strings**, um die Arbeit mit JavaScript-Ausdrücken in Strings einfacher zu machen
 * **Promises** und **Asynchrone Funktionen** mittels `async`/`await` um die Arbeit mit asynchronen Daten deutlich zu vereinfachen
 * **Import** und **Export** für die Kapselung von wiederverwendbarem JavaScript auf Module-Ebene
-
