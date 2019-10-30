@@ -28,7 +28,7 @@ Stellen wir uns einmal vor du hast ein `div` mit der ID `root`in deinem HTML-Dok
 </html>
 ```
 
- Der entsprechende Aufruf ist dann der folgende:
+Der entsprechende Aufruf ist dann der folgende:
 
 ```jsx
 const myFirstElement = <div>Mein erstes React Element</div>;
@@ -78,7 +78,7 @@ setInterval(changeTime, 1000);
 Der Vorteil beim **deklarativen** Vorgehen ist, dass wir nur noch **Zustände beschreiben** und sagen, wie etwas angezeigt werden soll und nicht selber jeden Schritt festlegen, wie wir diesen Zielzustand erreichen wollen. Das macht insbesondere bei komplexeren Anwendungen viele Dinge einfacher, übersichtlicher und ist dadurch zugleich deutlich weniger fehleranfälliger.
 
 {% hint style="info" %}
-In der Praxis ist es eher üblich, dass `ReactDOM.render()` nur ein einziges Mal, meist beim Öffnen einer Seite aufgerufen wird. Der wiederholte Aufruf der `render()`-Methode dient hier nur zur Veranschaulichung wie **ReactDOM** und **React-Elemente** zusammenspielen. 
+In der Praxis ist es eher üblich, dass `ReactDOM.render()` nur ein einziges Mal, meist beim Öffnen einer Seite aufgerufen wird. Der wiederholte Aufruf der `render()`-Methode dient hier nur zur Veranschaulichung wie **ReactDOM** und **React-Elemente** zusammenspielen.
 
 Das Rerendering lösen dann meist **Komponenten** aus, indem sich ihr State ändert oder ihnen von außen neue Props hereingereicht werden. Mit Komponenten geht es im nächsten Kapitel weiter!
 {% endhint %}

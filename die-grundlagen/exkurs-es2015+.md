@@ -311,7 +311,7 @@ Array.includes(value);
 Die `Array.find()`-Methode dient, wie der Name es erahnen lässt, dazu, das **erste** Element eines Arrays zu finden, das bestimmte Kriterien erfüllt, die mittels der als ersten Parameter übergebenen Funktion geprüft werden.
 
 ```javascript
-const numbers = [1,2,5,9,13,24,27,39,50];
+const numbers = [1, 2, 5, 9, 13, 24, 27, 39, 50];
 const biggerThan10 = numbers.find((number) => number > 10); // 13
 
 const users = [
@@ -324,7 +324,7 @@ const userWithId2 = users.find((user) => user.id === 2);
 // { id: 2, name: 'Bianca'}
 ```
 
-Die `Array.findIndex()`-Methode folgt der gleichen Signatur, liefert aber anders als die `Array.find()`-Methode nicht das gefundene Element selbst zurück, sondern nur dessen Index im Array. In den obigen Beispielen wären dies also `4` sowie `1`.
+Die `Array.findIndex()`-Methode folgt der gleichen Signatur, liefert aber anders als die `Array.find()`-Methode nicht das gefundene Element selbst zurück, sondern nur dessen Index im Array. In den obigen Beispielen wären dies also `4` im ersten Beispiel, sowie `1` im zweiten.
 
 Die in ES2016 neu dazu gekommene Methode `Array.includes()` prüft, ob ein Wert innerhalb eines Array existiert und gibt uns **endlich** einen Boolean zurück. Wer selbiges in der Vergangenheit mal mit `Array.indexOf()` realisiert hat, wird sich erinnern wie umständlich es war. Nun also ein simples `Array.includes()`:
 
@@ -1089,7 +1089,7 @@ All die Werte, die dabei nicht explizit in eine Variable geschrieben wurden wäh
 
 ## Template Strings
 
-**Template Strings** in ES2015 sind eine „dritte Schreibweise“ für Strings in JavaScript. Bisher konnten Strings entweder in einfache Anführungszeichen \(`'Beispiel'`\) oder in doppelte Anführungszeichen \(`"Beispiel"`\) gesetzt werden. Nun kommt auch die Möglichkeit hinzu, diese in Backticks \(`` `Beispiel` ``\) zu setzen.
+**Template Strings** in ES2015 sind eine „dritte Schreibweise“ für Strings in JavaScript. Bisher konnten Strings entweder in einfache Anführungszeichen \(`'Beispiel'`\) oder in doppelte Anführungszeichen \(`"Beispiel"`\) gesetzt werden. Nun kommt auch die Möglichkeit hinzu, diese in Backticks \(```Beispiel``` \) zu setzen.
 
 **Template Strings** können in zwei Varianten auftreten. Als gewöhnliche **Template Strings**, die JavaScript Ausdrücke enthalten können, sowie in erweiterter Form als sog. **Tagged Template Strings**.
 
@@ -1379,3 +1379,4 @@ ES2015 und die nachfolgenden Versionen bieten eine Menge nützliche neue Funktio
 * **Template Strings**, um die Arbeit mit JavaScript-Ausdrücken in Strings einfacher zu machen
 * **Promises** und **Asynchrone Funktionen** mittels `async`/`await` um die Arbeit mit asynchronen Daten deutlich zu vereinfachen
 * **Import** und **Export** für die Kapselung von wiederverwendbarem JavaScript auf Module-Ebene
+
