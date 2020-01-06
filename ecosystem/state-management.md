@@ -1245,8 +1245,8 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 
 const addTodoAction = (text) => ({
-    type: "ADD_TODO",
-    payload: { text },
+  type: "ADD_TODO",
+  payload: { text },
 });
 
 const TodoApp = () => {
