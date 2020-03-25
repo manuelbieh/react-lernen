@@ -6,17 +6,17 @@ Zum leichteren Verständnis gleich ein erstes einfaches Beispiel:
 
 ```jsx
 const withFormatting = (WrappedComponent) => {
-    return class extends React.Component {
-        bold = (string) => {
-            return <strong>{string}</strong>
-        }
-        italic = (string) => {
-            return <em>{string}</em>
-        }
-        render() {
-            return <WrappedComponent bold={this.bold} italic={this.italic} />
-        }
+  return class extends React.Component {
+    bold = (string) => {
+      return <strong>{string}</strong>;
+    };
+    italic = (string) => {
+      return <em>{string}</em>;
+    };
+    render() {
+      return <WrappedComponent bold={this.bold} italic={this.italic} />;
     }
+  };
 };
 ```
 
@@ -43,7 +43,7 @@ const withCryptoPrices = (WrappedComponent) => {
   return class extends React.Component {
     state = {
       isLoading: true,
-      items: []
+      items: [],
     };
 
     componentDidMount() {
@@ -63,7 +63,7 @@ const withCryptoPrices = (WrappedComponent) => {
 
         this.setState(() => ({
           isLoading: false,
-          items: this.convertResponseToArray(cryptoTickerResponse)
+          items: this.convertResponseToArray(cryptoTickerResponse),
         }));
       } catch (err) {
         this.setState(() => ({
@@ -103,14 +103,15 @@ const PriceTable = ({ isLoading, items, loadData }) => {
   if (!items || items.length === 0) {
     return (
       <p>
-        Keine Daten vorhanden. <button onClick={loadData}>Erneut versuchen</button>
+        Keine Daten vorhanden.{' '}
+        <button onClick={loadData}>Erneut versuchen</button>
       </p>
     );
   }
 
   return (
     <table>
-      {items.map(item => (
+      {items.map((item) => (
         <tr key={item.id}>
           <td>
             {item.name} ({item.symbol})
@@ -141,10 +142,7 @@ const CryptoPriceTable = withCryptoPrices(PriceTable);
 Rendern wir nun eine Instanz der `CryptoPriceTable`, stößt die **Higher Order Component** beim `componentDidMount()` einen API-Request an und übergibt das Ergebnis dieses Requests an die ihr übergebene `PriceTable`-Komponente. Diese kümmert sich anschließend nur noch um die entsprechende Darstellung.
 
 ```jsx
-ReactDOM.render(
-  <CryptoPriceTable />, 
-  document.getElementById("root")
-);
+ReactDOM.render(<CryptoPriceTable />, document.getElementById('root'));
 ```
 
 Dadurch ergeben sich großartige Möglichkeiten für uns. Erst einmal sind beide Komponenten unabhängig voneinander testbar. Mehr dazu gibt es im entsprechenden Kapitel, wo wir uns nochmal gezielt anschauen, wie einfach man insbesondere Layout-Komponenten mittels Snapshot-Tests testen kann.
@@ -152,7 +150,7 @@ Dadurch ergeben sich großartige Möglichkeiten für uns. Erst einmal sind beide
 Weiter haben wir nun eben die Möglichkeit, auch andere Layout-Komponenten mit der `withCryptoPrices`-HOC zu „verbinden“. Um dieses mächtige Konzept einmal anhand eines Beispiels zu verdeutlichen, geben wir die Preise nun im CSV-Format aus. Unsere HOC bleibt dabei völlig unverändert. Unsere Layout-Komponente könnte wie folgt implementiert werden:
 
 ```jsx
-const PriceCSV = ({ isLoading, items, loadData, separator=";" }) => {
+const PriceCSV = ({ isLoading, items, loadData, separator = ';' }) => {
   if (isLoading) {
     return <p>Preise werden geladen. Bitte warten.</p>;
   }
@@ -160,7 +158,8 @@ const PriceCSV = ({ isLoading, items, loadData, separator=";" }) => {
   if (!items || items.length === 0) {
     return (
       <p>
-        Keine Daten vorhanden. <button onClick={loadData}>Erneut versuchen</button>
+        Keine Daten vorhanden.{' '}
+        <button onClick={loadData}>Erneut versuchen</button>
       </p>
     );
   }
@@ -173,7 +172,7 @@ const PriceCSV = ({ isLoading, items, loadData, separator=";" }) => {
       )}
     </pre>
   );
-}
+};
 ```
 
 Und damit haben wir auch schon unsere CSV-Layout-Komponente implementiert. Wieder schauen wir zuerst ob noch Daten geladen werden; anschließend schauen wir erneut, ob `items` vorhanden sind. Hier könnte man anfangen darüber nachzudenken, auch dies in einer weiteren HOC zu bündeln, denn HOCs lassen sich beliebig ineinander schachteln, sind es doch am Ende lediglich Funktionen, die als Parameter an andere Funktionen weitergegeben werden.
@@ -185,10 +184,7 @@ Anders als bei der `PriceTable` haben wir hier allerdings noch eine weitere \(op
 ```jsx
 const CryptoCSV = withCryptoPrices(PriceCSV);
 
-ReactDOM.render(
-  <CryptoCSV separator="," />, 
-  document.getElementById("root")
-);
+ReactDOM.render(<CryptoCSV separator="," />, document.getElementById('root'));
 ```
 
 Allerdings wird dafür eine Änderung an unserer ursprünglichen `withCryptoPrices`-HOC notwendig. Momentan werden lediglich die fest definierten Props `isLoading`, `items` und `loadData` an die Kind-Komponente \(`WrappedComponent`\) übergeben:
@@ -223,4 +219,3 @@ Entscheidend ist hier Zeile 3: mittels `{...this.props}` ,die Spread-Syntax aus 
 
 Zwar werden **Higher Order Components** noch immer häufig verwendet und gegen ihre Verwendung ist nichts einzuwenden. Allerdings gibt es mittlerweile neuere Konzepte und seit den neuesten Updates vor allem neue Wege um eine ähnliche Funktionalität in vielen Fällen in noch übersichtlicher Form zu erreichen. Zwei davon sind **Functions as a Child** und die neue **Context API**, die in Version 16.3.0 ihren Weg in React gefunden hat. Diese werden in den folgenden Kapiteln beschrieben.
 {% endhint %}
-
