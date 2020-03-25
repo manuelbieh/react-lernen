@@ -51,7 +51,7 @@ import LanguageContext from './LanguageContext';
 
 const DisplaySelectedLanguage = () => (
   <LanguageContext.Consumer>
-    {(value) => (<p>Die ausgewählte Sprache ist {value}</p>)}
+    {(value) => <p>Die ausgewählte Sprache ist {value}</p>}
   </LanguageContext.Consumer>
 );
 
@@ -72,7 +72,7 @@ const App = () => (
   <LanguageContext.Provider value="en">
     <header>Herzlich willkommen</header>
     <div className="content">
-      <div className="sidebar"></div>
+      <div className="sidebar" />
       <div className="mainContent">
         <DisplaySelectedLanguage />
       </div>
@@ -97,21 +97,21 @@ Erweitern wir das Beispiel, können wir uns so eine relativ simple kleine Kompon
 Im folgenden Beispiel legen wir ein Objekt mit Übersetzungen an und geben ein relativ umfangreiches Objekt mit verschiedenen Datentypen \(bestehend aus einem Array, einem String, einer Funktion um die Sprache zu wechseln und einem Objekt mit den eigentlichen Übersetzungen\) in den Context herein:
 
 ```jsx
-import React from "react";
-import ReactDOM from "react-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 const translationStore = {
   de: {
-    greeting: "Guten Tag!",
-    headline: "Heute lernen wir, wie Context funktioniert.",
+    greeting: 'Guten Tag!',
+    headline: 'Heute lernen wir, wie Context funktioniert.',
   },
   en: {
-    greeting: "Good day!",
-    headline: "Today we learn how context works.",
+    greeting: 'Good day!',
+    headline: 'Today we learn how context works.',
   },
 };
 
-const defaultLanguage = "de";
+const defaultLanguage = 'de';
 
 const defaultLanguageContextValue = {
   availableLanguages: Object.keys(translationStore),
@@ -154,7 +154,7 @@ const Greeting = () => (
 
 const Headline = () => (
   <LanguageContext.Consumer>
-      {(contextValue) => contextValue.translations.headline}
+    {(contextValue) => contextValue.translations.headline}
   </LanguageContext.Consumer>
 );
 
@@ -179,20 +179,24 @@ const LanguageSelector = () => {
 const App = () => (
   <Localized>
     <LanguageSelector />
-    <p><Greeting /></p>
-    <p><Headline /></p>
+    <p>
+      <Greeting />
+    </p>
+    <p>
+      <Headline />
+    </p>
   </Localized>
 );
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
 Zuerst definieren wir ein Objekt `defaultLanguageContextValue`, welches den Default-Wert unseres neuen Context-Objekts darstellt. Dieses besteht aus:
 
-* einem Objekt `translationStore`, welches alle vorhandenen Übersetzungen beinhaltet. 
-* einer Standardsprache Deutsch \(`de`\) , die in der `language` Eigenschaft gespeichert wird
-* einem Array \(`availableLanguages`\) mit allen verfügbaren Sprachen aus dem `translationStore`-Objekt, das wir mittels `Object.keys()` dynamisch aus den Eigenschaften auf erster Ebene erzeugen \(in unserem Beispiel also `['de', 'en']`\).
-* einer Platzhalterfunktion \(`changeLanguage()`\), die später in der `Localized`-Komponente durch eine echte Implementierung ersetzt wird. Dies dient dazu, dass wir bei inkorrekter Benutzung des Contexts nicht Gefahr laufen eine Funktion aufzurufen, die noch gar nicht existiert. In diesem Fall würde die Warnung ausgegeben werden _„Funktion changeLanguage\(\) nicht implementiert!“_.
+- einem Objekt `translationStore`, welches alle vorhandenen Übersetzungen beinhaltet.
+- einer Standardsprache Deutsch \(`de`\) , die in der `language` Eigenschaft gespeichert wird
+- einem Array \(`availableLanguages`\) mit allen verfügbaren Sprachen aus dem `translationStore`-Objekt, das wir mittels `Object.keys()` dynamisch aus den Eigenschaften auf erster Ebene erzeugen \(in unserem Beispiel also `['de', 'en']`\).
+- einer Platzhalterfunktion \(`changeLanguage()`\), die später in der `Localized`-Komponente durch eine echte Implementierung ersetzt wird. Dies dient dazu, dass wir bei inkorrekter Benutzung des Contexts nicht Gefahr laufen eine Funktion aufzurufen, die noch gar nicht existiert. In diesem Fall würde die Warnung ausgegeben werden _„Funktion changeLanguage\(\) nicht implementiert!“_.
 
 Die `changeLanguage()`-Funktion kann erst später in der Komponente selbst implementiert werden, da React ansonsten keine Möglichkeit hätte, mit Bordmitteln den State \(also in diesem konkreten Fall die Sprache und die Übersetzungen\) zu ändern, da State für React nur **innerhalb einer Komponente** existiert. So könnten wir zwar die aktuelle Spracheinstellung bspw. in einer globalen Variable speichern, React würde die Komponente dann bei einer Änderung aber nicht neu rendern, da sich weder Props noch State geändert haben, dies aber eine Bedingung ist, um React den Seitenbaum neu rendern zu lassen.
 
@@ -209,7 +213,7 @@ const Translated = ({ translationKey }) => (
   <LanguageContext.Consumer>
     {(contextValue) => contextValue.translations[translationKey]}
   </LanguageContext.Consumer>
-)
+);
 ```
 
 Unsere `App`-Komponente sieht dann entsprechend so aus:
@@ -218,8 +222,12 @@ Unsere `App`-Komponente sieht dann entsprechend so aus:
 const App = () => (
   <Localized>
     <LanguageSelector />
-    <p><Translated translationKey="greeting" /></p>
-    <p><Translated translationKey="headline" /></p>
+    <p>
+      <Translated translationKey="greeting" />
+    </p>
+    <p>
+      <Translated translationKey="headline" />
+    </p>
   </Localized>
 );
 ```
@@ -308,9 +316,11 @@ class App extends React.Component {
   };
 
   render() {
-    <Provider value={{color: this.state.color}}>
-      <MoreComponents />
-    </Provider>
+    return (
+      <Provider value={{ color: this.state.color }}>
+        <MoreComponents />
+      </Provider>
+    );
   }
 }
 ```
@@ -326,12 +336,13 @@ class App extends React.Component {
   };
 
   render() {
-    <Provider value={this.state}>
-      <MoreComponents />
-    </Provider>
+    return (
+      <Provider value={this.state}>
+        <MoreComponents />
+      </Provider>
+    );
   }
 }
 ```
 
 Im zweiten Beispiel übergeben wir lediglich eine _Referenz_ zum `state`-Objekt der Komponente. Da diese auch beim Re-Rendering der Komponente erhalten bleibt, löst dieses Vorgehen kein Re-Rendering aus, solange sich der Inhalt des States der Komponente nicht ändert!
-
