@@ -4,19 +4,19 @@ In diesem Kapitel möchte ich auf alle verfügbaren internen Hooks einmal eingeh
 
 Zu den drei **generellen Hooks** gehören die bereits in den vorherigen Kapiteln vorgestellten Hooks:
 
-* `useState`
-* `useEffect`
-* `useContext`
+- `useState`
+- `useEffect`
+- `useContext`
 
 Die sieben **weiteren Hooks** sind:
 
-* `useReducer` 
-* `useCallback` 
-* `useMemo` 
-* `useRef` 
-* `useImperativeHandle` 
-* `useLayoutEffect` 
-* `useDebugValue`
+- `useReducer`
+- `useCallback`
+- `useMemo`
+- `useRef`
+- `useImperativeHandle`
+- `useLayoutEffect`
+- `useDebugValue`
 
 ## useState
 
@@ -37,8 +37,8 @@ Doch Achtung, es gibt einen entscheidenden Unterschied: anders als bei `this.set
 Um diesen Unterschied zu illustrieren schauen wir uns einmal den direkten Vergleich an:
 
 ```jsx
-import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
+import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 
 class StateClass extends React.Component {
   state = { a: 1, b: 2 };
@@ -79,7 +79,7 @@ const App = () => {
   );
 };
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
 Während die `StateClass` die Daten aller Aufrufe von `this.setState()` sammelt und mit dem bestehenden State zusammenführt, überschreibt die `setState()`-Funktion im `StateHook` jeweils den kompletten State und ersetzt den kompletten alten Wert mit dem neuen Wert. Die Ausgabe ist also in der **Klassen-Komponente**: `{a: 1, b: 2, c: 3, d: 4}` und in der **Function Component** mit dem Hook ein einfaches `{d: 4}`, da dieses zuletzt in den State geschrieben wurde.
@@ -143,13 +143,10 @@ Standardmäßig wird der `useEffect()`-Hook bzw. dessen Effekt-Funktion nach jed
 Dies führt aber mitunter zu sehr vielen unnötigen Aufrufen der Funktion und auch dazu, dass die Funktion unter gewissen Umständen auch ausgeführt wird, wenn sich gar keine Daten seit dem letzten Rendering geändert haben, die für den Seiteneffekt relevant sind. Zu diesem Zweck bietet uns React die Möglichkeit, ein **Dependency Array** als zweiten Parameter zu definieren. Dort können und sollen wir alle Werte eintragen, die eine erneute Ausführung der Effekt-Funktion herbeiführen sollen. Nur wenn sich mind. ein Wert im **Dependency Array** geändert hat, wird die Funktion erneut ausgeführt. Um am Beispiel unseres Benutzerprofils zu bleiben, wäre das hier etwa der Benutzername oder die ID, über die wir die Benutzerdaten von der API abrufen.
 
 ```javascript
-useEffect(
-  () => {
-    const user = api.getUser(props.username);
-    setUser(user);
-  }, 
-  [props.username]
-);
+useEffect(() => {
+  const user = api.getUser(props.username);
+  setUser(user);
+}, [props.username]);
 ```
 
 Beim Erstellen eines solchen **Dependency Arrays** sollte man genau darauf achten, dass sämtliche Werte, die innerhalb der Funktion verwendet werden und die sich im Laufe der Lebenszeit der Komponente ändern können, auch dort aufgelistet sind. Soll die Effekt-Funktion nur einmalig ausgeführt werden, also einen ähnlichen Zweck erfüllen wie `componentDidMount()` in Klassen-Komponenten, wird ein leeres Array \(d.h. `[]`\) übergeben.
@@ -188,22 +185,24 @@ useEffect(async () => {
   const accountData = await response.json();
   setGitHubAccount(accountData);
 
-  fetchGitHubAccount("manuelbieh");
+  fetchGitHubAccount('manuelbieh');
 }, []);
 ```
 
 Dies ist **nicht erlaubt**, da die Effekt-Funktion mit dem `async` Schlüsselwort als _asynchron_ deklariert wird. Wie also lösen wir das Problem? Nun, die Lösung ist in diesem Fall relativ simpel: Wir verschieben den asynchronen Teil der Funktion in eine eigene, asynchrone Funktion **innerhalb der Effekt-Funktion** und rufen diese Funktion dann lediglich auf:
 
 ```jsx
-import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
+import React, { useEffect, useState } from 'react';
+import ReactDOM from 'react-dom';
 
 const App = (props) => {
   const [gitHubAccount, setGitHubAccount] = useState();
 
   useEffect(() => {
     const fetchGitHubAccount = async () => {
-      const response = await fetch(`https://api.github.com/users/${props.username}`);
+      const response = await fetch(
+        `https://api.github.com/users/${props.username}`
+      );
       const accountData = await response.json();
       setGitHubAccount(accountData);
     };
@@ -222,10 +221,7 @@ const App = (props) => {
   );
 };
 
-ReactDOM.render(
-  <App username="manuelbieh" />, 
-  document.getElementById("root")
-);
+ReactDOM.render(<App username="manuelbieh" />, document.getElementById('root'));
 ```
 
 In diesem Fall ist nicht mehr die Effekt-Funktion selbst asynchron, sondern die asynchrone Funktionalität wird in die asynchrone Funktion `fetchGitHubAccount()` ausgelagert, die wir **innerhalb** des `useEffect()`-Hooks definieren.
@@ -244,10 +240,12 @@ Der `useContext()`-Hook verhält sich dabei wie eine Context-Consumer-Komponente
 
 Die Verwendung des Hooks ist optional und so ist es auch weiterhin möglich, Context-Consumer im **JSX** der **Function Component** zu verwenden. Allerdings ist der Hook die deutlich übersichtlichere Variante, da dieser keine neue Hierarchie-Ebene im Komponentenbaum erzeugt.
 
+<div class="force-break-before"></div>
+
 ## useReducer
 
 ```javascript
-const [state, dispatch] = useReducer(reducerFunc, initialState, initFunc)
+const [state, dispatch] = useReducer(reducerFunc, initialState, initFunc);
 ```
 
 Der `useReducer()`-Hook ist eine Alternative zu `useState()`, die es erlaubt auch komplexere States zu managen. Der Hook ist angelehnt an die Flux-Architektur, bei der, kurz gesagt, eine **Reducer-** Funktion einen **neuen State erzeugt**, indem sie den **letzten State** und eine sog. **Action** übergeben bekommt.
@@ -257,8 +255,8 @@ Die **Reducer**-Funktion wird durch den Aufruf einer **Dispatch**-Funktion aufge
 Schauen wir uns auch hierzu einmal ein simples Beispiel an und entwickeln zu diesem Zweck eine einfache `Counter`-Komponente, mit der wir über zwei Buttons \(`+` und `-`\) einen Wert rauf- und runterzählen können:
 
 ```jsx
-import React, { useReducer } from "react";
-import ReactDOM from "react-dom";
+import React, { useReducer } from 'react';
+import ReactDOM from 'react-dom';
 
 const initialState = {
   count: 0,
@@ -266,9 +264,9 @@ const initialState = {
 
 const reducerFunction = (state, action) => {
   switch (action.type) {
-    case "INCREMENT":
+    case 'INCREMENT':
       return { count: state.count + 1 };
-    case "DECREMENT":
+    case 'DECREMENT':
       return { count: state.count - 1 };
     default:
       throw new Error('Unbekannte Action');
@@ -281,13 +279,13 @@ const Counter = () => {
   return (
     <div>
       <h1>{state.count}</h1>
-      <button onClick={() => dispatch({ type: "INCREMENT" })}>+</button>
-      <button onClick={() => dispatch({ type: "DECREMENT" })}>-</button>
+      <button onClick={() => dispatch({ type: 'INCREMENT' })}>+</button>
+      <button onClick={() => dispatch({ type: 'DECREMENT' })}>-</button>
     </div>
   );
 };
 
-ReactDOM.render(<Counter />, document.getElementById("root"));
+ReactDOM.render(<Counter />, document.getElementById('root'));
 ```
 
 Wir definieren zunächst den initialen State \(`initialState`\) und die Reducer-Funktion \(`reducerFunction`\). Der **initiale State** besteht lediglich aus einem Objekt mit einer `count`-Eigenschaft, die initial `0` ist. Die **Reducer**-Funktion erwartet einen `state` und eine `action`. die von React später über den Aufruf der **Dispatch**-Funktion an den Reducer übergeben werden. Aus diesen beiden Parametern erzeugen wir dann den neuen State. **Wichtig:** Hier müssen wir stets einen neuen State erzeugen statt den bestehenden zu mutieren, da eine Mutation des bestehenden States zu ungewünschten Seiteneffekten und fehlerhafter Darstellung führen kann. Eine **Reducer**-Funktion muss also eine **Pure Function** sein!
@@ -305,17 +303,17 @@ Neben der `reducer`-Funktion und dem `initialState`, die jeweils zwingend angege
 Wird eine solche `init`-Funktion übergeben, wird diese vom Hook beim **ersten** Aufruf aufgerufen und der `initialState` wird ihr als **initiales Argument** übergeben. Dies kann insbesondere dann sinnvoll sein, wenn der **initiale State** auf den **Props** einer Komponente basiert. Diese können dann im zweiten Parameter an die `init`-Funktion weitergereicht werden, die darauf basierend den initialen State des Reducers erzeugen kann:
 
 ```jsx
-import React, { useReducer } from "react";
-import ReactDOM from "react-dom";
+import React, { useReducer } from 'react';
+import ReactDOM from 'react-dom';
 
 const reducerFunction = (state, action) => {
   switch (action.type) {
-    case "INCREMENT":
+    case 'INCREMENT':
       return { count: state.count + 1 };
-    case "DECREMENT":
+    case 'DECREMENT':
       return { count: state.count - 1 };
     default:
-      throw new Error("Unbekannte Action");
+      throw new Error('Unbekannte Action');
   }
 };
 
@@ -325,22 +323,26 @@ const initFunction = (initValue) => {
 
 const Counter = (props) => {
   const [state, dispatch] = useReducer(
-    reducerFunction, props.startValue, initFunction
+    reducerFunction,
+    props.startValue,
+    initFunction
   );
 
   return (
     <div>
       <h1>{state.count}</h1>
-      <button onClick={() => dispatch({ type: "INCREMENT" })}>+</button>
-      <button onClick={() => dispatch({ type: "DECREMENT" })}>-</button>
+      <button onClick={() => dispatch({ type: 'INCREMENT' })}>+</button>
+      <button onClick={() => dispatch({ type: 'DECREMENT' })}>-</button>
     </div>
   );
 };
 
-ReactDOM.render(<Counter startValue={3} />, document.getElementById("root"));
+ReactDOM.render(<Counter startValue={3} />, document.getElementById('root'));
 ```
 
 In diesem Beispiel erweitern wir den `useReducer()`-Hook um den dritten, optionalen Parameter: die **Init-** Funktion. Aus dem `initialState` im ersten Beispiel wird ein Argument für die **Init-**Funktion. Der Wert für dieses Funktions-Argument wird der Komponente hier als `startValue` über die Props übergeben.
+
+<div class="force-break-before"></div>
 
 ### Reducer in der Praxis
 
@@ -350,15 +352,15 @@ Das Prinzip von **Reducern** dürfte einem großen Teil der React-Community wohl
 
 Ein typischer Anwendungsfall für Reducer ist dabei die Status-Verwaltung bei API Requests. Als gewohntes Muster hat sich hier bspw. herauskristallisiert, drei verschiedene Actions je API Request zu definieren:
 
-* eine Action, die die Anwendung davon in Kenntnis setzt, dass Daten geladen werden, wenn der Request gestartet wird,
-* eine Action, die den Lade-Status zurücksetzt und, wenn der Request fehlgeschlagen ist, den State darüber in Kenntnis setzt, dass ein Fehler aufgetreten ist \(und ggf. auch welcher\),
-* eine Action, die die von der API erhaltenen Daten in den State schreibt, wenn der Request erfolgreich war
+- eine Action, die die Anwendung davon in Kenntnis setzt, dass Daten geladen werden, wenn der Request gestartet wird,
+- eine Action, die den Lade-Status zurücksetzt und, wenn der Request fehlgeschlagen ist, den State darüber in Kenntnis setzt, dass ein Fehler aufgetreten ist \(und ggf. auch welcher\),
+- eine Action, die die von der API erhaltenen Daten in den State schreibt, wenn der Request erfolgreich war
 
 Werfen wir hierzu einen Blick auf ein solches Beispiel und laden wieder unsere Account-Daten via GitHub-API:
 
 ```jsx
-import React, { useEffect, useReducer } from "react";
-import ReactDOM from "react-dom";
+import React, { useEffect, useReducer } from 'react';
+import ReactDOM from 'react-dom';
 
 const initialState = {
   data: null,
@@ -369,12 +371,12 @@ const initialState = {
 
 const accountReducer = (state, action) => {
   switch (action.type) {
-    case "REQUEST_START":
+    case 'REQUEST_START':
       return {
         ...state,
         isLoading: true,
       };
-    case "REQUEST_SUCCESS":
+    case 'REQUEST_SUCCESS':
       return {
         ...state,
         data: action.payload,
@@ -382,7 +384,7 @@ const accountReducer = (state, action) => {
         isError: false,
         lastUpdated: action.meta.lastUpdated,
       };
-    case "REQUEST_ERROR":
+    case 'REQUEST_ERROR':
       return {
         ...state,
         isLoading: false,
@@ -398,7 +400,7 @@ const RepoInfo = (props) => {
     const fetchGitHubAccount = async (username) => {
       try {
         dispatch({
-          type: "REQUEST_START",
+          type: 'REQUEST_START',
         });
         const response = await fetch(
           `https://api.github.com/users/${username}`
@@ -406,7 +408,7 @@ const RepoInfo = (props) => {
 
         const accountData = await response.json();
         dispatch({
-          type: "REQUEST_SUCCESS",
+          type: 'REQUEST_SUCCESS',
           payload: accountData,
           meta: {
             lastUpdated: new Date(),
@@ -414,7 +416,7 @@ const RepoInfo = (props) => {
         });
       } catch (err) {
         dispatch({
-          type: "REQUEST_ERROR",
+          type: 'REQUEST_ERROR',
           error: true,
         });
       }
@@ -444,7 +446,7 @@ const RepoInfo = (props) => {
 
 ReactDOM.render(
   <RepoInfo username="manuelbieh" />,
-  document.getElementById("root")
+  document.getElementById('root')
 );
 ```
 
@@ -549,14 +551,12 @@ Der `useCallback()`-Hook erwartet eine Funktion als erstes Argument und einen De
 Was erst einmal kompliziert klingen mag, lässt sich wie so häufig am Besten anhand eines Beispiels erklären:
 
 ```jsx
-import React, { useState, useCallback } from "react";
-import ReactDOM from "react-dom";
+import React, { useState, useCallback } from 'react';
+import ReactDOM from 'react-dom';
 
 const FancyInput = React.memo(({ name, onChange }) => {
-  console.log("Rendering FancyInput");
-  return (
-    <input type="text" name={name} onChange={onChange} />
-  );
+  console.log('Rendering FancyInput');
+  return <input type="text" name={name} onChange={onChange} />;
 });
 
 const Form = () => {
@@ -581,7 +581,7 @@ const Form = () => {
   );
 };
 
-ReactDOM.render(<Form />, document.getElementById("root"));
+ReactDOM.render(<Form />, document.getElementById('root'));
 ```
 
 Hier sehen wir die zwei Komponenten `Form` und `FancyInput`. Die `Form`-Komponente rendert eine `FancyInput`-Komponente und übergibt ihr neben dem `name`-Attribut auch eine `onChange`-Funktion. Diese ändert bei jeder Änderung im Eingabefeld den State der `Form`-Komponente und löst somit ein Rendering aus.
@@ -638,8 +638,8 @@ Während uns `useCallback()` also die **hereingegebene Funktion** in einer _memo
 Werfen wir einmal einen Blick auf eine nicht optimierte Komponente:
 
 ```jsx
-import React, { useState, useMemo } from "react";
-import ReactDOM from "react-dom";
+import React, { useState, useMemo } from 'react';
+import ReactDOM from 'react-dom';
 
 const fibonacci = (num) =>
   num <= 1 ? 1 : fibonacci(num - 1) + fibonacci(num - 2);
@@ -647,7 +647,9 @@ const fibonacci = (num) =>
 const FibonacciNumber = ({ value }) => {
   const result = fibonacci(value);
   return (
-    <p>{value}: {result}</p>
+    <p>
+      {value}: {result}
+    </p>
   );
 };
 
@@ -657,7 +659,7 @@ const App = () => {
   const handleKeyUp = (e) => {
     const { key, target } = e;
     const { value } = target;
-    if (key === "Enter") {
+    if (key === 'Enter') {
       if (value > 40 || value < 1) {
         alert('Invalid value');
         return;
@@ -676,7 +678,7 @@ const App = () => {
   );
 };
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
 Unsere kleine App besteht zunächst aus einem Eingabefeld für Nummern. Wird eine Nummer eingegeben und die **Enter**-Taste betätigt, wird diese Nummer in den `values`-State geschrieben. Dieser ist in diesem Fall ein Array, das all unsere eingegebenen Nummern vorhält. Die Komponente iteriert dann durch alle eingegebenen Nummern und rendert eine `FibonacciNumber`-Komponente, die den Wert \(also die jeweilige Nummer\) übergeben bekommt.
@@ -712,8 +714,8 @@ const ref = useRef(initialValue);
 Der `useRef()`-Hook ist, wie der Name es erahnen lässt, die Hooks-Variante um **Refs** zu erzeugen:
 
 ```jsx
-import React, { useEffect, useRef } from "react";
-import ReactDOM from "react-dom";
+import React, { useEffect, useRef } from 'react';
+import ReactDOM from 'react-dom';
 
 function App() {
   const inputRef = useRef();
@@ -724,7 +726,7 @@ function App() {
   return <input ref={inputRef} />;
 }
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
 Doch dies ist nur die halbe Wahrheit, denn in **Function Components** dienen **Refs** noch einem weiteren Zweck: Mit ihnen ist es möglich eine **veränderbare Referenz** zu erzeugen, die während der gesamten Lebensdauer einer Komponente \(d.h. bis sie unmounted wird\) Bestand hat. Sie erfüllt sozusagen darüber hinaus auch die Aufgaben von Instanzvariablen bei Klassen-Komponenten.
@@ -750,15 +752,13 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 
 const App = () => {
-  const [ mountLayoutComp, setMountLayoutComp ] = useState(false);
+  const [mountLayoutComp, setMountLayoutComp] = useState(false);
 
   useEffect(() => {
     setMountLayoutComp(true);
   }, []);
 
-  return mountLayoutComp 
-    ? <ComponentWithLayoutEffect /> 
-    : null;
+  return mountLayoutComp ? <ComponentWithLayoutEffect /> : null;
 };
 
 ReactDOM.render(<App />, document.getElementById('root'));
@@ -775,7 +775,7 @@ useDebugValue(value);
 Der `useDebugValue()`-Hook dient allein zur Verbesserung der Debugging-Erfahrung für Entwickler und hat keinen direkten Nutzen für den **Benutzer** einer Anwendung. Mit ihm ist es in **eigenen Hooks** möglich, einen Wert innerhalb des **Hooks** mit einem Label zu versehen, wenn dieser mit den **React-Devtools** inspiziert wird:
 
 ```jsx
-import React, { useDebugValue, useEffect } from "react";
+import React, { useDebugValue, useEffect } from 'react';
 
 const usePageTitle = (title) => {
   useDebugValue(title);
@@ -806,8 +806,8 @@ Der Hook bekommt also wie bisher als erstes Argument den **Debug-Wert** übergeb
 Wer einmal an einem zugegebenermaßen sehr abwegigen aber eindeutigen Beispiel selbst erleben möchte, wie sich der Unterschied bemerkbar macht, der nimmt einmal die Fibonacci-Funktion aus dem `useMemo()`-Beispiel, lässt sich diese einmal mit und einmal ohne Formatierungsfunktion als Debug-Wert anzeigen und beobachtet, wie sich die Zeit bis zum Anzeigen der App verändert:
 
 ```jsx
-import React, { useDebugValue, useEffect } from "react";
-import ReactDOM from "react-dom";
+import React, { useDebugValue, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 
 const fibonacci = (num) =>
   num <= 1 ? 1 : fibonacci(num - 1) + fibonacci(num - 2);
@@ -825,7 +825,7 @@ function App() {
   return <p>Debug Value Formatter Beispiel</p>;
 }
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
 Hier erhöht sich die initiale Ladezeit der App deutlich, was sich natürlich auch auf den Benutzer und die User Experience auswirkt.
@@ -833,7 +833,7 @@ Hier erhöht sich die initiale Ladezeit der App deutlich, was sich natürlich au
 ## useImperativeHandle
 
 ```javascript
-useImperativeHandle(ref, createHandle, [deps])
+useImperativeHandle(ref, createHandle, [deps]);
 ```
 
 Um es Vorweg zu nehmen: Dieser Hook hat mir einige graue Haare bereitet, denn es fiel mir wirklich schwer einen Anwendungsfall zu konstruieren, bei dem der Einsatz von `useImperativeHandle()` die Lösung darstellt. Als ich meinem Frust auf Twitter etwas Luft machen wollte, meldete sich dann auch noch Dan Abramov, Core-Entwickler im React-Team bei Facebook und bekräftigte mich darin, dass es ein Zeichen dafür ist, dass ich alles richtig machen würde, da der Hook bestenfalls gar nicht verwendet werden sollte und daher auch absichtlich einen langen Namen hat. Allerdings möchte ich in diesem Buch den Anspruch verfolgen, React eben auch zu verstehen und nicht nur zu wissen, dass es einen solchen Hook möglicherweise gibt.
@@ -845,28 +845,32 @@ Nun habe ich mich tatsächlich lange mit diesem Hook beschäftigt und muss sagen
 Hier daher ein mit Vorsicht zu genießendes Beispiel, die die Verwendung des **Hooks** illustriert. Im Beispiel erstellen wir eine eigene `FancyForm` Formular-Komponente. Diese gibt ihre **Kind-Elemente** aus und stellt einige Methoden bereit, die in der konsumierenden Eltern-Komponente aufgerufen werden können. So implementieren wir hier beispielhaft eine Methode `focusFirstInput`, um das erste Eingabefeld innerhalb unseres `FancyForm`-Formulars fokussieren zu können. Außerdem erweitern wir das Formular um eine eigene Methode `getFormValues`, mit der wir die aktuell eingegebenen Daten als JSON zurückgegeben bekommen. Weiterhin ermöglichen wir, das Formular programmatisch abzusenden und zurückzusetzen, indem wir der weitergeleiteten **ForwardRef** die Methoden `reset()` und `submit()` vom HTML-`<form>`-Element als imperative Methode zuweisen:
 
 ```jsx
-import React, { useImperativeHandle, useEffect, useRef } from "react";
-import ReactDOM from "react-dom";
+import React, { useImperativeHandle, useEffect, useRef } from 'react';
+import ReactDOM from 'react-dom';
 
 const FancyForm = React.forwardRef((props, forwardedRef) => {
   const formRef = useRef();
 
-  useImperativeHandle(forwardedRef, () => ({
-    focusFirstInput: () => {
-      (formRef.current.querySelector("input") || {}).focus();
-    },
-    getFormValues: () => {
-      return Array.from(new FormData(formRef.current)).reduce(
-        (acc, [value, name]) => {
-          acc[name] = value;
-          return acc;
-        },
-        {}
-      );
-    },
-    reset: () => formRef.current.reset(),
-    submit: () => formRef.current.submit(),
-  }), []);
+  useImperativeHandle(
+    forwardedRef,
+    () => ({
+      focusFirstInput: () => {
+        (formRef.current.querySelector('input') || {}).focus();
+      },
+      getFormValues: () => {
+        return Array.from(new FormData(formRef.current)).reduce(
+          (acc, [value, name]) => {
+            acc[name] = value;
+            return acc;
+          },
+          {}
+        );
+      },
+      reset: () => formRef.current.reset(),
+      submit: () => formRef.current.submit(),
+    }),
+    []
+  );
 
   return <form ref={formRef}>{props.children}</form>;
 });
@@ -896,6 +900,5 @@ const App = () => {
   );
 };
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById('root'));
 ```
-

@@ -14,6 +14,8 @@ Auf die meiner Meinung nach wichtigsten und nützlichsten neuen Funktionen und M
 
 **Wenn du bereits Erfahrung mit ES2015 und den nachfolgenden Versionen hast, kannst du dieses Kapitel überspringen!**
 
+<div class="force-break-before"></div>
+
 ## Variablen-Deklarationen mit let und const
 
 Gab es bisher nur `var` um in JavaScript eine Variable zu deklarieren, kommen in ES2015 zwei neue Schlüsselwörter dazu, mit denen Variablen deklariert werden können: `let` und `const`. Eine Variablendeklaration mit `var` wird dadurch in fast allen Fällen überflüssig, meist sind `let` oder `const` die sauberere Wahl. Doch wo ist der Unterschied?
@@ -31,7 +33,7 @@ Doch Vorsicht: anders als bei anderen Sprachen bedeutet `const` nicht, dass der 
 Erst einmal zur Demonstration ein kurzes Beispiel dafür, wie sich die Variablendeklaration von `let` und `const` von denen mit `var` unterscheiden und was es bedeutet, dass erstere nur in dem Scope sichtbar sind, in dem sie definiert wurden:
 
 ```javascript
-for (var i = 0; i < 10; i++) { }
+for (var i = 0; i < 10; i++) {}
 console.log(i);
 ```
 
@@ -44,7 +46,7 @@ console.log(i);
 Nun einmal dasselbe Beispiel mit `let`
 
 ```javascript
-for (let j = 0; j < 10; j++) { }
+for (let j = 0; j < 10; j++) {}
 console.log(j);
 ```
 
@@ -92,7 +94,7 @@ Wir versuchen hier also eine durch `const` deklarierte Variable direkt zu übers
 
 ```javascript
 const myObject = {
-  a: 1
+  a: 1,
 };
 myObject.b = 2;
 console.log(myObject);
@@ -134,6 +136,8 @@ Uncaught TypeError: Assignment to constant variable.
 
 Möchten wir `myArray` also überschreibbar halten, müssen wir stattdessen `let` verwenden oder uns damit begnügen, dass zwar der Inhalt des mittels `const` deklarierten Arrays veränderbar ist, nicht jedoch die Variable selbst.
 
+<div class="force-break-before"></div>
+
 ## Arrow Functions
 
 **Arrow Functions** sind eine weitere **deutliche** Vereinfachung, die uns ES2015 gebracht hat. Bisher funktionierte eine Funktionsdeklaration so: man schrieb das Keyword `function`, optional gefolgt von einem Funktionsnamen, Klammern, in der die Funktionsargumente beschrieben wurden, sowie dem **Function Body**, also dem eigentlichen Inhalt der Funktion:
@@ -145,7 +149,7 @@ function(arg1, arg2) {}
 **Arrow Functions** vereinfachen uns das ungemein, indem sie erst einmal das `function`-Keyword überflüssig machen:
 
 ```javascript
-(arg1, arg2) => {}
+(arg1, arg2) => {};
 ```
 
 Haben wir zudem nur einen Parameter, sind sogar die Klammern bei den Argumenten optional. Aus unserer Funktion
@@ -157,7 +161,7 @@ function(arg) {}
 würde also die folgende **Arrow Function** werden:
 
 ```javascript
-arg => {}
+(arg) => {};
 ```
 
 Jap, das ist eine gültige Funktion in ES2015!
@@ -173,7 +177,7 @@ function double(number) {
 … und als ES2015 **Arrow Function**:
 
 ```javascript
-const double = number => number * 2;
+const double = (number) => number * 2;
 ```
 
 In beiden Fällen liefert uns die eben deklarierte Funktion beim Aufruf von bspw. `double(5)` als Ergebnis `10` zurück!
@@ -188,7 +192,7 @@ function TimeButton() {
   var self = this;
   this.showTime = function() {
     document.getElementById('time').innerHTML = new Date();
-  }
+  };
   button.addEventListener('click', function() {
     self.showTime();
   });
@@ -202,10 +206,13 @@ function TimeButton() {
   var button = document.getElementById('btn');
   this.showTime = function() {
     document.getElementById('time').innerHTML = new Date();
-  }
-  button.addEventListener('click', function() {
-    this.showTime();
-  }.bind(this));
+  };
+  button.addEventListener(
+    'click',
+    function() {
+      this.showTime();
+    }.bind(this)
+  );
 }
 ```
 
@@ -218,7 +225,7 @@ function TimeButton() {
   var button = document.getElementById('btn');
   this.showTime = function() {
     document.getElementById('time').innerHTML = new Date();
-  }
+  };
   button.addEventListener('click', () => {
     this.showTime();
   });
@@ -248,19 +255,19 @@ string.endsWith(value);
 Zurückgegeben wird jeweils ein Boolean, also `true` oder `false.` Möchte ich wissen ob mein String `Beispiel`ein `eis` enthält, prüfe ich ganz einfach auf
 
 ```javascript
-'Beispiel'.includes('eis')
+'Beispiel'.includes('eis');
 ```
 
 Analog verhält es sich mit `startsWith`:
 
 ```javascript
-'Beispiel'.startsWith('Bei')
+'Beispiel'.startsWith('Bei');
 ```
 
 … wie auch mit `endsWith`:
 
 ```javascript
-'Beispiel'.endsWith('spiel')
+'Beispiel'.endsWith('spiel');
 ```
 
 Die Methode arbeitet dabei case-sensitive, unterscheidet also zwischen Groß- und Kleinschreibung.
@@ -270,8 +277,8 @@ Zwei weitere hilfreiche Methoden, die mit ES2015 Einzug in JavaScript erhalten h
 Hilfreich ist das bspw. wenn ihr Zahlen auffüllen wollt, so dass diese immer einheitlich dreistellig sind:
 
 ```javascript
-  '7'.padStart(3, '0'); // 007
- '72'.padStart(3, '0'); // 072
+'7'.padStart(3, '0'); // 007
+'72'.padStart(3, '0'); // 072
 '132'.padStart(3, '0'); // 132
 ```
 
@@ -315,9 +322,9 @@ const numbers = [1, 2, 5, 9, 13, 24, 27, 39, 50];
 const biggerThan10 = numbers.find((number) => number > 10); // 13
 
 const users = [
-  {id: 1, name: 'Manuel'}, 
-  {id: 2, name: 'Bianca'}, 
-  {id: 3, name: 'Brian'}
+  { id: 1, name: 'Manuel' },
+  { id: 2, name: 'Bianca' },
+  { id: 3, name: 'Brian' },
 ];
 
 const userWithId2 = users.find((user) => user.id === 2);
@@ -329,8 +336,8 @@ Die `Array.findIndex()`-Methode folgt der gleichen Signatur, liefert aber anders
 Die in ES2016 neu dazu gekommene Methode `Array.includes()` prüft, ob ein Wert innerhalb eines Array existiert und gibt uns **endlich** einen Boolean zurück. Wer selbiges in der Vergangenheit mal mit `Array.indexOf()` realisiert hat, wird sich erinnern wie umständlich es war. Nun also ein simples `Array.includes()`:
 
 ```javascript
-[1,2,3,4,5].includes(4); // true
-[1,2,3,4,5].includes(6); // false
+[1, 2, 3, 4, 5].includes(4); // true
+[1, 2, 3, 4, 5].includes(6); // false
 ```
 
 Aufgepasst: die Methode ist case-sensitive. `['a', 'b'].includes('A')` gibt also `false` zurück.
@@ -354,11 +361,11 @@ Wieder der Reihe nach. Die wohl nützlichste ist aus meiner Sicht `Object.assign
 ```javascript
 const user = { id: 1, name: 'Manuel' };
 const modifiedUser = Object.assign(user, { role: 'Admin' });
-console.log(user); 
+console.log(user);
 // -> { id: 1, name: 'Manuel', role: 'Admin' }
-console.log(modifiedUser); 
+console.log(modifiedUser);
 // -> { id: 1, name: 'Manuel', role: 'Admin' }
-console.log(user === modifiedUser); 
+console.log(user === modifiedUser);
 // -> true
 ```
 
@@ -369,11 +376,11 @@ Da React dem Prinzip von **Pure Functions** folgt, das sind Funktionen die in si
 ```javascript
 const user = { id: 1, name: 'Manuel' };
 const modifiedUser = Object.assign({}, user, { role: 'Admin' });
-console.log(user); 
+console.log(user);
 // -> { id: 1, name: 'Manuel' }
-console.log(modifiedUser); 
+console.log(modifiedUser);
 // -> { id: 1, name: 'Manuel', role: 'Admin' }
-console.log(user === modifiedUser); 
+console.log(user === modifiedUser);
 // -> false
 ```
 
@@ -389,7 +396,7 @@ const modifiedUser = Object.assign(
   { role: 'Admin' },
   { name: 'Nicht Manuel', job: 'Developer' }
 );
-console.log(modifiedUser); 
+console.log(modifiedUser);
 // -> { id: 1, name: 'Nicht Manuel', role: 'Admin', job: 'Developer' }
 ```
 
@@ -398,11 +405,11 @@ Die drei statischen Objekt-Methoden `Object.entries()`, `Object.keys()` und `Obj
 Angewendet auf unser obiges Beispiel hat dies also folgende Return-Values zum Ergebnis:
 
 ```javascript
-Object.keys({ id: 1, name: 'Manuel'}); 
+Object.keys({ id: 1, name: 'Manuel' });
 // -> ['id', 'name']
-Object.values({ id: 1, name: 'Manuel'}); 
+Object.values({ id: 1, name: 'Manuel' });
 // -> [1, 'Manuel']
-Object.entries({id: 1, name: 'Manuel'}); 
+Object.entries({ id: 1, name: 'Manuel' });
 // -> [['id', 1], ['name', 'Manuel']]
 ```
 
@@ -471,7 +478,9 @@ const job = 'Developer';
 const role = 'Author';
 
 const user = {
-  name, job, role
+  name,
+  job,
+  role,
 };
 ```
 
@@ -484,7 +493,7 @@ const job = 'Developer';
 const user = {
   name,
   job,
-  role: 'Author'
+  role: 'Author',
 };
 ```
 
@@ -612,7 +621,7 @@ Hier eignet sich der Spread Operator hervorragend um neue Objekte zu erstellen:
 ```javascript
 const globalSettings = { language: 'en-US', timezone: 'Berlin/Germany' };
 const userSettings = { mutedUsers: ['Manuel'] };
-const allSettings = {...globalSettings, ...userSettings};
+const allSettings = { ...globalSettings, ...userSettings };
 console.log(allSettings);
 ```
 
@@ -632,7 +641,7 @@ Die Eigenschaften beider Objekte finden sich dabei im neu erstellten, kombiniert
 const settings = {
   ...userSettings,
   showWarnings: true,
-}
+};
 ```
 
 Befinden sich in beiden Objekten Eigenschaften mit dem gleichen Namen, hat das letztgenannte Objekt Vorrang:
@@ -640,7 +649,7 @@ Befinden sich in beiden Objekten Eigenschaften mit dem gleichen Namen, hat das l
 ```javascript
 const globalSettings = { language: 'en-US', timezone: 'Berlin/Germany' };
 const userSettings = { language: 'de-DE' };
-const allSettings = {...globalSettings, ...userSettings};
+const allSettings = { ...globalSettings, ...userSettings };
 console.log(allSettings);
 ```
 
@@ -706,6 +715,8 @@ Bevor ich zum **Rest Operator** komme, der logisch sehr eng mit dem **Spread Ope
 
 Mittels **Destructuring** ist es möglich, einzelne Elemente aus Objekten oder Arrays zu extrahieren und Variablen zuzuweisen. Eine weitere **deutliche** Syntax-Erweiterung, die uns ES2015 hier beschert hat.
 
+<div class="force-break-before"></div>
+
 #### Destructuring von Arrays
 
 Stellen wir uns vor, wir möchten aus einem geordneten Array mit den Olympia-Teilnehmern im 100m-Lauf jeweils den Gewinner der Gold-, Silber- und Bronzemedaille in eine eigene Variable schreiben. Auf herkömmlichem \(also ES5\) Weg funktionierte das bisher folgendermaßen:
@@ -748,8 +759,8 @@ const getAllAthletes = () => {
     'LaShawn Merritt',
     'Alonso Edward',
     'Ramil Guliyev',
-  ] 
-}
+  ];
+};
 
 const [gold, silver, bronze] = getAllAthletes();
 ```
@@ -771,26 +782,16 @@ const logWinners = (athletes) => {
   const gold = athletes[0];
   const silver = athletes[1];
   const bronze = athletes[2];
-  console.log(
-    'Winners of Gold, Silver and Bronze are', 
-    gold, 
-    silver, 
-    bronze
-  );
-}
+  console.log('Winners of Gold, Silver and Bronze are', gold, silver, bronze);
+};
 ```
 
 Das geht einfacher:
 
 ```javascript
 const logWinners = ([gold, silver, bronze]) => {
-  console.log(
-    'Winners of Gold, Silver and Bronze are', 
-    gold, 
-    silver, 
-    bronze
-  );
-}
+  console.log('Winners of Gold, Silver and Bronze are', gold, silver, bronze);
+};
 ```
 
 Hier reichen wir das Array in unsere `logWinners()`-Funktion herein und statt für jeden Medaillengewinner eine Variable pro Zeile zu deklarieren, nutzen wir auch in diesem Fall ganz einfach wieder die Destructuring-Methode von oben.
@@ -822,7 +823,8 @@ const UserPersona = (props) => {
   return (
     <div>
       <img src={props.image} alt="User Image" />
-      {props.firstName} {props.lastName}<br />
+      {props.firstName} {props.lastName}
+      <br />
       <strong>{props.job}</strong>
     </div>
   );
@@ -837,7 +839,8 @@ const UserPersona = (props) => {
   return (
     <div>
       <img src={image} alt="User Image" />
-      {firstName} {lastName}<br />
+      {firstName} {lastName}
+      <br />
       <strong>{job}</strong>
     </div>
   );
@@ -850,7 +853,8 @@ Damit wirkt unsere Komponente schon deutlich aufgeräumter und lesbarer. Doch es
 const UserPersona = ({ firstName, lastName, image, job }) => (
   <div>
     <img src={image} alt="User Image" />
-    {firstName} {lastName}<br />
+    {firstName} {lastName}
+    <br />
     <strong>{job}</strong>
   </div>
 );
@@ -877,7 +881,7 @@ Manchmal ist es notwendig, Eigenschaften umzubenennen; entweder weil es bereits 
 const passenger = {
   name: 'Manuel Bieh',
   class: 'economy',
-}
+};
 ```
 
 Das obige `passenger` Objekt enthält die Eigenschaft class, die als Name für eine Eigenschaft gültig ist, als Name für eine Variable jedoch nicht. Ein direktes Destructuring wäre hier also nicht möglich und würde zu einem Fehler führen:
@@ -977,7 +981,7 @@ Example(1, 2, 3, 4, 5);
 ```javascript
 const Example = () => {
   console.log(arguments);
-}
+};
 Example(1, 2, 3, 4, 5);
 ```
 
@@ -992,7 +996,7 @@ Hier kommt nun erstmals der **Rest Operator** ins Spiel. Dieser schreibt uns sä
 ```javascript
 const Example = (...rest) => {
   console.log(rest);
-}
+};
 Example(1, 2, 3, 4, 5);
 ```
 
@@ -1010,17 +1014,14 @@ const Example = (first, second, third, ...rest) => {
   console.log('second:', second);
   console.log('third:', third);
   console.log('rest:', rest);
-}
+};
 Example(1, 2, 3, 4, 5);
 ```
 
 **Ausgabe:**
 
 {% hint style="info" %}
-`first: 1    
-second: 2    
-third: 3    
-rest: [4, 5]`
+`first: 1 second: 2 third: 3 rest: [4, 5]`
 {% endhint %}
 
 Der **Rest Operator** sammelt hier also die restlichen, verbliebenen Elemente aus einem **Destructuring** ein und speichert diese in einer Variable mit dem Namen, der hinter den drei Punkten angegeben wird. Dieser muss dabei nicht wie im obigen Beispiel `rest` heißen sondern kann jeden gültigen JavaScript-Variablennamen annehmen.
@@ -1048,18 +1049,20 @@ console.log(competitors);
 **Ausgabe:**
 
 {% hint style="info" %}
+
 ```javascript
 'Usain Bolt'
-'Andre De Grasse'    
-'Christophe Lemaitre'`  
-[  
+'Andre De Grasse'
+'Christophe Lemaitre'`
+[
   'Adam Gemili',
   'Churandy Martina',
   'LaShawn Merritt',
   'Alonso Edward',
-  'Ramil Guliyev'  
+  'Ramil Guliyev'
 ]
 ```
+
 {% endhint %}
 
 … wie auch beim **Object Destructuring:**
@@ -1070,12 +1073,14 @@ const user = {
   lastName: 'Bieh',
   job: 'JavaScript Developer',
   hair: 'Brown',
-}
+};
 const { firstName, lastName, ...other } = user;
 console.log(firstName);
 console.log(lastName);
 console.log(other);
 ```
+
+<div class="force-break-before"></div>
 
 **Ausgabe:**
 
@@ -1089,7 +1094,7 @@ All die Werte, die dabei nicht explizit in eine Variable geschrieben wurden wäh
 
 ## Template Strings
 
-**Template Strings** in ES2015 sind eine „dritte Schreibweise“ für Strings in JavaScript. Bisher konnten Strings entweder in einfache Anführungszeichen \(`'Beispiel'`\) oder in doppelte Anführungszeichen \(`"Beispiel"`\) gesetzt werden. Nun kommt auch die Möglichkeit hinzu, diese in Backticks \(```Beispiel``` \) zu setzen.
+**Template Strings** in ES2015 sind eine „dritte Schreibweise“ für Strings in JavaScript. Bisher konnten Strings entweder in einfache Anführungszeichen \(`'Beispiel'`\) oder in doppelte Anführungszeichen \(`"Beispiel"`\) gesetzt werden. Nun kommt auch die Möglichkeit hinzu, diese in Backticks \(`Beispiel` \) zu setzen.
 
 **Template Strings** können in zwei Varianten auftreten. Als gewöhnliche **Template Strings**, die JavaScript Ausdrücke enthalten können, sowie in erweiterter Form als sog. **Tagged Template Strings**.
 
@@ -1141,19 +1146,27 @@ const errorHandler = (err) => {
   console.error('An error occured:', err.message);
 };
 
-getUser(id, (user) => {
-  user.getFriends((friends) => {
-    friends[0].getSettings((settings) => {
-      if (settings.notifications === true) {
-        email.send('You are my first friend!', (status) => {
-          if (status === 200) {
-            alert('User has been notified via email!');
-          }
-        }, errorHandler);
-      }
+getUser(
+  id,
+  (user) => {
+    user.getFriends((friends) => {
+      friends[0].getSettings((settings) => {
+        if (settings.notifications === true) {
+          email.send(
+            'You are my first friend!',
+            (status) => {
+              if (status === 200) {
+                alert('User has been notified via email!');
+              }
+            },
+            errorHandler
+          );
+        }
+      }, errorHandler);
     }, errorHandler);
-  }, errorHandler)
-}, errorHandler)
+  },
+  errorHandler
+);
 ```
 
 Wir rufen über die asynchrone `getUser()`-Funktion einen User zu einer entsprechenden `id` ab. Von diesem User besorgen wir uns mittels der asynchronen `getFriends()`-Methode eine Liste aller seiner Freunde. Vom ersten Freund \(`friends[0]`\) rufen wir mittels der asynchronen `getSettings()`-Methode die Benutzereinstellungen ab. Erlaubt der Benutzer E-Mail-Benachrichtigungen, schicken wir ihm eine E-Mail und reagieren, ebenfalls wieder asynchron, auf den Response des Mailservers.
@@ -1168,19 +1181,19 @@ const errorHandler = (err) => {
 };
 
 getUser(id)
-.then((user) => user.getFriends())
-.then((friends) => friends[0].getSettings())
-.then((settings) => {
-  if (settings.notifications === true) {
-    return email.send('You are my first friend!');
-  }
-})
-.then((status) => {
-  if (status === 200) {
-    alert('User has been notified via email');
-  }
-})
-.catch(errorHandler);
+  .then((user) => user.getFriends())
+  .then((friends) => friends[0].getSettings())
+  .then((settings) => {
+    if (settings.notifications === true) {
+      return email.send('You are my first friend!');
+    }
+  })
+  .then((status) => {
+    if (status === 200) {
+      alert('User has been notified via email');
+    }
+  })
+  .catch(errorHandler);
 ```
 
 Wir reagieren hier nach jedem Schritt mittels `then()` auf das zurückgegebene Promise, erreichen das gleiche Resultat wie vorher bei der Callback-Version, haben aber an der tiefsten Stelle lediglich eine Verschachtelung, die 2 Ebenen tief ist.
@@ -1188,11 +1201,18 @@ Wir reagieren hier nach jedem Schritt mittels `then()` auf das zurückgegebene P
 Dabei ist es relativ simpel, bestehenden, auf Callback basierenden Code in Promises umzuschreiben. Das möchte ich kurz anhand der Geolocation API und konkret deren `getCurrentPosition()`-Methode demonstrieren. Wer es nicht kennt: die Methode existiert auf dem `navigator.geolocation` Objekt, öffnet eine Benachrichtigung im Browser und fragt den Benutzer um Erlaubnis, ihn orten zu dürfen. Sie erwartet zwei Callbacks als Argument: das erste, der Success-Callback, bekommt ein Objekt mit der Position des Benutzers übergeben, falls dieser der Ortung zustimmt. Der zweite, der Error-Callback, bekommt ein Fehler-Objekt übergeben, falls der Benutzer einer Ortung entweder nicht zugestimmt hat oder eine Ortung aus anderen Gründen nicht möglich ist.
 
 ```javascript
-navigator.geolocation.getCurrentPosition((position) => {
-  console.log(`User position is at ${position.coords.latitude}, ${position.coords.longitude}`);
-}, () => {
-  console.log('Unable to locate user');
-});
+navigator.geolocation.getCurrentPosition(
+  (position) => {
+    console.log(
+      `User position is at ${position.coords.latitude}, ${
+        position.coords.longitude
+      }`
+    );
+  },
+  () => {
+    console.log('Unable to locate user');
+  }
+);
 ```
 
 Und so wird der Callback in ein Promise umgewandelt:
@@ -1209,12 +1229,16 @@ Jap. Das war es wirklich schon. Nun können wir statt mittels der Callback-Synta
 
 ```javascript
 getCurrentPositionPromise()
-.then((position) => {
-  console.log(`User position is at ${position.coords.latitude}, ${position.coords.longitude}`);
-})
-.catch(() => {
-  console.log('Unable to locate user');
-});
+  .then((position) => {
+    console.log(
+      `User position is at ${position.coords.latitude}, ${
+        position.coords.longitude
+      }`
+    );
+  })
+  .catch(() => {
+    console.log('Unable to locate user');
+  });
 ```
 
 Einige neuere JavaScript APIs im Browser sind bereits diesem Ansatz folgend implementiert worden. Wer mehr über Promises und deren Funktionsweise erfahren möchte, dem empfehle ich [den entsprechenden Artikel bei den MDN Web Docs](https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Promise) zu lesen. Die Erklärung zu Promises sollte nur einleitend sein, um auf ein deutlich spannenderes neues Feature vorzubereiten, nämlich:
@@ -1236,7 +1260,7 @@ Werfen wir also nochmal einen Blick auf das Beispiel unseres Users, der eine E-M
     if (settings.notifications === true) {
       const status = await email.send('You are my first friend!');
       if (status === 200) {
-          alert('User has been notified via email');
+        alert('User has been notified via email');
       }
     }
   } catch (err) {
@@ -1256,6 +1280,8 @@ Babel ist dann vorangegangen und hat eine Lösung implementiert, die auf dem dam
 Mittlerweile ist man sich nach gerade einmal **10** Jahren bei der Spezifikation einig und die Umsetzung auf Seiten der JavaScript-Engines ist im vollen Gange. Klingt kompliziert, ist es zwischendrin auch mal gewesen, inzwischen gibt es aber Konsens und für uns Entwickler herrscht allmählich Klarheit. Aber dennoch gibt es auch noch immer einige Fallstricke, durch die wir auch in Zukunft auf Webpack, Babel oder TypeScript setzen müssen \(oder eher: sollten\), um komfortabel mit Modulen zu arbeiten. Dazu später mehr.
 
 Soviel zur Historie. Also wie funktionieren jetzt Imports und was sind Module überhaupt?
+
+<div class="force-break-before"></div>
 
 ### Module in JavaScript
 
@@ -1287,9 +1313,9 @@ An anderer Stelle innerhalb unserer Anwendung können wir diese Funktionen nun m
 import { double, square, divideBy5 } from './calc.mjs';
 
 const value = 5;
-console.log(double(value));     // 10
-console.log(square(value));     // 25
-console.log(divideBy5(value));  // 1
+console.log(double(value)); // 10
+console.log(square(value)); // 25
+console.log(divideBy5(value)); // 1
 ```
 
 Ein File kann dabei theoretisch **unbegrenzt viele benannte Exports** haben, sie müssen sich jedoch in ihrem Namen unterscheiden und ein bereits exportierter Name **darf nicht ein weiteres Mal exportiert werden.**
@@ -1305,8 +1331,11 @@ export const divideBy = (number, divisor) => number / divisor;
 export const divideBy5 = (number) => divideBy(number, 5);
 
 export default {
-   double, square, divideBy, divideBy5
-}
+  double,
+  square,
+  divideBy,
+  divideBy5,
+};
 ```
 
 Unsere Anwendung müsste dann stattdessen lediglich das Modul selbst importieren, also dessen **Default Export** und einer Variable zuweisen:
@@ -1314,8 +1343,8 @@ Unsere Anwendung müsste dann stattdessen lediglich das Modul selbst importieren
 ```javascript
 import Calc from './calc.mjs';
 
-console.log(Calc.double(value));    // 10
-console.log(Calc.square(value));    // 25
+console.log(Calc.double(value)); // 10
+console.log(Calc.square(value)); // 25
 console.log(Calc.divideBy5(value)); // 1
 ```
 
@@ -1368,15 +1397,16 @@ import React from 'react';
 
 Abhilfe schaffen sollen hier später einmal die **Package Name Maps**, ein Proposal, also ein Vorschlag für kommende ECMAScript Versionen, das aber momentan noch ganz am Anfang der Diskussion steht. Darum kommen wir wie eingangs erwähnt in absehbarer Zeit nicht drum herum, auch weiterhin einen Module Bundler wie Webpack zu benutzen, um komfortabel mit ES-Modules arbeiten zu können wenn wir JavaScript-Module gleichzeitig sowohl serverseitig als auch clientseitig nutzen wollen.
 
+<div class="force-break-before"></div>
+
 ## Fazit
 
 ES2015 und die nachfolgenden Versionen bieten eine Menge nützliche neue Funktionen, die es bisher in JavaScript nicht gab. Viele davon sind bei der Arbeit mit React nahezu nicht wegzudenken. Zu den wichtigsten Neuerungen gehören die hier beschriebenen:
 
-* Variablendeklarationen mit `let` und `const`
-* **Arrow Functions**, um Funktionen zu erstellen, die kein eigenes `this` binden
-* **Klassen**. Machen vieles einfacher und sind die Basis von **React Class Components**
-* Die **Rest und Spread Operatoren**, die das Lesen und Schreiben von Daten in Arrays und Objekten deutlich vereinfachen
-* **Template Strings**, um die Arbeit mit JavaScript-Ausdrücken in Strings einfacher zu machen
-* **Promises** und **Asynchrone Funktionen** mittels `async`/`await` um die Arbeit mit asynchronen Daten deutlich zu vereinfachen
-* **Import** und **Export** für die Kapselung von wiederverwendbarem JavaScript auf Module-Ebene
-
+- Variablendeklarationen mit `let` und `const`
+- **Arrow Functions**, um Funktionen zu erstellen, die kein eigenes `this` binden
+- **Klassen**. Machen vieles einfacher und sind die Basis von **React Class Components**
+- Die **Rest und Spread Operatoren**, die das Lesen und Schreiben von Daten in Arrays und Objekten deutlich vereinfachen
+- **Template Strings**, um die Arbeit mit JavaScript-Ausdrücken in Strings einfacher zu machen
+- **Promises** und **Asynchrone Funktionen** mittels `async`/`await` um die Arbeit mit asynchronen Daten deutlich zu vereinfachen
+- **Import** und **Export** für die Kapselung von wiederverwendbarem JavaScript auf Module-Ebene

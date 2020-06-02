@@ -345,4 +345,6 @@ class App extends React.Component {
 }
 ```
 
+<div class="force-break-before"></div>
+
 Im zweiten Beispiel übergeben wir lediglich eine _Referenz_ zum `state`-Objekt der Komponente. Da diese auch beim Re-Rendering der Komponente erhalten bleibt, löst dieses Vorgehen kein Re-Rendering aus, solange sich der Inhalt des States der Komponente nicht ändert!

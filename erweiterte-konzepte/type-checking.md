@@ -12,6 +12,8 @@ TypeError: Cannot read property 'settings' of undefined
 
 **Typechecking** kann uns hier also helfen, derartige potentielle Fehler schon vorher zu entdecken. Dazu gibt es neben **Flow** und **TypeScript**, die statische Typisierung ermöglichen, mit den sogenannten **PropTypes** auch eine recht simple React-eigene Lösung. Während **Flow** und **TypeScript** generell statische Typisierung in JavaScript ermöglichen, beschränken sich die React **PropTypes** allein auf React-Komponenten und finden außerhalb von Komponenten keine Anwendung. Wer also an statischer Typisierung Gefallen findet, sollte durchaus mal einen Blick auf **Flow** oder **TypeScript** wagen.
 
+<div class="force-break-before"></div>
+
 ## PropTypes
 
 **PropTypes** reichen bis in ganz frühe Versionen von React zurück, lange bevor React seine heutige Popularität erreicht hat, und wurden in React 15.5. aus dem Core heraus und in ein eigenes `prop-types`-Package ausgelagert. Während man seine **PropTypes** vorher mittels bspw. `React.PropTypes.string` direkt in der Core-Library definieren konnte, erfolgt der Zugriff nun über das zuvor importierte `PropTypes`-Modul: `PropTypes.string`.
@@ -81,9 +83,7 @@ const EventOverview = ({ date, description, ticketUrl, title }) => (
   <div>
     <h1>{title}</h1>
     <h2>{date.toLocaleString()}</h2>
-    {description && (
-      <div className="description">{description}</div>
-    )}
+    {description && <div className="description">{description}</div>}
     {ticketsUrl && <a href={ticketsUrl}>Tickets!</a>}
   </div>
 );
@@ -92,8 +92,8 @@ EventOverview.propTypes = {
   date: PropTypes.instanceOf(Date).isRequired,
   description: PropTypes.string,
   ticketsUrl: PropTypes.string,
-  title: PropTypes.string.isRequired
-}
+  title: PropTypes.string.isRequired,
+};
 ```
 
 Und damit wäre auch unsere **Stateless Functional Component** mit **PropType**-Checking ausgestattet!
@@ -101,16 +101,14 @@ Und damit wäre auch unsere **Stateless Functional Component** mit **PropType**-
 In einigen Fällen ist es wünschenswert, sinnvolle Standardwerte zu vergeben. Auch hierfür bietet uns React eine Möglichkeit, die sogenannten `defaultProps`. Diese werden ähnlich verwendet wie die `propTypes`, nämlich als statische Eigenschaft. Aber schauen wir uns ein schnelles Beispiel an:
 
 ```jsx
-const Greeting = ({ name }) => (
-    <h1>Hallo {name}!</h1>
-);
+const Greeting = ({ name }) => <h1>Hallo {name}!</h1>;
 
 Greeting.propTypes = {
-    name: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
 };
 
 Greeting.defaultProps = {
-    name: 'Gast',
+  name: 'Gast',
 };
 ```
 
@@ -123,10 +121,10 @@ Wir markieren die `name`-Prop der Komponente als `string.isRequired`, wir erwart
 Dies verursacht also die Ausgabe: **Hallo Manuel!**
 
 ```jsx
-<Greeting />
+<Greeting />;
 // oder:
 const user = {};
-<Greeting name={user.name} />
+<Greeting name={user.name} />;
 ```
 
 Dies nutzt wegen der fehlenden bzw. undefinierten `name`-Prop hingegen den `defaultValue`, in diesem Fall **Gast** und zeigt in beiden Fällen an: **Hallo Gast!** React ist dabei klug genug bei fehlender aber als `isRequired` markierter Prop zu erkennen ob ein `defaultValue` existiert und zeigt eine Warnung nur dann an, wenn eine Prop fehlt und auch nicht gleichzeitig ein `defaultValue` definiert wurde.
@@ -148,7 +146,10 @@ bzw mit Yarn:
 ```bash
 yarn add --dev babel-plugin-transform-react-remove-prop-types
 ```
+
 {% endhint %}
+
+<div class="force-break-before"></div>
 
 ## Flow
 
@@ -273,15 +274,15 @@ oder als Inline-Definition:
 
 ```jsx
 const EventOverview = ({
-    date,
-    description,
-    ticketUrl,
-    title
+  date,
+  description,
+  ticketUrl,
+  title,
 }: {
-    date: Date,
-    description?: string,
-    ticketsUrl?: string,
-    title: string
+  date: Date,
+  description?: string,
+  ticketsUrl?: string,
+  title: string,
 }) => {
   /*…*/
 };
@@ -327,6 +328,8 @@ import * as React from 'react';
 
 Dies führt dazu, dass gleichzeitig auch die von React mitgelieferten **Type Definitions** mit importiert wurden. Dies ist notwendig, wenn wir bspw. ein React-Element aus einer Funktion zurückgeben und dieses typisieren wollen.
 
+<div class="force-break-before"></div>
+
 ## TypeScript
 
 **TypeScript** wird von Microsoft entwickelt und ist ein sogenanntes **typisiertes Superset** von JavaScript, was bedeutet, dass es nicht direkt im Browser ausgeführt werden kann, sondern zuvor in einem Zwischenschritt von einem Compiler in „echtes“ JavaScript kompiliert wird, gültiges JavaScript aber immer auch gleichzeitig gültiges **TypeScript** ist. **TypeScript** sieht auf den ersten Blick erst einmal ähnlich aus wie **Flow** und funktioniert auch ähnlich. Während **Flow** allerdings lediglich ein reiner **Typechecker** ist, bringt **TypeScript** als Superset noch etwas mehr mit. So war es lange vor **ES2015** schon möglich, Klassen und Imports in **TypeScript** zu verwenden.
@@ -336,4 +339,3 @@ In der JavaScript-Community erfreut sich **TypeScript** immer wachsender Beliebt
 Im Bezug auf React wichtig zu wissen ist, dass **TypeScript**-Files üblicherweise eine `.ts` Datei-Endung haben, enthält eine Datei auch JSX, muss die Datei zwingend mit `.tsx` enden.
 
 Mit dem Release von **Babel 7** wurde auch die Integration vereinfacht und es benötigt nun nicht mehr zwangsweise den **TypeScript** Compiler \(`tsc`\) sondern kann in Form eines Babel-Plugins verwendet werden. Das Plugin wird mit dem Babel Preset `@babel/preset-typescript` installiert. Genaue Informationen wie **TypeScript** in Verbindung mit React verwendet werden kann, liefert die offizielle **TypeScript**-Dokumentation unter [https://www.typescriptlang.org/docs](https://www.typescriptlang.org/docs).
-

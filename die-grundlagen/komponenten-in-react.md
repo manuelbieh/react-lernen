@@ -6,7 +6,8 @@ Eine erste einfache `HelloWorld`-Komponente haben wir schon beim Sprung ins kalt
 
 Das Prinzip von **Komponenten** ist einfach erklärt: eine **Komponente** erlaubt es komplexe User Interfaces in einzelne kleine Stücke zu unterteilen. Diese sind im Idealfall wiederverwendbar, isoliert und in sich geschlossen. Sie verarbeiten beliebigen Input von außen in Form sogenannter **Props** \(engl. für „Properties“, also Eigenschaften\) und beschreiben letztendlich anhand ihrer `render()`-Funktion was auf dem Bildschirm erscheint.
 
-Komponenten können grob in zwei verschiedenen Varianten auftreten: in Form einer einfachen Funktion \(engl. **Function Component**\), sowie **Class Components**, die eine gewöhnliche ES2015-Klasse repräsentieren. Bis zur Einführung der React **Hooks** war es in **Function Components** nicht möglich, einen lokalen State zu verwalten, daher stößt man mancherorts noch auf den Begriff **Stateless Functional Component**, der aus einer Zeit stammt, als **Function Components** noch keinen State halten konnten. Wie **Hooks** im Detail funktionieren und wie State seit React 16.8.0 nun auch in **Function Components** verwendet werden kann, wird im weiteren Verlauf noch ausführlich im Kapitel über **Hooks** erläutert.
+Komponenten können grob in zwei verschiedenen Varianten auftreten: in Form einer einfachen Funktion \(engl. **Function Component**\), sowie **Class Components**, die eine gewöhnliche ES2015-Klasse repräsentieren.
+Bis zur Einführung der React **Hooks** war es in **Function Components** nicht möglich, einen lokalen State zu verwalten, daher stößt man mancherorts noch auf den Begriff **Stateless Functional Component**, der aus einer Zeit stammt, als **Function Components** noch keinen State halten konnten. Wie **Hooks** im Detail funktionieren und wie State seit React 16.8.0 nun auch in **Function Components** verwendet werden kann, wird im weiteren Verlauf noch ausführlich im Kapitel über **Hooks** erläutert.
 
 ### Function Components
 
@@ -14,20 +15,20 @@ Die deutlich einfachste Art in React eine Komponente zu definieren, ist sicherli
 
 ```jsx
 function Hello(props) {
-  return <div>Hello {props.name}</div>
+  return <div>Hello {props.name}</div>;
 }
 ```
 
 Diese Funktion erfüllt alle Kriterien einer gültigen **React-Komponente**: Sie hat als `return`-Wert ein explizites `null` \(`undefined` ist dagegen **nicht** gültig!\) oder ein gültiges `React.Element` \(hier in Form von **JSX**\) und sie empfängt ein `props`-Objekt als erstes Funktionsargument, wobei sogar dieses optional ist und ebenfalls `null` sein kann.
 
-###  Class Components / Klassen-Komponenten
+### Class Components / Klassen-Komponenten
 
 Die zweite Möglichkeit wie eine **React-Komponente** erstellt werden kann habe ich im Eingangsbeispiel schon kurz gezeigt: **Class Components** oder auf gut Deutsch **Klassen-Komponenten**. Diese bestehen aus einer ES2015-Klasse, die von der `React.Component` oder `React.PureComponent`\(dazu später mehr\) Klasse ableitet und haben mindestens eine Methode mit dem Namen `render()`:
 
 ```jsx
 class Hello extends React.Component {
   render() {
-    return <div>Hello {this.props.name}</div>
+    return <div>Hello {this.props.name}</div>;
   }
 }
 ```
@@ -37,7 +38,7 @@ Wichtiger Unterschied hier: Während eine **Function Component** ihre **Props** 
 Die beiden obigen Komponenten resultieren hier in einer komplett identischen Ausgabe!
 
 {% hint style="info" %}
-Ein Kriterium, das beide Arten von Komponenten gemeinsam haben, ist, dass der `displayName`, also der Name einer gültigen Komponente, stets mit einem **Großbuchstaben** anfängt. Der Rest des Namens kann aus Großbuchstaben oder Kleinbuchstaben bestehen, wichtig ist lediglich, dass der erste Buchstabe stets ein Großbuchstabe ist! 
+Ein Kriterium, das beide Arten von Komponenten gemeinsam haben, ist, dass der `displayName`, also der Name einer gültigen Komponente, stets mit einem **Großbuchstaben** anfängt. Der Rest des Namens kann aus Großbuchstaben oder Kleinbuchstaben bestehen, wichtig ist lediglich, dass der erste Buchstabe stets ein Großbuchstabe ist!
 
 Beginnt der Name einer Komponente mit einem Kleinbuchstaben, behandelt React diese stattdessen als reines DOM-Element. `section` würde React also als DOM-Element interpretieren, während eine eigene Komponente durchaus den Namen `Section` haben kann und wegen ihres Großbuchstabens am Anfang von React korrekt vom `section` DOM-Element unterschieden werden würde.
 {% endhint %}
@@ -81,7 +82,8 @@ Dies gilt gleichermaßen auch für Objekte und Arrays:
 ```jsx
 <MyComponent
   logConfig={{ logLevel: 'info' }}
-  logEntries={['Nachricht 1', 'Nachricht 2']} />  
+  logEntries={['Nachricht 1', 'Nachricht 2']}
+/>
 ```
 
 Hier würde ein Rendering ausgelöst, weil auch das `logConfig`-Objekt bzw. das `logEntries`-Array bei jedem erneuten Rendering an Ort und Stelle neu erzeugt werden würde.
@@ -101,8 +103,8 @@ Die **Function Component** verhält sich dann so wie eine vergleichbare **Klasse
 Wer neugierig geworden ist, kann sich für das einfachere Verständnis auch mit der folgenden Demo etwas austoben:
 
 ```jsx
-import React from "react";
-import ReactDOM from "react-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 class ClassComponent extends React.Component {
   render() {
@@ -152,14 +154,14 @@ class App extends React.Component {
   }
 }
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
 Hier löst die `App`-Komponente alle 0,2 Sekunden automatisch ein Rerendering aus, ohne dass dabei jedoch **Props** an ihre Kind-Komponenten übergeben werden. Preisfrage: Welche beiden Komponenten werden dabei jeweils mit neu gerendert und welche beiden nicht?
 
 ## Component Composition – mehrere Komponenten in einer
 
-Bisher haben unsere Beispiel-Komponenten jeweils nur DOM-Elemente ausgegeben. **React-Komponenten** können aber auch andere React-Komponenten beinhalten. Wichtig hierbei ist nur, dass die Komponente sich im selben Scope befindet, also entweder direkt im gleichen Scope definiert wurde oder bei der Verwendung von CommonJS- oder ES-Modules ins aktuelle File importiert wurden mittels `require()` oder `import`. 
+Bisher haben unsere Beispiel-Komponenten jeweils nur DOM-Elemente ausgegeben. **React-Komponenten** können aber auch andere React-Komponenten beinhalten. Wichtig hierbei ist nur, dass die Komponente sich im selben Scope befindet, also entweder direkt im gleichen Scope definiert wurde oder bei der Verwendung von CommonJS- oder ES-Modules ins aktuelle File importiert wurden mittels `require()` oder `import`.
 
 **Ein Beispiel:**
 
@@ -191,13 +193,13 @@ Die Komponente `<MyApp>` gibt hier ein `<div>` zurück, das zweimal die `Hello`-
 
 Wichtig: Eine Komponente darf stets nur ein einzelnes **Root-Element** zurückgeben! Dies kann sein:
 
-* ein einzelnes React-Element:
+- ein einzelnes React-Element:
 
 ```jsx
 <Hello name="Manuel />
 ```
 
-* Auch in verschachtelter Form, solange es nur ein einzelnes Element auf äußerer Ebene gibt:
+- Auch in verschachtelter Form, solange es nur ein einzelnes Element auf äußerer Ebene gibt:
 
 ```jsx
 <Parent>
@@ -205,44 +207,41 @@ Wichtig: Eine Komponente darf stets nur ein einzelnes **Root-Element** zurückge
 </Parent>
 ```
 
-* ein DOM-Element \(auch dieses darf wiederum verschachtelt sein und andere Elemente beinhalten\):
+- ein DOM-Element \(auch dieses darf wiederum verschachtelt sein und andere Elemente beinhalten\):
 
 ```jsx
 <div>…</div>
 ```
 
-* … oder selbstschließend:
+- … oder selbstschließend:
 
 ```jsx
 <img src="logo.jpg" alt="Bild: Logo" />
 ```
 
-* Oder auch:
+- Oder auch:
 
 ```javascript
-null
+null;
 ```
 
 … jedoch **nicht** `undefined`!
 
 Seit **React 16.0.0** dürfen das außerdem auch sein:
 
-* ein Array, welches wiederum gültige return-Werte \(s.o.\) beinhaltet:
+- ein Array, welches wiederum gültige return-Werte \(s.o.\) beinhaltet:
 
 ```jsx
-[
-  <div key="1">Hallo</div>, 
-  <Hello key="2" name="Manuel" />
-]
+[<div key="1">Hallo</div>, <Hello key="2" name="Manuel" />];
 ```
 
-* ein simpler String:
+- ein simpler String:
 
 ```javascript
-'Hallo Welt'
+'Hallo Welt';
 ```
 
-* oder ein sogenanntes „Fragment“ – eine Art spezielle „Komponente“, die selbst nicht im gerenderten Output auftaucht und als Container dienen kann, falls man andererseits gegen die Regel verstoßen würde, nur ein Root-Element aus der Funktion zurückzugeben oder invalides HTML erzeugen würde:
+- oder ein sogenanntes „Fragment“ – eine Art spezielle „Komponente“, die selbst nicht im gerenderten Output auftaucht und als Container dienen kann, falls man andererseits gegen die Regel verstoßen würde, nur ein Root-Element aus der Funktion zurückzugeben oder invalides HTML erzeugen würde:
 
 ```jsx
 <React.Fragment>
@@ -276,19 +275,27 @@ function Header() {
         <img src="logo.jpg" alt="Image: Logo" />
       </div>
       <ul className="navigation">
-        <li><a href="/">Homepage</a></li>
-        <li><a href="/team">Team</a></li>
-        <li><a href="/services">Services</a></li>
-        <li><a href="/contact">Contact</a></li>
+        <li>
+          <a href="/">Homepage</a>
+        </li>
+        <li>
+          <a href="/team">Team</a>
+        </li>
+        <li>
+          <a href="/services">Services</a>
+        </li>
+        <li>
+          <a href="/contact">Contact</a>
+        </li>
       </ul>
       <div className="searchbar">
-          <form method="post" action="/search">
-            <p>
-              <label htmlFor="q">Suche:</label>
-              <input type="text" id="q" name="q" />
-            </p>
-            <input type="submit" value="Suchen" />
-          </form>
+        <form method="post" action="/search">
+          <p>
+            <label htmlFor="q">Suche:</label>
+            <input type="text" id="q" name="q" />
+          </p>
+          <input type="submit" value="Suchen" />
+        </form>
       </div>
     </header>
   );
@@ -313,10 +320,18 @@ function Logo() {
 function Navigation() {
   return (
     <ul className="navigation">
-      <li><a href="/">Homepage</a></li>
-      <li><a href="/team">Team</a></li>
-      <li><a href="/services">Services</a></li>
-      <li><a href="/contact">Contact</a></li>
+      <li>
+        <a href="/">Homepage</a>
+      </li>
+      <li>
+        <a href="/team">Team</a>
+      </li>
+      <li>
+        <a href="/services">Services</a>
+      </li>
+      <li>
+        <a href="/contact">Contact</a>
+      </li>
     </ul>
   );
 }
@@ -352,9 +367,11 @@ Auch wenn der Code jetzt erstmal länger geworden ist, haben wir uns dadurch den
 
 Alle Komponenten können \(und sollten!\) in einem eigenen File gespeichert werden, was die Arbeit im Team immens erleichtert. So könnte jedes Team-Mitglied oder auch einzelne Teams innerhalb eines großen Projekt-Teams für eine oder mehrere Komponenten hauptverantwortlich sein \(„Ownership übernehmen“\) und Änderungen in diesen vornehmen, während das Risiko, die Änderungen eines Kollegen zu überschreiben oder später Merge-Konflikte in Git auflösen zu müssen, immens sinkt. Teams werden zu _Konsumenten_ von Komponenten anderer Teams, die anhand eventuell verfügbarer Props ein simples Interface für ihre Komponente bereitstellen.
 
+<div class="force-break-before"></div>
+
 ### Single Responsibility Prinzip
 
-Wir haben nun außerdem „sprechende“ Komponenten, von denen jede eine klar definierte Aufgabe hat, die direkt anhand ihres Namens ersichtlich wird. Das Logo zeigt mir überall wo es verwendet wird dasselbe Logo an. Möchte ich später eine Änderung an der Suchleiste vornehmen, suche ich gezielt nach der Searchbar.js und ändere diese entsprechend meinen neuen Anforderungen. Die Header-Komponente dient als übergeordnete Komponente, die selbst dafür verantwortlich ist, alle ihre Bestandteile zu beinhalten und diese überall hin mitzubringen, wo sie eingesetzt wird. 
+Wir haben nun außerdem „sprechende“ Komponenten, von denen jede eine klar definierte Aufgabe hat, die direkt anhand ihres Namens ersichtlich wird. Das Logo zeigt mir überall wo es verwendet wird dasselbe Logo an. Möchte ich später eine Änderung an der Suchleiste vornehmen, suche ich gezielt nach der Searchbar.js und ändere diese entsprechend meinen neuen Anforderungen. Die Header-Komponente dient als übergeordnete Komponente, die selbst dafür verantwortlich ist, alle ihre Bestandteile zu beinhalten und diese überall hin mitzubringen, wo sie eingesetzt wird.
 
 ### Wiederverwendbarkeit
 
@@ -386,7 +403,7 @@ Da das Prinzip von **Pure Functions** ein grundlegendes ist bei der Arbeit mit R
 
 ```javascript
 function pureDouble(number) {
-  return number * 2; 
+  return number * 2;
 }
 ```
 
@@ -415,7 +432,7 @@ So liefert die Funktion beim Aufruf von `pureCalculation(10, window.outerWidth)`
 ```javascript
 function pureSum(number1, number2) {
   return number1 + number2;
-};
+}
 ```
 
 **Gleicher Input, Gleicher Output.**
@@ -425,7 +442,7 @@ function pureSum(number1, number2) {
 Stellen wir uns einmal vor wir möchten eine Funktion implementieren, die als Input ein Objekt mit Parametern zu einem Auto empfängt.
 
 ```javascript
-var car = {speed: 0, seats: 5};
+var car = { speed: 0, seats: 5 };
 function accelerate(car) {
   car.speed += 1;
   return car;
@@ -435,31 +452,31 @@ function accelerate(car) {
 Das obige Beispiel ist ebenfalls eine Funktion, die nicht „pure“ ist, da sie ihren Eingabewert modifiziert und somit beim zweiten Aufruf bereits ein anderes Ergebnis als Ausgabewert hat als noch beim ersten Aufruf:
 
 ```javascript
-console.log(accelerate(car)) 
+console.log(accelerate(car));
 // {speed: 1, seats: 5}
 
-console.log(accelerate(car)) 
+console.log(accelerate(car));
 // {speed: 2, seats: 5}
 ```
 
 Wie sorgen wir also nun dafür, dass auch unser letztes Beispiel „pure“ wird? Indem wir den Eingabewert nicht mehr modifizieren und stattdessen jedes Mal ein neues, auf dem Eingabewert basierendes Objekt erzeugen, und dieses neue Objekt aus der Funktion zurückgeben:
 
 ```javascript
-var car = {speed: 0};
+var car = { speed: 0 };
 function accelerate(car) {
   return {
     speed: car.speed + 1,
-  }
+  };
 }
 ```
 
 Neues Ergebnis:
 
 ```javascript
-console.log(accelerate(car)) 
+console.log(accelerate(car));
 // {speed: 1}
 
-console.log(accelerate(car)) 
+console.log(accelerate(car));
 // {speed: 1}
 ```
 
@@ -484,7 +501,9 @@ function Example(props) {
   props.number = props.number + 1;
   props.fullName = [props.firstName, props.lastName].join(' ');
   return (
-    <div>({props.number}) {props.fullName} </div>
+    <div>
+      ({props.number}) {props.fullName}{' '}
+    </div>
   );
 }
 
@@ -497,7 +516,7 @@ ReactDOM.render(
 **Ausgabe:**
 
 {% hint style="danger" %}
- TypeError: Cannot add property number, object is not extensible
+TypeError: Cannot add property number, object is not extensible
 {% endhint %}
 
 Hier versuche ich direkt die `number` und `fullName` Props innerhalb meiner `Example`-Komponente zu ändern, was natürlich nicht funktionieren kann, da wir ja gelernt haben, dass Props grundsätzlich **readonly** sind.
@@ -514,7 +533,9 @@ var ReactDOM = require('react-dom');
 
 function Example(props) {
   return (
-    <div>({props.number + 1}) {[props.firstName, props.lastName].join(' ')}</div>
+    <div>
+      ({props.number + 1}) {[props.firstName, props.lastName].join(' ')}
+    </div>
   );
 }
 
@@ -543,13 +564,13 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 
 var renderCounter = 0;
-setInterval(function () {
+setInterval(function() {
   renderCounter++;
   renderApp();
 }, 2000);
 
 const App = (props) => {
-  return <div>{props.renderCounter}</div>
+  return <div>{props.renderCounter}</div>;
 };
 
 function renderApp() {
@@ -621,7 +642,7 @@ function User(props) {
       <UserImage image={props.image} />
       <ListOfPosts items={props.posts} />
     </div>
-  )
+  );
 }
 
 ReactDOM.render(
@@ -630,18 +651,15 @@ ReactDOM.render(
 );
 ```
 
+<div class="force-break-before"></div>
+
 ### Die wichtigsten Punkte im Überblick
 
-{% hint style="info" %}
 Komponenten müssen sich hinsichtlich ihrer Props als **Pure Functions** verhalten und bei gleichen Props stets die gleiche Ausgabe erzeugen.
 
-* Props sind innerhalb einer Komponente grundsätzlich als **readonly** zu betrachten
-* Komponenten können eine **beliebige Menge an Props** übergeben bekommen
-* In JSX übergibt man Props in ähnlicher Form wie in HTML Attribute
-* Anders als in HTML, sind in JSX diverse Arten von Werten erlaubt. Werte die nicht vom Typ String sind, werden dabei in **geschweifte Klammern** gefasst
-* Props können **sämtliche JavaScript-Ausdrücke** \(„Expressions“\) als Wert entgegennehmen
-* Empfangene Props können beliebig viele Ebenen tief im Komponenten-Baum an Kind-Elemente weitergegeben werden
-{% endhint %}
-
-
-
+- Props sind innerhalb einer Komponente grundsätzlich als **readonly** zu betrachten
+- Komponenten können eine **beliebige Menge an Props** übergeben bekommen
+- In JSX übergibt man Props in ähnlicher Form wie in HTML Attribute
+- Anders als in HTML, sind in JSX diverse Arten von Werten erlaubt. Werte die nicht vom Typ String sind, werden dabei in **geschweifte Klammern** gefasst
+- Props können **sämtliche JavaScript-Ausdrücke** \(„Expressions“\) als Wert entgegennehmen
+- Empfangene Props können beliebig viele Ebenen tief im Komponenten-Baum an Kind-Elemente weitergegeben werden

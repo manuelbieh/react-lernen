@@ -4,7 +4,7 @@ Eine Funktionalität, die in nahezu allen **Single Page Applikationen** \(SPA\) 
 
 Hier hat sich der **React Router** in den vergangenen Jahren als de facto Standard etabliert. Entwickelt von Michael Jackson \(ja, der Kerl heißt wirklich so!\) und Ryan Florence \(der laut eigener Aussage inzwischen über 10 verschiedene Router für diverse Zwecke entwickelt hat\) bringt er es auf mittlerweile über 35.000 Stars bei GitHub. Das Paket wird regelmäßig gepflegt, hat eine Community bestehend aus über 500 Contributors auf GitHub und passt sich durch seine deklarative Natur wunderbar an die React-Prinzipien an. Darüber hinaus ist er kompatibel sowohl mit dem Web \(client- und serverseitig!\) wie auch React Native. Er ist also sehr universell einsetzbar, sehr gut getestet und durch seine weite Verbreitung auch bewährt.
 
-Dabei ist sein Interface selbst ziemlich simpel. In ca. 95% der Zeit wird man mit lediglich fünf Komponenten in Berührung kommen: `BrowserRouter`, `Link`, `Route`, `Redirect` und `Switch`. Darüber hinaus gibt es noch die imperative History API, die durch das `history`-Package, einem dünnen Layer über der nativen Browserimplementierung, wodurch diese cross-browser fähig gemacht wird, sowie die Higher Order Component `withRouter`, um für das Routing relevante Daten aus dem Router in eine Komponente hinein zu reichen. 
+Dabei ist sein Interface selbst ziemlich simpel. In ca. 95% der Zeit wird man mit lediglich fünf Komponenten in Berührung kommen: `BrowserRouter`, `Link`, `Route`, `Redirect` und `Switch`. Darüber hinaus gibt es noch die imperative History API, die durch das `history`-Package, einem dünnen Layer über der nativen Browserimplementierung, wodurch diese cross-browser fähig gemacht wird, sowie die Higher Order Component `withRouter`, um für das Routing relevante Daten aus dem Router in eine Komponente hinein zu reichen.
 
 Installiert wird der **React Router** via:
 
@@ -21,33 +21,29 @@ yarn add react-router-dom
 Die generelle Benutzung ist dabei wie bereits angesprochen _deklarativ_, erfolgt also in Form der oben erwähnten Komponenten. Router können dadurch innerhalb einer Anwendung an jeder beliebigen Stelle verwendet werden. Voraussetzung ist lediglich, dass der jeweilige Seitenbaum sich in einem **Router Context** befindet. Dieser existiert in einer typischen Anwendung nur ein einziges Mal und legt sich meist ganz außen um die Anwendung. Etwa in der folgenden Form:
 
 ```jsx
-import React from "react";
-import ReactDOM from "react-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 const App = () => {
-  return (
-    <Router>
-      [...]
-    </Router>
-  );
-}
+  return <Router>[...]</Router>;
+};
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
 ### Routen definieren
 
-Jede Komponente innerhalb des `<Router></Router>`-Elements kann nun auf den **Router Context** zugreifen, darauf reagieren und ihn steuern. Verschiedene Routen legen wir durch die Verwendung der Route-Komponente an, die eine `path`-Prop enthalten sollte \(Ausnahme: 404 Fehler-Routen\) und wahlweise eine `render`-Prop oder eine `component`-Prop enthält. Der Unterschied liegt hier darin, dass der Wert der `render`-Prop eine **Funktion** sein muss, die ein valides **React-Element** zurückgibt \(hier sei auch nochmal an das entsprechende Kapitel zu **Render-Props** erinnert\), während die `component`-Prop eine **Komponente** \(kein _Element!_\) erwartet. 
+Jede Komponente innerhalb des `<Router></Router>`-Elements kann nun auf den **Router Context** zugreifen, darauf reagieren und ihn steuern. Verschiedene Routen legen wir durch die Verwendung der Route-Komponente an, die eine `path`-Prop enthalten sollte \(Ausnahme: 404 Fehler-Routen\) und wahlweise eine `render`-Prop oder eine `component`-Prop enthält. Der Unterschied liegt hier darin, dass der Wert der `render`-Prop eine **Funktion** sein muss, die ein valides **React-Element** zurückgibt \(hier sei auch nochmal an das entsprechende Kapitel zu **Render-Props** erinnert\), während die `component`-Prop eine **Komponente** \(kein _Element!_\) erwartet.
 
 Also sieht eine korrekte Verwendung beider Props z.B. so aus:
 
 ```jsx
-import React from "react";
-import ReactDOM from "react-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-const Example = () => <p>Example Komponente</p>
+const Example = () => <p>Example Komponente</p>;
 
 const App = () => {
   return (
@@ -56,9 +52,9 @@ const App = () => {
       <Route path="/example" render={() => <Example />} />
     </Router>
   );
-}
+};
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
 In diesem Beispiel würde die `Example`-Komponente beim Aufruf der `/example` URL zweimal gerendert werden, da die Route-Komponente lediglich überprüft, ob der Pfad der aktuellen URL mit dem in der `path`-Prop angegebenen Wert übereinstimmt. Dies mag erst einmal verwunderlich klingen, lässt sich aber ganz logisch erklären.
@@ -98,21 +94,21 @@ In diesem Beispiel sehen wir wie an zwei verschiedenen Stellen in unserer Anwend
 Hier sind wir in der Struktur der Komponenten jedoch ziemlich frei. Und so ist nicht unüblich, dass eine solche Doppelung von Routen durch eine etwas andere Struktur vermieden wird. Das obige Beispiel würde bspw. dann so geschrieben werden:
 
 ```jsx
-import React from "react";
-import ReactDOM from "react-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 const Home = () => (
   <>
-   <main>Home Content</main>
-   <aside>Home Sidebar</aside>
+    <main>Home Content</main>
+    <aside>Home Sidebar</aside>
   </>
 );
 
 const Account = () => (
   <>
-   <main>Account Content</main>
-   <aside>Account Sidebar</aside>
+    <main>Account Content</main>
+    <aside>Account Sidebar</aside>
   </>
 );
 
@@ -123,17 +119,17 @@ const App = () => {
       <Route path="/" component={Home} />
     </Router>
   );
-}
+};
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
 Hier haben wir nun das doppelte Routing vermieden, allerdings zu Ungunsten der Layout-Struktur, die nun dupliziert wurde. In einer typischen Anwendung könnten wir nun hergehen und die Struktur in eine eigene Layout-Komponente abstrahieren:
 
 ```jsx
-import React from "react";
+import React from 'react';
 
-const Layout = props => (
+const Layout = (props) => (
   <>
     <main>{props.content}</main>
     <aside>{props.sidebar}</aside>
@@ -141,7 +137,9 @@ const Layout = props => (
 );
 
 const Home = () => <Layout content="Home Content" sidebar="Home Sidebar" />;
-const Account = () => <Layout content="Account Content" sidebar="Account Sidebar" />;
+const Account = () => (
+  <Layout content="Account Content" sidebar="Account Sidebar" />
+);
 
 const App = () => {
   return (
@@ -150,9 +148,9 @@ const App = () => {
       <Route path="/" component={Home} />
     </Router>
   );
-}
+};
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
 Wer die Code-Beispiele jetzt ausprobiert, wird hierbei ein Verhalten feststellen, das in den meisten Fällen ungewollt ist: **React Router** geht sehr locker und lässig mit den Pfaden beim Path-Matching um. Und so sehen wir beim Aufruf der `/account` URL nicht nur die `Account`-Komponente, sondern ebenfalls die `Home`-Komponente. Dies passiert, weil `/account` **auch** den Pfad `/` **beinhaltet**, und somit werden beide Komponenten gerendert. Das ist durchaus so gewollt, so wäre es z.B. möglich einzelne Seitenbereiche unter einem bestimmten URL Präfix zu gliedern und dabei eine Komponente auf jeder dieser Routen rendern zu lassen.
@@ -175,6 +173,8 @@ Um das Matching zwischen dem `path` und der URL bewusst einzuschränken, bietet 
 
 Die Stelle, an der die Prop genau angegeben wird ist dabei, wie immer in **JSX**, zu vernachlässigen; ich schreibe sie gern direkt vor die `path`-Prop, um den Eindruck einer „sprechenden“ Prop zu vermitteln: hier habe ich eine **Route** mit dem **exact path**. In unserem Beispiel mit der Account-Sidebar würde die Sidebar bei Verwendung der `exact`-Prop nun nur noch dann gerendert, wenn die URL `/account` entspricht, jedoch nicht mehr bei `/account/edit`, `/account/images` oder `/account/settings`.
 
+<div class="force-break-before"></div>
+
 ### Matching auf eine Route limitieren via Switch-Komponente
 
 Die `exact`-Prop bezieht sich dabei immer nur auf eine **einzelne Route** und lässt andere Routen davon gänzlich unberührt. Haben wir eine Reihe von URLs, von denen in bestimmten Fällen mehrere Routen matchen können, wird das mitunter mühsam, jeder einzelnen dieser Routen eine weitere Prop hinzuzufügen. Hier hilft uns der nächste Import aus dem **React Router** Paket weiter: `Switch`.
@@ -192,7 +192,7 @@ Mit der `Switch`-Komponente, die sich um eine Reihe von `<Route />`-Elementen le
 
 Beim Aufruf der `/account`-URL würde nun gleich die erste Route zutreffen und alle folgenden Routen würden ignoriert, wir würden also nur die `Account`-Komponente rendern. Dabei prüft die `Switch`-Komponente auch stets nur ihre **direkten** Kind-Elemente auf ein Matching mit der URL. Enthält die `Account`-Komponente wiederum eigene Routen, was problemlos möglich ist, sind diese von der Switch-Komponente unbeeindruckt und werden gerendert, wenn ihr `path` mit der aktuellen URL übereinstimmt.
 
-Dies ermöglicht uns darüber hinaus die Erstellung einer 404 Fehlerseite als Fallback-Route. Lassen wir die `path`-Prop aus, bedeutet dies, dass diese Route auf **jede** URL zutrifft. Nutzen wir sie also innerhalb eines `Switch`-Elements als letzte Komponente, sagen wir dem **React Router** damit: _Rendere diese Komponente immer dann, wenn keine andere Route zutrifft – und zwar nur dann!_ 
+Dies ermöglicht uns darüber hinaus die Erstellung einer 404 Fehlerseite als Fallback-Route. Lassen wir die `path`-Prop aus, bedeutet dies, dass diese Route auf **jede** URL zutrifft. Nutzen wir sie also innerhalb eines `Switch`-Elements als letzte Komponente, sagen wir dem **React Router** damit: _Rendere diese Komponente immer dann, wenn keine andere Route zutrifft – und zwar nur dann!_
 
 Und das sieht dann so aus:
 
@@ -216,7 +216,7 @@ In diesem Fall ist zusätzlich zum `Switch`-Element auch noch eine `exact`-Prop 
 
 ### Parameter in URLs
 
-Kaum eine Anwendung kommt ohne URLs aus, die Parameter enthält. Auch dieser Fall wird natürlich vom React Router abgedeckt und in einer Form die jedem der schon einmal mit anderen Routing-Mechanismen gearbeitet hat durchaus vertraut vorkommen dürfte, nämlich durch die Verwendung eines Parameter-Namens mit vorangestelltem Doppelpunkt \(`:`\). 
+Kaum eine Anwendung kommt ohne URLs aus, die Parameter enthält. Auch dieser Fall wird natürlich vom React Router abgedeckt und in einer Form die jedem der schon einmal mit anderen Routing-Mechanismen gearbeitet hat durchaus vertraut vorkommen dürfte, nämlich durch die Verwendung eines Parameter-Namens mit vorangestelltem Doppelpunkt \(`:`\).
 
 ```jsx
 <Route path="/users/:userid" component={UserProfile} />
@@ -233,6 +233,8 @@ Die obige Route würde dann nur zutreffen, wenn die URL `/products/asc` oder `/p
 Möchte ich im ersten Beispiel, dass nur numerische Werte als `:userid` erlaubt sind, so kann ich dafür die Route definieren: `/users/:userid(\d*)` oder `/users/:userid([0-9]*)` und somit würde die URL `/users/123` die `UserProfile`-Komponente rendern, `/users/abc` hingegen nicht.
 
 Findet der **React Router** eine solche URL mit einem Parameter, extrahiert er dessen Wert und übergibt ihn in einer `match`-Prop an die gerenderte Komponente.
+
+<div class="force-break-before"></div>
 
 ### Weiterleitung bestimmter Routen steuern
 
@@ -252,7 +254,7 @@ Ein gängiger Anwendungsfall für eine `Redirect`-Komponente ist bspw. die Umlei
 
 Hier nutzen wir die `render`-Prop der `Route`-Komponente, um in einer Funktion abzufragen ob ein Benutzer eingeloggt ist \(mittels `isLoggedIn`\) und zeigen auf der `/` URL entweder eine Dashboard-Komponente, oder rendern eben einen Redirect zu `/login`, der den Benutzer dann eben auf eine Login-Seite weiterleiten würde.
 
-Eine zweite Variante, Weiterleitungen zu definieren, bietet sich uns durch die Verwendung der `Redirect`-Komponente innerhalb eines `<Switch/>`-Elements. Hier verhält sie sich so wie die `Route`-Komponente und greift nur dann, wenn nicht bereits eine andere Route oder ein anderer Redirect mit der aktuellen URL übereingestimmt hat. 
+Eine zweite Variante, Weiterleitungen zu definieren, bietet sich uns durch die Verwendung der `Redirect`-Komponente innerhalb eines `<Switch/>`-Elements. Hier verhält sie sich so wie die `Route`-Komponente und greift nur dann, wenn nicht bereits eine andere Route oder ein anderer Redirect mit der aktuellen URL übereingestimmt hat.
 
 Wird die `Redirect`-Komponente in einem `<Switch/>`-Element benutzt \(und nur dann!\) kann sie auch eine `from`-Prop bekommen. Diese entspricht der `path`-Prop bei der `Route`-Komponente, sorgt also dafür, dass der Redirect nur durchgeführt wird, wenn die aktuelle URL dem Wert der `from`-Prop entspricht:
 
@@ -278,21 +280,21 @@ Beim Aufruf der URL `/old` \(erstes Beispiel\) bzw. `/users/123` \(zweites Beisp
 
 Jede Komponente, die vom React Router gerendert wird, weil sie als `component`-Prop einer `Route`-Komponente angegeben wurde, bekommt automatisch drei für das Routing relevante Props übergeben:
 
-* `match` 
-* `location` 
-* `history`
+- `match`
+- `location`
+- `history`
 
 Auf diese kann innerhalb der jeweiligen Komponente wie auf jede andere Prop auch über `this.props` in **Klassen-Komponenten** oder `props` in **Function Components** zugegriffen werden:
 
 ```jsx
-import React from "react";
-import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 const Example = (props) => {
   console.log(props);
   return <p>Example</p>;
-}
+};
 
 const App = () => (
   <Router>
@@ -300,7 +302,7 @@ const App = () => (
   </Router>
 );
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
 Schauen wir uns die Konsolen-Ausgabe dieser Komponente an, sehen wir beim Aufruf der URL `/users/123` ein Resultat, das diesem entspricht \(gekürzt\):
@@ -329,16 +331,19 @@ In einer Benutzerprofil-Komponente könnten wir nun etwa hergehen und einen API-
 Auch die `render`-Prop auf der `Route`-Komponente bekommt alle Props des Routers übergeben:
 
 ```jsx
-<Route path="/users/:userid" render={(props) => {
-  return <p>Benutzerprofil für die ID {props.match.params.userid}</p>;
-}} />
+<Route
+  path="/users/:userid"
+  render={(props) => {
+    return <p>Benutzerprofil für die ID {props.match.params.userid}</p>;
+  }}
+/>
 ```
 
 ### Navigation zwischen einzelnen Routen
 
-Haben wir erst einmal eine Anwendung in mehrere Routen unterteilt, wollen wir natürlich auch zwischen diesen URLs verlinken. Dies ginge natürlich mit dem HTML-Element `<a href="...">...</a>`, keine Frage. Allerdings lösen wir damit einen komplett neuen „harten“ Seitenaufruf im Browser aus, verlassen die aktuelle Seite **komplett** und rufen die neue Seite komplett neu auf. 
+Haben wir erst einmal eine Anwendung in mehrere Routen unterteilt, wollen wir natürlich auch zwischen diesen URLs verlinken. Dies ginge natürlich mit dem HTML-Element `<a href="...">...</a>`, keine Frage. Allerdings lösen wir damit einen komplett neuen „harten“ Seitenaufruf im Browser aus, verlassen die aktuelle Seite **komplett** und rufen die neue Seite komplett neu auf.
 
-Das heißt, wir fordern ein HTML-Dokument an, das HTML-Dokument lädt CSS und das JavaScript mit unserer React-Anwendung erneut vom Server \(oder holt es idealerweise aus dem Browser-Cache\), initialisiert alles neu und entscheidet auf Basis der geänderten URL, welche Route gerendert werden soll. Etwaiger State, den wir zuvor global gesetzt haben, würde dadurch zurückgesetzt. 
+Das heißt, wir fordern ein HTML-Dokument an, das HTML-Dokument lädt CSS und das JavaScript mit unserer React-Anwendung erneut vom Server \(oder holt es idealerweise aus dem Browser-Cache\), initialisiert alles neu und entscheidet auf Basis der geänderten URL, welche Route gerendert werden soll. Etwaiger State, den wir zuvor global gesetzt haben, würde dadurch zurückgesetzt.
 
 Das ist aber eben nicht das Verhalten, das wir uns in einer Single Page Applikation wünschen. Hier möchten wir schließlich das HTML mitsamt seines CSS und JavaScript nur einmal vom Server laden. Wir möchten den globalen State beim Navigieren zwischen den einzelnen Routen persistieren und nur die Teile der Seite neu rendern, die sich auch basierend auf der Route ändern sollen.
 
@@ -446,7 +451,7 @@ import { useLocation } from 'react-router-dom';
 const ShowLocationInfo = () => {
   const location = useLocation();
   return <pre>{JSON.stringify(location, null, 2)}</pre>;
-}
+};
 ```
 
 In diesem Fall würde die `ShowLocationInfo`-Komponente bei ihrer Verwendung etwa eine Ausgabe wie die folgende verursachen:
@@ -469,11 +474,11 @@ import { useHistory } from 'react-router-dom';
 
 const NavigateHomeButton = () => {
   const history = useHistory();
-  
+
   const goHome = () => {
     history.push('/');
   };
-  
+
   return <button onClick={goHome}Take me home</button>;
 }
 ```
@@ -482,7 +487,7 @@ Hier implementieren wir einen simplen Button, der uns zur Startseite führt, sob
 
 **useParams**
 
-Dieser Hook ist ein Shortcut um auf die Parameter zuzugreifen, die sich bisher unter `match.params` etwas versteckt haben. Definiere ich eine Route mit Platzhaltern, also etwa `/users/:userid` und rufe dann eine URL auf wie `/users/123` enthalt das params-Objekt ein key/value Paar in der Form `{ "userid": "123" }`. 
+Dieser Hook ist ein Shortcut um auf die Parameter zuzugreifen, die sich bisher unter `match.params` etwas versteckt haben. Definiere ich eine Route mit Platzhaltern, also etwa `/users/:userid` und rufe dann eine URL auf wie `/users/123` enthalt das params-Objekt ein key/value Paar in der Form `{ "userid": "123" }`.
 
 Der useParams-Hook erlaubt es uns nun, direkt auf dieses Objekt zuzugreifen:
 
@@ -514,7 +519,7 @@ Diese Komponente würde beim einer entsprechend angelegten Route \(`/users/:user
 
 #### useRouteMatch\(\)
 
-Der letzte Hook, `useRouteMatch()`, gibt dem Entwickler Zugriff auf das komplette `match`-Objekt zu einer Route, bestehend aus den `params`, der `url`, dem `path` und `isExact`, also der Information, ob die komplette URL mit dem `path` der Route übereinstimmt. 
+Der letzte Hook, `useRouteMatch()`, gibt dem Entwickler Zugriff auf das komplette `match`-Objekt zu einer Route, bestehend aus den `params`, der `url`, dem `path` und `isExact`, also der Information, ob die komplette URL mit dem `path` der Route übereinstimmt.
 
 Der Funktion kann ein Pfad übergeben werden, dann gibt sie das `match`-Objekt zu dieser Route zurück. Wird kein Pfad übergeben wird der Pfad der aktuellen Route verwendet. Bleiben wir beim obigen Beispiel mit einem Pfad `/users/:userid` , ergibt die Route `<Route path="/users/:userid">` beim Aufruf der URL `/users/123` und dem Aufruf des Hooks ohne Parameter etwa folgendes Match-Objekt:
 
@@ -532,8 +537,7 @@ Der Funktion kann ein Pfad übergeben werden, dann gibt sie das `match`-Objekt z
 Wird der Hook mit einem Pfad aufgerufen, zu dem die aktuelle Route nicht passt, wird `null` aus der Funktion zurückgegeben:
 
 ```jsx
-useRouteMatch('/orders/:orderid')
+useRouteMatch('/orders/:orderid');
 ```
 
 Der obige Funktionsaufruf würde beim Aufruf der URL `/users/:userid` also `null` zurückgeben.
-

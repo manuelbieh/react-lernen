@@ -48,12 +48,14 @@ class MyComponent extends React.Component {
 
 Ist der **State** erst einmal definiert, können wir innerhalb der **Klassen-Komponente** mittels `this.state` **lesend** auf ihn zugreifen. **Lesend** ist hier ein entscheidendes Stichwort. Denn auch wenn es prinzipiell möglich, ist den State direkt über `this.state` zu verändern, sollte dies aus verschiedenen Gründen vermieden werden.
 
+<div class="force-break-before"></div>
+
 ## Den State verändern mit this.setState\(\)
 
-Um State zu verändern, stellt React eine eigene Methode innerhalb einer **Klassen-Komponente** bereit: 
+Um State zu verändern, stellt React eine eigene Methode innerhalb einer **Klassen-Komponente** bereit:
 
 ```javascript
- this.setState(updatedState)
+this.setState(updatedState);
 ```
 
 Wann immer der State innerhalb einer Komponente verändert werden soll, sollte dafür `this.setState()` verwendet werden. Der Aufruf von `this.setState()` führt dann dazu, dass React entsprechende **Lifecycle-Methoden** \(wie bspw. `componentDidUpdate()`\) ausführt und eine Komponente **neu rendert!** Würden wir den State stattdessen direkt verändern, also bspw. `this.state.counter = 1;` schreiben, hätte dies vorerst keinerlei Auswirkungen auf unsere Komponente und alles würde aussehen wie bisher, da der Render-Prozess **nicht** ausgelöst werden würde. React hat dann keine Kenntnis von der Änderung am State!
@@ -115,16 +117,16 @@ Was denkst du, wie ist der neue State wenn der initiale State `0` war? `3`? Fals
 
 ```javascript
 this.state = Object.assign(
-  this.state, 
+  this.state,
   { counter: this.state.counter + 1 },
   { counter: this.state.counter + 1 },
-  { counter: this.state.counter + 1 },
+  { counter: this.state.counter + 1 }
 );
 ```
 
-Die `counter`-Property überschreibt sich hier während eines Batch-Updates also immer wieder selbst, nimmt aber stets `this.state.counter` als Basiswert für die Erhöhung um 1. Nachdem alle State-Updates ausgeführt wurden, ruft React dann erneut die `render()`-Methode der Komponente auf. 
+Die `counter`-Property überschreibt sich hier während eines Batch-Updates also immer wieder selbst, nimmt aber stets `this.state.counter` als Basiswert für die Erhöhung um 1. Nachdem alle State-Updates ausgeführt wurden, ruft React dann erneut die `render()`-Methode der Komponente auf.
 
-Bei der Verwendung einer **Updater-Funktion** wird dieser Funktion dabei der jeweils aktuellste State als Parameter übergeben und wir haben Zugriff auf den zum Zeitpunkt des Funktionsaufrufs gültigen State: 
+Bei der Verwendung einer **Updater-Funktion** wird dieser Funktion dabei der jeweils aktuellste State als Parameter übergeben und wir haben Zugriff auf den zum Zeitpunkt des Funktionsaufrufs gültigen State:
 
 ```javascript
 this.setState((state) => ({ counter: state.counter + 1 });
@@ -139,8 +141,8 @@ Sollte es doch einmal nötig werden, unmittelbar nach einem `setState()`-Aufruf 
 ```javascript
 this.setState(
   {
-    time: new Date().toLocaleTimeString() 
-  }, 
+    time: new Date().toLocaleTimeString(),
+  },
   () => {
     console.log('Neue Zeit:', this.state.time);
   }
@@ -149,7 +151,7 @@ this.setState(
 
 ## Lifecycle-Methoden
 
-**Lifecycle-Methoden** können als Methoden einer **Klassen-Komponente** implementiert werden und werden durch React zu unterschiedlichen Zeitpunkten während eines **Komponenten-Lebenszyklus** \(daher der Name\) ausgeführt. 
+**Lifecycle-Methoden** können als Methoden einer **Klassen-Komponente** implementiert werden und werden durch React zu unterschiedlichen Zeitpunkten während eines **Komponenten-Lebenszyklus** \(daher der Name\) ausgeführt.
 
 Der **Lifecycle** einer Komponente beginnt in dem Moment, in der diese **instanziiert** bzw. **gemounted** wird, also sich innerhalb der `render()`-Methode einer Eltern-Komponente befindet und tatsächlich auch Teil des zurückgegebenen Komponenten-Baumes ist. Der Lifecycle endet, wenn die Komponente aus dem Baum der zu rendernden Elemente entfernt wird. Währenddessen gibt es noch **Lifecycle-Methoden** die auf **Updates** und auf Fehler reagieren. Oder eben darauf, dass sie nun entfernt \(_„unmounted“_\) werden.
 
@@ -161,35 +163,35 @@ Im Folgenden die Liste der **Lifecycle-Methoden** in der Reihenfolge, wann und i
 
 Die folgenden Methoden werden **einmalig** aufgerufen, wenn eine Komponenten erstmals gerendert wird, also, vereinfacht gesagt, erstmals zum DOM hinzugefügt wird:
 
-* `constructor(props)`
-* `static getDerivedStateFromProps(nextProps, prevState)`
-* `componentWillMount(nextProps, nextState)` \(deprecated in React 17\)
-* `render()`
-* `componentDidMount()`
+- `constructor(props)`
+- `static getDerivedStateFromProps(nextProps, prevState)`
+- `componentWillMount(nextProps, nextState)` \(deprecated in React 17\)
+- `render()`
+- `componentDidMount()`
 
 #### Update-Phase
 
 Die folgenden Methoden werden aufgerufen, wenn Komponenten entweder durch die Hereingabe neuer Props von außen oder durch die Veränderung des eigenen States ein Update erhalten oder oder explizit die von React bereitgestellte `forceUpdate()`-Methode aufgerufen wird:
 
-* `componentWillReceiveProps(nextProps)` \(deprecated in React 17\)
-* `static getDerivedStateFromProps(nextProps, prevState)`
-* `shouldComponentUpdate(nextProps, nextState)`
-* `componentWillUpdate(nextProps, nextState)` \(deprecated in React 17\)
-* `render()`
-* `getSnapshotBeforeUpdate(prevProps, prevState)`
-* `componentDidUpdate(prevProps, prevState, snapshot)`
+- `componentWillReceiveProps(nextProps)` \(deprecated in React 17\)
+- `static getDerivedStateFromProps(nextProps, prevState)`
+- `shouldComponentUpdate(nextProps, nextState)`
+- `componentWillUpdate(nextProps, nextState)` \(deprecated in React 17\)
+- `render()`
+- `getSnapshotBeforeUpdate(prevProps, prevState)`
+- `componentDidUpdate(prevProps, prevState, snapshot)`
 
 #### Unmount-Phase
 
 Hier gibt es nur eine Methode. Diese wird aufgerufen sobald die Komponente aus dem DOM entfernt wird. Dies ist nützlich, um bspw. Event-Listener oder `setTimeout()`/`setInterval()`-Aufrufe, die beim Mounting der Komponente hinzugefügt wurden, wieder zu entfernen:
 
-* `componentWillUnmount()`
+- `componentWillUnmount()`
 
 #### Fehlerbehandlung
 
 Zuletzt gibt es noch eine Methode, die in React 16 neu hinzukam und immer dann aufgerufen wird, wenn während des Renderings, in einer der Lifecycle-Methoden oder im Constructor einer **Kind-Komponente** ein Fehler geworfen wird:
 
-* `componentDidCatch()`
+- `componentDidCatch()`
 
 Komponenten, die eine `componentDidCatch()`-Methode implementieren werden auch als **Error Boundary** bezeichnet und dienen dazu, eine Alternative zum fehlerhaften Elementen-Baum darzustellen. Dies kann eine High-Level-Komponente sein \(bezogen auf ihre Position innerhalb der Komponenten-Hierarchie\), die grundsätzliche eine Fehler-Seite anzeigt und den Nutzer auffordert, die Anwendung neu zu laden, sollte ein Fehler auftreten. Es kann aber auch eine Low-Level-Komponente sein, die nur einen kurzen Fehlertext neben einem Button ausgibt, sollte die Aktion, die der Button ausgelöst hat, einen Fehler geworfen haben.
 
@@ -205,7 +207,7 @@ class Clock extends React.Component {
   state = {
     date: new Date(),
   };
-  
+
   componentDidMount() {
     this.intervalId = setInterval(() => {
       this.setState(() => ({
@@ -213,15 +215,13 @@ class Clock extends React.Component {
       }));
     }, 1000);
   }
-  
+
   componentWillUnmount() {
     clearTimeout(this.intervalId);
   }
-  
+
   render() {
-    return (
-      <div>{this.state.date.toLocaleTimeString()}</div>
-    );
+    return <div>{this.state.date.toLocaleTimeString()}</div>;
   }
 }
 
@@ -238,7 +238,7 @@ Sollten wir dies einmal vergessen, werden wir im Development-Modus von React abe
 
 {% hint style="danger" %}
 **Warning:** Can't call setState \(or forceUpdate\) on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in the componentWillUnmount method.  
-    in Clock
+ in Clock
 {% endhint %}
 
 Anders als in einigen vorherigen Beispielen rufen wir hier die `ReactDOM.render()`-Methode nur ein einziges Mal auf. Die Komponente kümmert sich ab dann „um sich selbst“ und löst einen Render-Vorgang aus, sobald sich ihr **State** aktualisiert hat. Dies ist die übliche Vorgehensweise bei der Entwicklung von Anwendungen, die auf React basieren. Ein einziger `ReactDOM.render()`-Aufruf und ab dort verwaltet sich die App sozusagen von alleine, erlaubt Interaktion mit dem Benutzer, reagiert auf Zustandsänderungen und rendert regelmäßig das Interface neu.
@@ -252,13 +252,9 @@ Bei der Trennung von Business- und Layout-Komponenten ist im React Jargon meist 
 Schauen wir uns also das Zusammenspiel mehrerer Komponenten in einem weiteren Beispiel an:
 
 ```jsx
-const ShowDate = ({ date }) => (
-  <div>Heute ist {date}</div>
-);
+const ShowDate = ({ date }) => <div>Heute ist {date}</div>;
 
-const ShowTime = ({ time }) => (
-  <div>Es ist {time} Uhr</div>
-);
+const ShowTime = ({ time }) => <div>Es ist {time} Uhr</div>;
 
 class DateTime extends React.Component {
   state = {
@@ -283,7 +279,7 @@ class DateTime extends React.Component {
         <ShowDate date={this.state.date.toLocaleDateString()} />
         <ShowTime time={this.state.date.toLocaleTimeString()} />
       </div>
-    )
+    );
   }
 }
 
@@ -340,7 +336,7 @@ class ParentComponent extends React.Component {
   }
 
   componentDidUpdate() {
-    log('componentDidUpdate', 'parent')
+    log('componentDidUpdate', 'parent');
   }
 
   componentWillUnmount() {
@@ -449,7 +445,7 @@ Und so geht hier das Spiel erneut los: `constructor()`, `getDerivedStateFromProp
 
 #### `componentDidMount()`
 
-Ist eine solche Komponente erreicht, ist die `componentDidMount()`-Methode an der Reihe. Diese Methode wird aufgerufen, sobald eine Komponente und all ihre Kind-Komponenten gerendert wurden. Ab diesem Moment kann auf die DOM-Node der Komponente zugegriffen werden falls notwendig. Die Methode ist außerdem der richtige Ort um bspw. Timeouts oder Intervalle zu starten oder Netzwerk-Requests bspw. via XHR/Fetch zu veranlassen. 
+Ist eine solche Komponente erreicht, ist die `componentDidMount()`-Methode an der Reihe. Diese Methode wird aufgerufen, sobald eine Komponente und all ihre Kind-Komponenten gerendert wurden. Ab diesem Moment kann auf die DOM-Node der Komponente zugegriffen werden falls notwendig. Die Methode ist außerdem der richtige Ort um bspw. Timeouts oder Intervalle zu starten oder Netzwerk-Requests bspw. via XHR/Fetch zu veranlassen.
 
 Die Methode wird „von innen nach außen“ aufgerufen. Also erst sind die Kind-Komponenten an der Reihe sobald diese gerendert wurden, dann kommen die Eltern-Komponenten dran. So können wir in der obigen Log-Ausgabe auch gut sehen, dass dort erst einmal die `componentDidMount()`-Methode der `ChildComponent` aufgerufen wird, erst danach die der `ParentComponent`.
 
@@ -459,7 +455,7 @@ In unserem Beispiel starten wir in der `ParentComponent` einmalig einen `setTime
 
 Findet ein Update einer Komponente statt, das ist immer der Fall wenn die Komponente ihren State verändert oder von außen Props hereingereicht bekommt, wird `shouldComponentUpdate()` aufgerufen. Doch Vorsicht, hier gibt es einen Unterschied je nachdem ob sich die Props geändert haben oder der State: bekommt eine Komponente neue Props von außen, wird zuvor `getDerivedStateFromProps()` aufgerufen.
 
-Die `shouldComponentUpdate()`-Methode dient als „Hilfe“, mit der React mitgeteilt werden kann, ob ein kostspieliges Re-Rendering überhaupt nötig ist. Die Methode bekommt die **nächsten Props** und den **nächsten State** als Parameter übergeben und kann auf deren Basis die Entscheidung treffen, ob ein Rendering ausgeführt werden soll. Die Methode muss dabei entweder `true` zurückgeben, damit wird ein Re-Rendering ausgelöst wird oder `false`, wodurch der Aufruf von sowohl `componentDidUpdate()` , `getSnapshotBeforeUpdate()` als auch `render()` in dieser Komponente unterbunden wird. 
+Die `shouldComponentUpdate()`-Methode dient als „Hilfe“, mit der React mitgeteilt werden kann, ob ein kostspieliges Re-Rendering überhaupt nötig ist. Die Methode bekommt die **nächsten Props** und den **nächsten State** als Parameter übergeben und kann auf deren Basis die Entscheidung treffen, ob ein Rendering ausgeführt werden soll. Die Methode muss dabei entweder `true` zurückgeben, damit wird ein Re-Rendering ausgelöst wird oder `false`, wodurch der Aufruf von sowohl `componentDidUpdate()` , `getSnapshotBeforeUpdate()` als auch `render()` in dieser Komponente unterbunden wird.
 
 In komplexen Anwendungen ist es oftmals der Fall, dass der Update-Zyklus nur ausgelöst wird, weil sich in einem anderen Teil der Anwendung, in einer Eltern-Komponente etwas geändert hat, diese Änderung aber für Kind-Komponenten irrelevant ist. Die `shouldComponentUpdate()`-Methode ist dann sehr hilfreich, wenn es um die Optimierung der Rendering-Performance geht, da so unnötige Re-Renderings verhindert werden.
 
@@ -497,9 +493,8 @@ Immer dann wird die `componentWillUnmount()`-Methode einer Komponente aufgerufen
 
 Event Listener. Gutes Stichwort. Darum kümmern wir uns im nächsten Kapitel, denn in den meisten Fällen ist der Einsatz von `addEventListener()` in React nicht mehr nötig, da React ein eigenes Event-System mitbringt, um für bessere Übersicht zu sorgen.
 
+<div class="force-break-before"></div>
+
 ### Diagramm der Lifecycle-Methoden
 
-![Diagram der verschiedenen Lifecycle-Methods in ihren jeweiligen Phasen \(CC0 Dan Abramov\)](../.gitbook/assets/lifecycle-methods-2.jpg)
-
-
-
+![Diagram der verschiedenen Lifecycle-Methods in ihren jeweiligen Phasen (CC0 Dan Abramov)](../.gitbook/assets/lifecycle-methods-2.jpg)

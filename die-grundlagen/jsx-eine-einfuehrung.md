@@ -232,11 +232,8 @@ Damit solltest du auch schon ausreichend Kenntnisse über JSX erlangt haben, um 
 
 ## Fazit
 
-{% hint style="info" %}
-* Mehrzeiliges JSX muss stets in Klammern gesetzt werden
-* JSX kann JavaScript-Ausdrücke verarbeiten. Diese müssen in geschweifte Klammern gesetzt werden und können dann auch in Props verwendet werden
-* Um Attribute für HTML-Elemente zu setzen muss die Schreibweise des DOM Element Interface benutzt werden \(`htmlFor` statt `for`, `className` statt `class`\)
-* CSS Inline-Styles werden als JavaScript Object geschrieben
-* Kommentare werden ebenfalls in geschweifte Klammern gesetzt und verwenden Multiline-Comment Syntax: `{/* */}`
-{% endhint %}
-
+- Mehrzeiliges JSX muss stets in Klammern gesetzt werden
+- JSX kann JavaScript-Ausdrücke verarbeiten. Diese müssen in geschweifte Klammern gesetzt werden und können dann auch in Props verwendet werden
+- Um Attribute für HTML-Elemente zu setzen muss die Schreibweise des DOM Element Interface benutzt werden \(`htmlFor` statt `for`, `className` statt `class`\)
+- CSS Inline-Styles werden als JavaScript Object geschrieben
+- Kommentare werden ebenfalls in geschweifte Klammern gesetzt und verwenden Multiline-Comment Syntax: `{/* */}`

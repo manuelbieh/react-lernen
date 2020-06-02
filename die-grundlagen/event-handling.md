@@ -1,12 +1,12 @@
 # Event-Handling
 
-Ein wesentlicher Teil bei der Entwicklung von Anwendungen mit einem komplexen User Interfaces ist natürlich die Interaktion zwischen Benutzer und dem Interface an sich - insbesondere in Form von **Events**. 
+Ein wesentlicher Teil bei der Entwicklung von Anwendungen mit einem komplexen User Interfaces ist natürlich die Interaktion zwischen Benutzer und dem Interface an sich - insbesondere in Form von **Events**.
 
-Ich drücke einen Knopf und es passiert etwas. Ich schreibe einen Text in ein Feld und es passiert etwas. Ich wähle ein Element aus einer Liste und es passiert etwas. In einfachem JavaScript stellt uns der Browser dafür die Methoden `addEventListener()` und `removeEventListener()` bereit. Auf diese beiden Event-Methoden kann in React in den meisten Fällen nahezu komplett verzichtet werden, da React ein eigenes System zum Definieren von Benutzerinteraktion gleich mitbringt. Und zwar, nicht erschrecken: über **Inline-Events**. 
+Ich drücke einen Knopf und es passiert etwas. Ich schreibe einen Text in ein Feld und es passiert etwas. Ich wähle ein Element aus einer Liste und es passiert etwas. In einfachem JavaScript stellt uns der Browser dafür die Methoden `addEventListener()` und `removeEventListener()` bereit. Auf diese beiden Event-Methoden kann in React in den meisten Fällen nahezu komplett verzichtet werden, da React ein eigenes System zum Definieren von Benutzerinteraktion gleich mitbringt. Und zwar, nicht erschrecken: über **Inline-Events**.
 
 Diese **Inline-Events** haben rein äußerlich sehr große Ähnlichkeit zu den HTML Event-Attributen \(also bspw. `<button onclick="myFunction" />`\) und doch ist ihre Funktionsweise grundlegend anders.
 
-Da wurde uns Web-Entwicklern über Jahre immer wieder beigebracht, dass man seine Event-Listener sauber von seinem Markup trennen sollte, **Separation of Concerns**, dann kommt React daher und macht wieder einfach alles anders. 
+Da wurde uns Web-Entwicklern über Jahre immer wieder beigebracht, dass man seine Event-Listener sauber von seinem Markup trennen sollte, **Separation of Concerns**, dann kommt React daher und macht wieder einfach alles anders.
 
 Und das ist in diesem Fall auch gut so, denn durch die Verwendung eines eigenen Systems zur Verwaltung von Events, nimmt uns React hier wieder eine ganze Menge Arbeit ab und ermöglicht es uns außerdem, sehr leicht im Komponenten-Kontext zu bleiben, indem wir alle Event-Handler als **Klassen-Methoden** implementieren können und so sowohl Darstellungslogik als auch Verhaltenslogik in einer einzigen Komponente kapseln können. Kein mühsames und unübersichtliches hin- und herspringen zwischen Controllern und Views!
 
@@ -14,11 +14,11 @@ Und das ist in diesem Fall auch gut so, denn durch die Verwendung eines eigenen 
 
 Events in React und JSX werden wie erwähnt sehr ähnlich definiert wie HTML Event-Attribute. Doch es gibt einige Unterschiede. So werden Events in React in **CamelCase**-Form definiert, statt in **Lowercase**. Somit wird aus `onclick` in React `onClick`, aus `onmouseover` wird `onMouseOver`, `ontouchstart` wird zu `onTouchStart` usw.
 
-Der dem Event-Handler übergebene erste Parameter ist auch kein Objekt vom Typ `Event`, sondern ein sogenannter `SyntheticEvent`, ein React-eigener Wrapper um das native Event-Objekt. Dieser Wrapper ist Teil des React Event Systems und dient als eine Art Normalisierungsschicht, um Cross-Browser-Kompatibilität zu gewährleisten. Dabei hält diese sich, anders als so mancher Browser, strikt an die [Event-Spezifikation des W3C](https://www.w3.org/TR/DOM-Level-3-Events/). 
+Der dem Event-Handler übergebene erste Parameter ist auch kein Objekt vom Typ `Event`, sondern ein sogenannter `SyntheticEvent`, ein React-eigener Wrapper um das native Event-Objekt. Dieser Wrapper ist Teil des React Event Systems und dient als eine Art Normalisierungsschicht, um Cross-Browser-Kompatibilität zu gewährleisten. Dabei hält diese sich, anders als so mancher Browser, strikt an die [Event-Spezifikation des W3C](https://www.w3.org/TR/DOM-Level-3-Events/).
 
 Ein weiterer Unterschied zur nativen Browser-Event-API ist der, dass explizit `preventDefault()` aufgerufen werden muss um das Standardverhalten des Browsers bei einem Event zu unterdrücken, statt lediglich `false` aus dem Event-Handler zurückzugeben.
 
-Und nicht zuletzt ist der im Event-Attribut \(bzw. Event-**Prop** in JSX\) angegebene Wert eine **Referenz zu einer Funktion** statt wie in HTML ein String. Folglich benötigen wir hier die geschweiften Klammern um JSX mitzuteilen, dass es sich um einen JavaScript-Ausdruck handelt. 
+Und nicht zuletzt ist der im Event-Attribut \(bzw. Event-**Prop** in JSX\) angegebene Wert eine **Referenz zu einer Funktion** statt wie in HTML ein String. Folglich benötigen wir hier die geschweiften Klammern um JSX mitzuteilen, dass es sich um einen JavaScript-Ausdruck handelt.
 
 Wie das aussieht? So:
 
@@ -36,7 +36,7 @@ Dieses Vorgehen, das auf den ersten Blick einigen vielleicht erst einmal etwas e
 
 ### Scopes in Event-Handlern
 
-Bei der Verwendung von ES2015-Klassen in React ist es für gewöhnlich so, dass Event-Handler als Methoden der Klassen-Komponente implementiert werden. Hierbei muss jedoch beachtet werden, dass **Klassen-Methoden nicht automatisch an die Instanz gebunden werden**. Klingt kompliziert, bedeutet aber lediglich, dass `this` in eurem Event-Handler grundsätzlich erstmal `undefined` ist. 
+Bei der Verwendung von ES2015-Klassen in React ist es für gewöhnlich so, dass Event-Handler als Methoden der Klassen-Komponente implementiert werden. Hierbei muss jedoch beachtet werden, dass **Klassen-Methoden nicht automatisch an die Instanz gebunden werden**. Klingt kompliziert, bedeutet aber lediglich, dass `this` in eurem Event-Handler grundsätzlich erstmal `undefined` ist.
 
 Hierzu ein kurzes Beispiel:
 
@@ -48,7 +48,7 @@ class Counter extends React.Component {
 
   increase() {
     this.setState((state) => ({
-        counter: state.counter + 1,
+      counter: state.counter + 1,
     }));
   }
 
@@ -58,7 +58,7 @@ class Counter extends React.Component {
         <p>{this.state.counter}</p>
         <button onClick={this.increase}>+1</button>
       </div>
-    )
+    );
   }
 }
 ```
@@ -66,7 +66,8 @@ class Counter extends React.Component {
 Hier definieren wir also einen `onClick`-Event, um den Zähler jeweils um `1` zu erhöhen, sobald der Benutzer auf den Button `+1` klickt. Beim Klick auf den Button sieht unser Benutzer aber stattdessen:
 
 {% hint style="danger" %}
-**TypeError**  
+**TypeError**
+
 Cannot read property 'setState' of undefined
 {% endhint %}
 
@@ -84,7 +85,7 @@ Die Methode wird nun **im Scope der Komponenten-Instanz** aufgerufen und unser C
 
 #### Method-Binding im Constructor
 
-Eine andere, sauberere Möglichkeit eine Methode an eine Klassen-Instanz zu binden, ist dies im Constructor bei der Instanziierung einer Klasse zu tun. 
+Eine andere, sauberere Möglichkeit eine Methode an eine Klassen-Instanz zu binden, ist dies im Constructor bei der Instanziierung einer Klasse zu tun.
 
 ```jsx
 class Counter extends React.Component {
@@ -118,7 +119,7 @@ class Counter extends React.Component {
     this.setState((state) => ({
       counter: state.counter + 1,
     }));
-  }
+  };
 }
 ```
 
@@ -134,7 +135,7 @@ Schreiben wir:
 increase = () => { … }
 ```
 
-**Problem gelöst!** 
+**Problem gelöst!**
 
 Der Unterschied liegt hier wie erwähnt darin, dass wir im ersten Beispiel eine **echte Klassen-Methode** implementieren und im zweiten Fall stattdessen einer gleichnamigen Eigenschaft dieser Klasse eine **Arrow Function als Wert** zuweisen. Da diese kein eigenes `this` bindet, greifen wir hier auf das `this` der Klassen-Instanz zu.
 
@@ -142,7 +143,7 @@ Der Unterschied liegt hier wie erwähnt darin, dass wir im ersten Beispiel eine 
 
 Die Verwendung von React schließt auch die Implementierung von nativen Browser-Events nicht aus. Allerdings sollte nach Möglichkeit immer das React-eigene Event-System verwendet werden, da dieses Cross-Browser-Kompatibilität mitbringt, nach dem W3C Standard für Browser-Events arbeitet und zahlreiche Optimierungen vornimmt.
 
-Gelegentlich ist es jedoch notwendig, Events außerhalb des Komponenten-Kontexts zu definieren. Ein Klassisches Beispiel sind `window.onresize` oder `window.onscroll` Events. Hier bietet React von Haus aus keine Möglichkeit, um globale Events außerhalb des komponentenspezifischen JSX zu definieren. Hier ist dann die `componentDidMount()`-Methode der richtige Ort um diese zu definieren. Dabei sollte allerdings auch stets darauf geachtet werden, dass Events, die mittels `addEventListener()` definiert werden, **immer auch entfernt werden!** 
+Gelegentlich ist es jedoch notwendig, Events außerhalb des Komponenten-Kontexts zu definieren. Ein Klassisches Beispiel sind `window.onresize` oder `window.onscroll` Events. Hier bietet React von Haus aus keine Möglichkeit, um globale Events außerhalb des komponentenspezifischen JSX zu definieren. Hier ist dann die `componentDidMount()`-Methode der richtige Ort um diese zu definieren. Dabei sollte allerdings auch stets darauf geachtet werden, dass Events, die mittels `addEventListener()` definiert werden, **immer auch entfernt werden!**
 
 Der richtige Ort **dafür** ist dann die `componentWillUnmount()`-Methode. Werden eigene definierte globale Events nicht entfernt, werden diese mit jedem Mounting einer Komponente **erneut** hinzugefügt und auch erneut **mehrmals** aufgerufen, was letztendlich ebenfalls zu **Performance-Bottlenecks** und sogar zu **Memory-Leaks** führen kann.
 
@@ -162,7 +163,7 @@ class TextRepeater extends React.Component {
     this.setState((state) => ({
       value: e.target.value,
     }));
-  }
+  };
 
   render() {
     return (
@@ -170,7 +171,7 @@ class TextRepeater extends React.Component {
         <input type="text" onChange={this.handleChange} />
         <p>{this.state.value}</p>
       </div>
-    )
+    );
   }
 }
 ```
@@ -180,18 +181,19 @@ Wir registrieren ein `onChange`-Event, das bei einer Änderung im Textfeld den e
 Hier haben wir aber nun mit einem Fallstrick zu tun: der `this.setState()`-Aufruf nutzt eine **Updater-Funktion**, also einen Callback. Dieser findet außerhalb des eigentlichen Event-Handler Scopes statt. Das bedeutet, das `SyntheticEvent` wurde zu diesem Zeitpunkt bereits wieder zurückgesetzt und `e.target` existiert zum Zeitpunkt des Aufrufs der Updater-Funktion schon gar nicht mehr:
 
 {% hint style="danger" %}
-**TypeError**  
+**TypeError**
+
 Cannot read property 'value' of null
 {% endhint %}
 
-Die einfachste Lösung wäre hier statt der Updater-Funktion ein Object-Literal zu verwenden: 
+Die einfachste Lösung wäre hier statt der Updater-Funktion ein Object-Literal zu verwenden:
 
 ```jsx
 handleChange = (e) => {
   this.setState({
     value: e.target.value,
   });
-}
+};
 ```
 
 Damit wäre unser Problem in dem Fall zwar gelöst, das hilft uns aber trotzdem nicht sonderlich weiter. Denn auf das gleiche Problem stoßen wir auch, wenn wir auf Eigenschaften des `SyntheticEvent`-Objekts bspw. in einem `setTimeout()`-Callback zugreifen wollen. Wir müssen uns also etwas anderes einfallen lassen.
@@ -206,7 +208,7 @@ handleChange = (e) => {
   this.setState(() => ({
     value: value,
   }));
-}
+};
 ```
 
 Klappt. Bonuspunkte für Eleganz gibt es bei der Verwendung von **Object Destructuring** und dem **Object Property Shorthand**:
@@ -215,12 +217,12 @@ Klappt. Bonuspunkte für Eleganz gibt es bei der Verwendung von **Object Destruc
 handleChange = (e) => {
   const { value } = e.target;
   this.setState(() => ({ value }));
-}
+};
 ```
 
 #### Persistieren von `SyntheticEvents` mittels `e.persist()`
 
-Theoretisch möglich, in der Praxis aus meiner Erfahrung eher irrelevant: Das `SyntheticEvent`-Objekt stellt eine eigene Methode `persist()` bereit, mit der eine Referenz zum entsprechenden Event beibehalten \(also persistiert\) werden kann. Ein möglicher Anwendungsfall wäre hier, das gesamte `SyntheticEvent`-Objekt an eine Callback-Funktion **außerhalb** des Event-Handlers weiterzugeben. 
+Theoretisch möglich, in der Praxis aus meiner Erfahrung eher irrelevant: Das `SyntheticEvent`-Objekt stellt eine eigene Methode `persist()` bereit, mit der eine Referenz zum entsprechenden Event beibehalten \(also persistiert\) werden kann. Ein möglicher Anwendungsfall wäre hier, das gesamte `SyntheticEvent`-Objekt an eine Callback-Funktion **außerhalb** des Event-Handlers weiterzugeben.
 
 Sollte das jedoch notwendig sein, lohnt es sich aber womöglich darüber nachzudenken, ob der Code der externen Callback-Funktion nicht besser im Event-Handler selbst aufgehoben wäre. Unsere Beispielfunktion von oben sieht in diesem Fall so aus:
 
@@ -230,18 +232,17 @@ handleChange = (e) => {
   this.setState(() => ({
     value: e.target.value,
   }));
-}
+};
 ```
 
-Zuerst rufen wir besagte `e.persist()`-Methode auf. Anschließend können wir auch in der **Updater-Funktion** sorglos auf `e.target` und dessen `value`-Eigenschaft zugreifen. 
+Zuerst rufen wir besagte `e.persist()`-Methode auf. Anschließend können wir auch in der **Updater-Funktion** sorglos auf `e.target` und dessen `value`-Eigenschaft zugreifen.
+
+<div class="force-break-before"></div>
 
 ### Fazit
 
-{% hint style="info" %}
-* Zum Definieren von Events möglichst **immer** die Event-Props im JSX verwenden: `onChange`, `onMouseOver`, `onTouchStart`, `onKeyDown`, `onAnimationStart` usw. auch wenn es anfangs gewöhnungsbedürftig wirken sollte.
-* Event-Handler müssen explizit an die Klassen-Instanz gebunden werden, wenn auf andere Klassen-Methoden wie bspw. `this.setState()` zugegriffen wird. Der eleganteste Weg hierfür sind **Public Class Properties** und **Arrow Functions.**
-* Eigene Events über die `addEventListener()`-API zu definieren sollte möglichst vermieden werden. Lässt es sich einmal nicht vermeiden, unbedingt daran denken, diese Events beim Unmounting der Komponente mittels `removeEventListener()` zu entfernen!
-* `SyntheticEvent`-Objekte werden „nullified“. Vorsicht bei der Verwendung in Callback-Funktionen außerhalb des jeweiligen Event-Handlers! Hier ist es gut möglich, dass das Event-Objekt beim Aufruf des Callbacks mittlerweile nicht mehr existiert.
-* Mittels `event.persist()` kann erzwungen werden, dass das das Event-Objekt nicht durch React auf `null` gesetzt wird.
-{% endhint %}
-
+- Zum Definieren von Events möglichst **immer** die Event-Props im JSX verwenden: `onChange`, `onMouseOver`, `onTouchStart`, `onKeyDown`, `onAnimationStart` usw. auch wenn es anfangs gewöhnungsbedürftig wirken sollte.
+- Event-Handler müssen explizit an die Klassen-Instanz gebunden werden, wenn auf andere Klassen-Methoden wie bspw. `this.setState()` zugegriffen wird. Der eleganteste Weg hierfür sind **Public Class Properties** und **Arrow Functions.**
+- Eigene Events über die `addEventListener()`-API zu definieren sollte möglichst vermieden werden. Lässt es sich einmal nicht vermeiden, unbedingt daran denken, diese Events beim Unmounting der Komponente mittels `removeEventListener()` zu entfernen!
+- `SyntheticEvent`-Objekte werden „nullified“. Vorsicht bei der Verwendung in Callback-Funktionen außerhalb des jeweiligen Event-Handlers! Hier ist es gut möglich, dass das Event-Objekt beim Aufruf des Callbacks mittlerweile nicht mehr existiert.
+- Mittels `event.persist()` kann erzwungen werden, dass das das Event-Objekt nicht durch React auf `null` gesetzt wird.
