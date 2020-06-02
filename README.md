@@ -7,7 +7,6 @@ description: Readme
 Dieses Buch gibt es auch als ePub-, PDF- und Mobi-Version käuflich zu erwerben:
 
 * [Bei Leanpub kaufen](https://www.leanpub.com/react-lernen)
-* [Bei Gumroad kaufen](https://gum.co/react-lernen)
 * [Für Apple Books kaufen](https://books.apple.com/de/book/react-lernen-und-verstehen/id1461226151)
 
 Und auch als gedruckte Version, wer es lieber auf Papier lesen möchte:
