@@ -70,7 +70,7 @@ Eine ähnliche Funktionalität, ohne React implementiert, hätte stattdessen woh
 function changeTime() {
   var time = new Date().toLocaleTimeString();
   var target = document.getElementById('root');
-  target.textContent = 'Es ist jetzt ' + time  ' Uhr';
+  target.textContent = 'Es ist jetzt ' + time + ' Uhr';
 }
 setInterval(changeTime, 1000);
 ```
@@ -82,4 +82,3 @@ In der Praxis ist es eher üblich, dass `ReactDOM.render()` nur ein einziges Mal
 
 Das Rerendering lösen dann meist **Komponenten** aus, indem sich ihr State ändert oder ihnen von außen neue Props hereingereicht werden. Mit Komponenten geht es im nächsten Kapitel weiter!
 {% endhint %}
-

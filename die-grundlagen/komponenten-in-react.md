@@ -58,7 +58,7 @@ const logFunction = (message) => console.log(message);
 
 class App extends React.Component {
   render() {
-    return <MyComponent logger={changeHandler} />;
+    return <MyComponent logger={logFunction} />;
   }
 }
 ```
@@ -528,8 +528,8 @@ Manchmal möchte ich aber eben doch einen neuen Wert von einer hereingereichten 
 Möchte ich aber nur mal eben einen Wert anzeigen, der sich von der Prop ableitet, die ich als Komponente hereingereicht bekomme, geht das indem ich nur die Ausgabe auf Basis der Prop anpasse ohne zurückzuschreiben.
 
 ```jsx
-var React = require('react');
-var ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 function Example(props) {
   return (
@@ -560,8 +560,8 @@ Jetzt bleibt noch abschließend zu klären, wie Props denn nun außerhalb einer 
 Auch das lässt sich am besten anhand eines konkreten, allerdings noch recht abstrakten Beispiels erklären:
 
 ```jsx
-var React = require('react');
-var ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 var renderCounter = 0;
 setInterval(function() {

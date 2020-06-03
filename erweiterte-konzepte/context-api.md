@@ -58,7 +58,7 @@ const DisplaySelectedLanguage = () => (
 export default DisplaySelectedLanguage;
 ```
 
-Wir können nun an einer beliebigen Stelle innerhalb unserer Anwendung die `SelectedLanguage` Komponente verwenden und haben dort immer den jeweils vom Provider bereitgestellten Wert verfügbar. Ändert sich der Wert im **Provider,** werden auch alle **Consumer-** Komponenten unterhalb des entsprechenden Providers mit dem aktualisierten Wert neu gerendert!
+Wir können nun an einer beliebigen Stelle innerhalb unserer Anwendung die `DisplaySelectedLanguage` Komponente verwenden und haben dort immer den jeweils vom Provider bereitgestellten Wert verfügbar. Ändert sich der Wert im **Provider,** werden auch alle **Consumer-** Komponenten unterhalb des entsprechenden Providers mit dem aktualisierten Wert neu gerendert!
 
 Ein vollständiges, wenn auch recht konstruiertes Beispiel kann dann wie folgt aussehen:
 

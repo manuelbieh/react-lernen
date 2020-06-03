@@ -127,7 +127,7 @@ console.log(myArray);
 
 ```text
 const myArray = [];
-myArray = Array.concat(1, 2);
+myArray = myArray.concat(1, 2);
 ```
 
 {% hint style="danger" %}
@@ -770,7 +770,7 @@ Die Arrow Function gibt uns hier ein Array mit allen Athleten zurück, dementspr
 Möchten wir auf diese Weise einzelne Elemente des Arrays auslassen, ist das buchstäblich durch Auslassen des entsprechenden Wertes möglich:
 
 ```javascript
-const [, silber, bronze] = athletes;
+const [, silver, bronze] = athletes;
 ```
 
 Hier würden wir auf das Deklarieren einer Variable `gold` verzichten und nur die Gewinner der Silber- und Bronze-Medaille in entsprechenden Variablen speichern.

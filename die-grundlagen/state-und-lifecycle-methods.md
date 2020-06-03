@@ -21,6 +21,7 @@ Um in einer Komponente einen initialen Zustand zu definieren gibt es zwei einfac
 ```javascript
 class MyComponent extends React.Component {
   constructor(props) {
+    super(props);
     this.state = {
       counter: props.counter,
     };
