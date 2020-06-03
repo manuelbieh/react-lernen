@@ -73,23 +73,19 @@ class CryptoPrices extends React.Component {
 
     try {
       const cryptoTicker = await fetch(
-        `https://api.coinmarketcap.com/v2/ticker/?limit=${limit || 10}&convert=EUR`
+        `https://api.coingecko.com//api/v3/coins/markets?vs_currency=eur&per_page=${limit || 10}`
       );
       const cryptoTickerResponse = await cryptoTicker.json();
 
       this.setState(() => ({
         isLoading: false,
-        items: this.convertResponseToArray(cryptoTickerResponse)
+        items: cryptoTickerResponse
       }));
     } catch (err) {
       this.setState(() => ({
         isLoading: false
       }));
     }
-  };
-
-  convertResponseToArray = (response) => {
-    return Object.entries(response.data).map(([id, item]) => item);
   };
 
   render() {
@@ -129,7 +125,7 @@ Die Verwendung dieser Komponente ist dann ähnlich zu der aus dem ersten Beispie
         <ul>
           {items.map((item) => (
             <li>
-              {item.name} ({item.symbol}): EUR {item.quotes.EUR.price}
+              {item.name} ({item.symbol}): EUR {item.current_price}
             </li>
           ))}
         </ul>
