@@ -36,7 +36,7 @@ Doch wozu das überhaupt? Eine solche strikte Unterteilung in Business Logik und
 
 Stellen wir uns ein gängiges Beispiel aus der Interface Entwicklung einmal vor: die Umschaltung zwischen einer **Listen-** und einer **Karten-Ansicht**. Hier würde sich eine **Container-Komponente** darum kümmern, die Daten zu beschaffen die relevant für den Benutzer sind. Sie würde die beschafften Daten dann an die frei konfigurierbare **Layout-Komponente** übergeben. Solange beide Komponenten sich an das vom Entwickler vorgebene Interface \(Stichwort **PropTypes**\) halten, sind beide Komponenten beliebig austauschbar und können vollkommen unabhängig voneinander entwickelt und **getestet** werden!
 
-Genug Theorie. Zeit für ein weiteres Beispiel. Wir wollen uns eine Liste mit den 10 größten Kryptowährungen laden und ihren momentanen Preis anzeigen. Dazu erstellen wir eine **Higher Order Component,** die sich diese Daten über die frei zugängliche Coinmarketcap API beschafft und an eine Layout-Komponente übergibt.
+Genug Theorie. Zeit für ein weiteres Beispiel. Wir wollen uns eine Liste mit den 10 größten Kryptowährungen laden und ihren momentanen Preis anzeigen. Dazu erstellen wir eine **Higher Order Component,** die sich diese Daten über die frei zugängliche Coingecko API beschafft und an eine Layout-Komponente übergibt.
 
 ```jsx
 const withCryptoPrices = (WrappedComponent) => {
@@ -57,23 +57,20 @@ const withCryptoPrices = (WrappedComponent) => {
 
       try {
         const cryptoTicker = await fetch(
-          'https://api.coinmarketcap.com/v2/ticker/?limit=10&convert=EUR'
+          'https://api.coingecko.com' +
+          '/api/v3/coins/markets?vs_currency=eur&per_page=10'
         );
         const cryptoTickerResponse = await cryptoTicker.json();
 
         this.setState(() => ({
           isLoading: false,
-          items: this.convertResponseToArray(cryptoTickerResponse),
+          items: cryptoTickerResponse,
         }));
       } catch (err) {
         this.setState(() => ({
           isLoading: false,
         }));
       }
-    };
-
-    convertResponseToArray = (response) => {
-      return Object.entries(response.data).map(([id, item]) => item);
     };
 
     render() {
@@ -90,7 +87,7 @@ const withCryptoPrices = (WrappedComponent) => {
 };
 ```
 
-Voilà, fertig ist die **HOC** für die Abfrage der Crypto-Preise auf coinmarketcap.com. Doch die **Higher Order Component** allein reicht noch nicht. Wir benötigen nun auch noch eine Layout-Komponente, an die wir die Verantwortung delegieren, die Daten entsprechend anzuzeigen.
+Voilà, fertig ist die **HOC** für die Abfrage der Crypto-Preise auf coingecko.com. Doch die **Higher Order Component** allein reicht noch nicht. Wir benötigen nun auch noch eine Layout-Komponente, an die wir die Verantwortung delegieren, die Daten entsprechend anzuzeigen.
 
 Hierzu erstellen wir eine möglichst generische `PriceTable`-Komponente, die selbst keinerlei Kenntnis davon hat, ob sie nun die aktuellen Joghurtpreise aus dem örtlichen Supermarkt darstellt oder Preise von Kryptowährungen auf irgendeiner beliebigen Börse. Entsprechend nennen wir sie auch sehr generisch `PriceTable`:
 
@@ -116,7 +113,7 @@ const PriceTable = ({ isLoading, items, loadData }) => {
           <td>
             {item.name} ({item.symbol})
           </td>
-          <td>EUR {item.quotes.EUR.price}</td>
+          <td>EUR {item.current_price}</td>
         </tr>
       ))}
       <tr>
@@ -167,8 +164,8 @@ const PriceCSV = ({ isLoading, items, loadData, separator = ';' }) => {
   return (
     <pre>
       {items.map(
-        ({ name, symbol, quotes }) =>
-          `${name}${separator}${symbol}${separator}${quotes.EUR.price}\n`
+        ({ name, symbol, current_price }) =>
+          `${name}${separator}${symbol}${separator}${current_price}\n`
       )}
     </pre>
   );
@@ -177,7 +174,7 @@ const PriceCSV = ({ isLoading, items, loadData, separator = ';' }) => {
 
 Und damit haben wir auch schon unsere CSV-Layout-Komponente implementiert. Wieder schauen wir zuerst ob noch Daten geladen werden; anschließend schauen wir erneut, ob `items` vorhanden sind. Hier könnte man anfangen darüber nachzudenken, auch dies in einer weiteren HOC zu bündeln, denn HOCs lassen sich beliebig ineinander schachteln, sind es doch am Ende lediglich Funktionen, die als Parameter an andere Funktionen weitergegeben werden.
 
-Zuletzt rendern wir den tatsächlichen Output: wir iterieren durch die Liste der `items`, picken uns über die **Object Destructuring** Syntax die für uns relevanten Eigenschaften `name`, `symbol` und `quotes` heraus und umschließen die einzelnen Zeilen mit einem `pre`-Element um den Zeilenumbruch am Ende der Zeile korrekt darzustellen.
+Zuletzt rendern wir den tatsächlichen Output: wir iterieren durch die Liste der `items`, picken uns über die **Object Destructuring** Syntax die für uns relevanten Eigenschaften `name`, `symbol` und `current_price` heraus und umschließen die einzelnen Zeilen mit einem `pre`-Element um den Zeilenumbruch am Ende der Zeile korrekt darzustellen.
 
 Anders als bei der `PriceTable` haben wir hier allerdings noch eine weitere \(optionale\) Prop eingeführt: `separator` - um der Render-Komponente mitzuteilen welches Trennzeichen sie bei der Darstellung der Daten verwenden soll. Die Prop kann wie in JSX üblich bei der Verwendung der Komponente als simple Prop angegeben werden:
 
@@ -219,3 +216,4 @@ Entscheidend ist hier Zeile 3: mittels `{...this.props}` ,die Spread-Syntax aus 
 
 Zwar werden **Higher Order Components** noch immer häufig verwendet und gegen ihre Verwendung ist nichts einzuwenden. Allerdings gibt es mittlerweile neuere Konzepte und seit den neuesten Updates vor allem neue Wege um eine ähnliche Funktionalität in vielen Fällen in noch übersichtlicher Form zu erreichen. Zwei davon sind **Functions as a Child** und die neue **Context API**, die in Version 16.3.0 ihren Weg in React gefunden hat. Diese werden in den folgenden Kapiteln beschrieben.
 {% endhint %}
+
