@@ -73,7 +73,7 @@ class CryptoPrices extends React.Component {
 
     try {
       const cryptoTicker = await fetch(
-        `https://api.coingecko.com//api/v3/coins/markets?vs_currency=eur&per_page=${limit || 10}`
+        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&per_page=${limit || 10}`
       );
       const cryptoTickerResponse = await cryptoTicker.json();
 
