@@ -15,6 +15,7 @@ Auf die meiner Meinung nach wichtigsten und nützlichsten neuen Funktionen und M
 **Wenn du bereits Erfahrung mit ES2015 und den nachfolgenden Versionen hast, kannst du dieses Kapitel überspringen!**
 
 <span class="force-break-before"></span>
+x
 
 ## Variablen-Deklarationen mit let und const
 
