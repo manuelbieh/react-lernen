@@ -240,7 +240,7 @@ Der `useContext()`-Hook verhält sich dabei wie eine Context-Consumer-Komponente
 
 Die Verwendung des Hooks ist optional und so ist es auch weiterhin möglich, Context-Consumer im **JSX** der **Function Component** zu verwenden. Allerdings ist der Hook die deutlich übersichtlichere Variante, da dieser keine neue Hierarchie-Ebene im Komponentenbaum erzeugt.
 
-<div class="force-break-before"></div>
+<span class="force-break-before"></span>
 
 ## useReducer
 
@@ -342,7 +342,7 @@ ReactDOM.render(<Counter startValue={3} />, document.getElementById('root'));
 
 In diesem Beispiel erweitern wir den `useReducer()`-Hook um den dritten, optionalen Parameter: die **Init-** Funktion. Aus dem `initialState` im ersten Beispiel wird ein Argument für die **Init-**Funktion. Der Wert für dieses Funktions-Argument wird der Komponente hier als `startValue` über die Props übergeben.
 
-<div class="force-break-before"></div>
+<span class="force-break-before"></span>
 
 ### Reducer in der Praxis
 
