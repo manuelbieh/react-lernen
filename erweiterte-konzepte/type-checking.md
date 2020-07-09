@@ -12,7 +12,7 @@ TypeError: Cannot read property 'settings' of undefined
 
 **Typechecking** kann uns hier also helfen, derartige potentielle Fehler schon vorher zu entdecken. Dazu gibt es neben **Flow** und **TypeScript**, die statische Typisierung ermöglichen, mit den sogenannten **PropTypes** auch eine recht simple React-eigene Lösung. Während **Flow** und **TypeScript** generell statische Typisierung in JavaScript ermöglichen, beschränken sich die React **PropTypes** allein auf React-Komponenten und finden außerhalb von Komponenten keine Anwendung. Wer also an statischer Typisierung Gefallen findet, sollte durchaus mal einen Blick auf **Flow** oder **TypeScript** wagen.
 
-<div class="force-break-before"></div>
+<span class="force-break-before"></span>
 
 ## PropTypes
 
@@ -149,7 +149,7 @@ yarn add --dev babel-plugin-transform-react-remove-prop-types
 
 {% endhint %}
 
-<div class="force-break-before"></div>
+<span class="force-break-before"></span>
 
 ## Flow
 
@@ -328,7 +328,7 @@ import * as React from 'react';
 
 Dies führt dazu, dass gleichzeitig auch die von React mitgelieferten **Type Definitions** mit importiert wurden. Dies ist notwendig, wenn wir bspw. ein React-Element aus einer Funktion zurückgeben und dieses typisieren wollen.
 
-<div class="force-break-before"></div>
+<span class="force-break-before"></span>
 
 ## TypeScript
 

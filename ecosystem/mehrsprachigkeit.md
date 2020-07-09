@@ -321,7 +321,7 @@ Innerhalb von `<Trans>`-Elementen kann übrigens auch die `t`-Funktion wie gewoh
 </Trans>
 ```
 
-<div class="force-break-before"></div>
+<span class="force-break-before"></span>
 
 ### Fazit
 

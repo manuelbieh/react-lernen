@@ -237,7 +237,7 @@ handleChange = (e) => {
 
 Zuerst rufen wir besagte `e.persist()`-Methode auf. Anschließend können wir auch in der **Updater-Funktion** sorglos auf `e.target` und dessen `value`-Eigenschaft zugreifen.
 
-<div class="force-break-before"></div>
+<span class="force-break-before"></span>
 
 ### Fazit
 

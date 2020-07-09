@@ -49,7 +49,7 @@ class MyComponent extends React.Component {
 
 Ist der **State** erst einmal definiert, können wir innerhalb der **Klassen-Komponente** mittels `this.state` **lesend** auf ihn zugreifen. **Lesend** ist hier ein entscheidendes Stichwort. Denn auch wenn es prinzipiell möglich, ist den State direkt über `this.state` zu verändern, sollte dies aus verschiedenen Gründen vermieden werden.
 
-<div class="force-break-before"></div>
+<span class="force-break-before"></span>
 
 ## Den State verändern mit this.setState\(\)
 
@@ -494,7 +494,7 @@ Immer dann wird die `componentWillUnmount()`-Methode einer Komponente aufgerufen
 
 Event Listener. Gutes Stichwort. Darum kümmern wir uns im nächsten Kapitel, denn in den meisten Fällen ist der Einsatz von `addEventListener()` in React nicht mehr nötig, da React ein eigenes Event-System mitbringt, um für bessere Übersicht zu sorgen.
 
-<div class="force-break-before"></div>
+<span class="force-break-before"></span>
 
 ### Diagramm der Lifecycle-Methoden
 

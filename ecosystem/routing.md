@@ -173,7 +173,7 @@ Um das Matching zwischen dem `path` und der URL bewusst einzuschränken, bietet 
 
 Die Stelle, an der die Prop genau angegeben wird ist dabei, wie immer in **JSX**, zu vernachlässigen; ich schreibe sie gern direkt vor die `path`-Prop, um den Eindruck einer „sprechenden“ Prop zu vermitteln: hier habe ich eine **Route** mit dem **exact path**. In unserem Beispiel mit der Account-Sidebar würde die Sidebar bei Verwendung der `exact`-Prop nun nur noch dann gerendert, wenn die URL `/account` entspricht, jedoch nicht mehr bei `/account/edit`, `/account/images` oder `/account/settings`.
 
-<div class="force-break-before"></div>
+<span class="force-break-before"></span>
 
 ### Matching auf eine Route limitieren via Switch-Komponente
 
@@ -234,7 +234,7 @@ Möchte ich im ersten Beispiel, dass nur numerische Werte als `:userid` erlaubt 
 
 Findet der **React Router** eine solche URL mit einem Parameter, extrahiert er dessen Wert und übergibt ihn in einer `match`-Prop an die gerenderte Komponente.
 
-<div class="force-break-before"></div>
+<span class="force-break-before"></span>
 
 ### Weiterleitung bestimmter Routen steuern
 

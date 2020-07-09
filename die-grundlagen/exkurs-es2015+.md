@@ -14,7 +14,7 @@ Auf die meiner Meinung nach wichtigsten und nützlichsten neuen Funktionen und M
 
 **Wenn du bereits Erfahrung mit ES2015 und den nachfolgenden Versionen hast, kannst du dieses Kapitel überspringen!**
 
-<div class="force-break-before"></div>
+<span class="force-break-before"></span>
 
 ## Variablen-Deklarationen mit let und const
 
@@ -136,7 +136,7 @@ Uncaught TypeError: Assignment to constant variable.
 
 Möchten wir `myArray` also überschreibbar halten, müssen wir stattdessen `let` verwenden oder uns damit begnügen, dass zwar der Inhalt des mittels `const` deklarierten Arrays veränderbar ist, nicht jedoch die Variable selbst.
 
-<div class="force-break-before"></div>
+<span class="force-break-before"></span>
 
 ## Arrow Functions
 
@@ -715,7 +715,7 @@ Bevor ich zum **Rest Operator** komme, der logisch sehr eng mit dem **Spread Ope
 
 Mittels **Destructuring** ist es möglich, einzelne Elemente aus Objekten oder Arrays zu extrahieren und Variablen zuzuweisen. Eine weitere **deutliche** Syntax-Erweiterung, die uns ES2015 hier beschert hat.
 
-<div class="force-break-before"></div>
+<span class="force-break-before"></span>
 
 #### Destructuring von Arrays
 
@@ -1080,7 +1080,7 @@ console.log(lastName);
 console.log(other);
 ```
 
-<div class="force-break-before"></div>
+<span class="force-break-before"></span>
 
 **Ausgabe:**
 
@@ -1281,7 +1281,7 @@ Mittlerweile ist man sich nach gerade einmal **10** Jahren bei der Spezifikation
 
 Soviel zur Historie. Also wie funktionieren jetzt Imports und was sind Module überhaupt?
 
-<div class="force-break-before"></div>
+<span class="force-break-before"></span>
 
 ### Module in JavaScript
 
@@ -1397,7 +1397,7 @@ import React from 'react';
 
 Abhilfe schaffen sollen hier später einmal die **Package Name Maps**, ein Proposal, also ein Vorschlag für kommende ECMAScript Versionen, das aber momentan noch ganz am Anfang der Diskussion steht. Darum kommen wir wie eingangs erwähnt in absehbarer Zeit nicht drum herum, auch weiterhin einen Module Bundler wie Webpack zu benutzen, um komfortabel mit ES-Modules arbeiten zu können wenn wir JavaScript-Module gleichzeitig sowohl serverseitig als auch clientseitig nutzen wollen.
 
-<div class="force-break-before"></div>
+<span class="force-break-before"></span>
 
 ## Fazit
 

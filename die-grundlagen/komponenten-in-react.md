@@ -367,7 +367,7 @@ Auch wenn der Code jetzt erstmal länger geworden ist, haben wir uns dadurch den
 
 Alle Komponenten können \(und sollten!\) in einem eigenen File gespeichert werden, was die Arbeit im Team immens erleichtert. So könnte jedes Team-Mitglied oder auch einzelne Teams innerhalb eines großen Projekt-Teams für eine oder mehrere Komponenten hauptverantwortlich sein \(„Ownership übernehmen“\) und Änderungen in diesen vornehmen, während das Risiko, die Änderungen eines Kollegen zu überschreiben oder später Merge-Konflikte in Git auflösen zu müssen, immens sinkt. Teams werden zu _Konsumenten_ von Komponenten anderer Teams, die anhand eventuell verfügbarer Props ein simples Interface für ihre Komponente bereitstellen.
 
-<div class="force-break-before"></div>
+<span class="force-break-before"></span>
 
 ### Single Responsibility Prinzip
 
@@ -651,7 +651,7 @@ ReactDOM.render(
 );
 ```
 
-<div class="force-break-before"></div>
+<span class="force-break-before"></span>
 
 ### Die wichtigsten Punkte im Überblick
 
