@@ -67,7 +67,7 @@ null
 
 … da **JavaScript-Datentypen** allesamt auch als Ausdruck verwendet werden können.
 
-Die ES2015 **Template String Syntax**, die Backticks \(\`\`\`\) benutzt, ist ebenfalls ein Ausdruck. Klar, sind sie doch letztlich nichts anderes als ein String:
+Die ES2015 **Template String Syntax**, die Backticks \(``` ` ```\) benutzt, ist ebenfalls ein Ausdruck. Klar, sind sie doch letztlich nichts anderes als ein String:
 
 ```javascript
 `Hallo ${name}`;
