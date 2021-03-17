@@ -539,7 +539,7 @@ Oder eben:
 class MyComponent extends React.Component {}
 ```
 
-Auch eine `super()`-Funktion kennt die neu eingeführte **ES2015**-Klasse, um damit den **Constructor** ihrer Elternklasse aufzurufen. Im Falle von React ist dies immer notwendig, wenn ich in meiner eigenen Klasse eine `constructor`-Methode definiere. Diese muss dann dann `super()` aufrufen und ihre `props` an den Constructor der `React.Component`-Klasse weiterzugeben:
+Auch eine `super()`-Funktion kennt die neu eingeführte **ES2015**-Klasse, um damit den **Constructor** ihrer Elternklasse aufzurufen. Im Falle von React ist dies immer notwendig, wenn ich in meiner eigenen Klasse eine `constructor`-Methode definiere. Diese muss dann `super()` aufrufen und ihre `props` an den Constructor der `React.Component`-Klasse weiterzugeben:
 
 ```javascript
 class MyComponent extends React.Component {
