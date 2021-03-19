@@ -250,7 +250,7 @@ Hier wäre es beispielsweise nicht möglich, ein `div` oder `span` oder ein sons
 </dl>
 ```
 
-… und wäre damit ungültiges HTML, da ein `dl`-Element nur `dt` und `dd` als Kind-Element erlaubt. Das **Fragment** hilft uns hier also gültiges JSX zu erzeugen, ohne dabei gleichzeitig das HTML ungültig werden zu lassen. Dies war in React bis zur Einführung von Fragments in Version 16.3. ein Problemund führte dazu, dass Komponenten unnötig kompliziert implementiert werden mussten, um weder gegen JSX- noch gegen HTML-Regeln zu verstoßen.
+… und wäre damit ungültiges HTML, da ein `dl`-Element nur `dt` und `dd` als Kind-Element erlaubt. Das **Fragment** hilft uns hier also gültiges JSX zu erzeugen, ohne dabei gleichzeitig das HTML ungültig werden zu lassen. Dies war in React bis zur Einführung von Fragments in Version 16.3. ein Problem und führte dazu, dass Komponenten unnötig kompliziert implementiert werden mussten, um weder gegen JSX- noch gegen HTML-Regeln zu verstoßen.
 
 Die Fragment-Komponente kann auch als benannter Import direkt aus React importiert werden:
 
