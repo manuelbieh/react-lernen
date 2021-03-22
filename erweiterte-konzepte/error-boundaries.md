@@ -85,7 +85,7 @@ Zuletzt reagieren wir auf einen möglicherweise aufgetretenen Fehler in unserer 
 
 Wir wissen nun, wie wir eine **Error Boundary** implementieren: durch das Hinzufügen von `static getDerivedStateFromError()` oder `componentDidCatch()` in einer Komponente. **Error Boundaries** sollten dabei so unabhängig wie möglich sein und wenig bis gar keine eigene Logik implementieren oder gar zu eng an bestimmte Komponenten gekoppelt werden. Wie granular eine solche **Error Boundary** aber letztendlich ist, liegt in der Entscheidung des Entwicklers.
 
-So ist es in komplexen Anwendungen durchaus sinnvoll, verschiedene \(auch ineinander verschachtelte\) **Error Boundaries** zu haben, die jeweils unterschiedliche Fehlerfälle abdecken. Eine, die sich um die komplette Anwendung legt und Fehler sämtliche Fehler abfängt, eine weitere für bestimmte Bereiche im Seitenbaum, die vielleicht nur optional sind. Schauen wir uns auch das einmal anhand eines Beispiels an:
+So ist es in komplexen Anwendungen durchaus sinnvoll, verschiedene \(auch ineinander verschachtelte\) **Error Boundaries** zu haben, die jeweils unterschiedliche Fehlerfälle abdecken. Eine, die sich um die komplette Anwendung legt und sämtliche Fehler abfängt, eine weitere für bestimmte Bereiche im Seitenbaum, die vielleicht nur optional sind. Schauen wir uns auch das einmal anhand eines Beispiels an:
 
 ```jsx
 import React from 'react';
