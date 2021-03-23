@@ -248,7 +248,7 @@ Die Verwendung des Hooks ist optional und so ist es auch weiterhin möglich, Con
 const [state, dispatch] = useReducer(reducerFunc, initialState, initFunc);
 ```
 
-Der `useReducer()`-Hook ist eine Alternative zu `useState()`, die es erlaubt auch komplexere States zu managen. Der Hook ist angelehnt an die Flux-Architektur, bei der, kurz gesagt, eine **Reducer-** Funktion einen **neuen State erzeugt**, indem sie den **letzten State** und eine sog. **Action** übergeben bekommt.
+Der `useReducer()`-Hook ist eine Alternative zu `useState()`, die es erlaubt auch komplexere States zu managen. Der Hook ist angelehnt an die Flux-Architektur, bei der, kurz gesagt, eine **Reducer**-Funktion einen **neuen State erzeugt**, indem sie den **letzten State** und eine sog. **Action** übergeben bekommt.
 
 Die **Reducer**-Funktion wird durch den Aufruf einer **Dispatch**-Funktion aufgerufen, die wiederum eine **Action** übergeben bekommt. Die **Action** selbst ist dabei ein Objekt, das zwingend eine `type` Eigenschaft und oftmals \(optional\) eine `payload`-Eigenschaft besitzt. Aus dieser **Action** und dem **letzten State** erzeugt die **Reducer**-Funktion dann den **neuen State**. Die **Reducer**-Funktion hat also die Form `(oldState, action) => newState`.
 
