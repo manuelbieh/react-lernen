@@ -487,7 +487,7 @@ Hier implementieren wir einen simplen Button, der uns zur Startseite führt, sob
 
 **useParams**
 
-Dieser Hook ist ein Shortcut um auf die Parameter zuzugreifen, die sich bisher unter `match.params` etwas versteckt haben. Definiere ich eine Route mit Platzhaltern, also etwa `/users/:userid` und rufe dann eine URL auf wie `/users/123` enthalt das params-Objekt ein key/value Paar in der Form `{ "userid": "123" }`.
+Dieser Hook ist ein Shortcut um auf die Parameter zuzugreifen, die sich bisher unter `match.params` etwas versteckt haben. Definiere ich eine Route mit Platzhaltern, also etwa `/users/:userid` und rufe dann eine URL auf wie `/users/123` enthält das params-Objekt ein key/value Paar in der Form `{ "userid": "123" }`.
 
 Der useParams-Hook erlaubt es uns nun, direkt auf dieses Objekt zuzugreifen:
 
