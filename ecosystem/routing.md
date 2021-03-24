@@ -479,7 +479,7 @@ const NavigateHomeButton = () => {
     history.push('/');
   };
 
-  return <button onClick={goHome}Take me home</button>;
+  return <button onClick={goHome}>Take me home</button>;
 }
 ```
 
