@@ -499,7 +499,7 @@ class Countdown extends React.Component {
 }
 ```
 
-Dies **kann** bei kluger Verwendung die Lesbarkeit einer `render()`-Methode erhöhen, führt aber unweigerlich auch dazu, dass sich die Komplexität einer Komponente \(in etwas geringerem Maß\) erhöht. Viele Leute – ich zähle mich dazu – raten daher eher dazu Teile des Codes wiederum in eigene gekapselte **Function Components** auszulagern statt `renderXY()`-Methoden zu verwenden.
+Dies **kann** bei kluger Verwendung die Lesbarkeit einer `render()`-Methode erhöhen, führt aber unweigerlich auch dazu, dass sich die Komplexität einer Komponente \(in etwas geringerem Maß\) erhöht. Viele Leute – ich zähle mich dazu – raten daher eher dazu, Teile des Codes wiederum in eigene gekapselte **Function Components** auszulagern statt `renderXY()`-Methoden zu verwenden.
 
 {% hint style="info" %}
 Sobald die Überlegung ansteht eine weitere `render()`-Methode innerhalb einer Komponente zu implementieren sollte darüber nachgedacht werden, stattdessen eine eigene, separate **Function Component** zu erstellen.
