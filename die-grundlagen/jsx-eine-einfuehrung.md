@@ -2,7 +2,7 @@
 
 ## JSX als wichtiger Bestandteil in der React-Entwicklung
 
-Bevor wir tiefer in die Entwicklung von Komponenten einsteigen möchte ich zuerst einmal auf **JSX** eingehen, da JSX einen wesentlichen Teil bei der Arbeit mit React darstellt. Wie eingangs schon erwähnt stellt JSX einen ganz grundlegenden Teil der meisten React-Komponenten dar und ist aus meiner Sicht einer der Gründe, warum React so schnell und positiv von so vielen Entwicklern angenommen wurde. Mittlerweile bieten auch andere Frameworks wie Vue.js die Möglichkeit JSX zur komponentengetriebenen Entwicklung einzusetzen.
+Bevor wir tiefer in die Entwicklung von Komponenten einsteigen, möchte ich zuerst einmal auf **JSX** eingehen, da JSX einen wesentlichen Teil bei der Arbeit mit React darstellt. Wie eingangs schon erwähnt stellt JSX einen ganz grundlegenden Teil der meisten React-Komponenten dar und ist aus meiner Sicht einer der Gründe, warum React so schnell und positiv von so vielen Entwicklern angenommen wurde. Mittlerweile bieten auch andere Frameworks wie Vue.js die Möglichkeit JSX zur komponentengetriebenen Entwicklung einzusetzen.
 
 JSX sieht auf den ersten Blick erst einmal gar nicht sehr viel anders aus als HTML, oder eher noch XML, da in JSX, eben wie auch in XML und XHTML jedes geöffnete Element ein schließendes Element \(`</div>`\) besitzen oder selbstschließend \(`<img />`\) sein muss. Mit dem grundlegenden Unterschied, dass JSX auf **JavaScript-Ausdrücke** zurückgreifen kann und dadurch sehr mächtig wird.
 
@@ -34,7 +34,7 @@ Das zweite Argument repräsentiert die **Props** eines Elements, also in etwa ve
 
 Alle weiteren Argumente stellen die Kind-Elemente \(_„children“_\) des Elements dar. Im obigen Beispiel hat unser `div` zwei Paragraphen \(`<p>`\) als Kind-Elemente, welche selbst keine eigenen Props haben \(`null`\) und lediglich einen Text-String \(`Ein Paragraph in JSX` bzw `Ein weiterer Paragraph`\) als Kind-Element besitzt.
 
-Wem das jetzt zu kompliziert klingt den kann ich beruhigen: Das geht in der Praxis hinterher wie von selbst von der Hand. Fast so, als würde man HTML-Markup schreiben. Dennoch halte ich es für wichtig die Hintergründe zumindest einmal gelesen zu haben um spätere Beispiele besser nachvollziehen zu können.
+Wem das jetzt zu kompliziert klingt, den kann ich beruhigen: Das geht in der Praxis hinterher wie von selbst von der Hand. Fast so, als würde man HTML-Markup schreiben. Dennoch halte ich es für wichtig, die Hintergründe zumindest einmal gelesen zu haben, um spätere Beispiele besser nachvollziehen zu können.
 
 ## Ausdrücke in JavaScript
 
@@ -52,7 +52,7 @@ Zuerst einmal ist ein Ausdruck in JavaScript, kurz gesagt, ein Stück Code, das 
 'Hal' + 'lo';
 ```
 
-… ist ein anderer Ausdruck der die zwei Strings `Hal` und `lo` per **String Concatenation** zu einem Wert `Hallo` zusammenfügt.
+… ist ein anderer Ausdruck, der die zwei Strings `Hal` und `lo` per **String Concatenation** zu einem Wert `Hallo` zusammenfügt.
 
 Stattdessen könnten wir aber auch einfach gleich schreiben:
 
@@ -67,7 +67,7 @@ null
 
 … da **JavaScript-Datentypen** allesamt auch als Ausdruck verwendet werden können.
 
-Die ES2015 **Template String Syntax**, die Backticks \(\`\`\`\) benutzt, ist ebenfalls ein Ausdruck. Klar, sind sie doch letztlich nichts anderes als ein String:
+Die ES2015 **Template String Syntax**, die Backticks \(``` ` ```\) benutzt, ist ebenfalls ein Ausdruck. Klar, sind sie doch letztlich nichts anderes als ein String:
 
 ```javascript
 `Hallo ${name}`;
@@ -169,7 +169,7 @@ Das gilt in ähnlicher Form auch für Array-Literals, natürlich mit dem Untersc
 
 Weiter könnte manch einem aufgefallen sein, dass im gleichen Beispiel die Prop `className` verwendet wird. Wer jemals mit der DOM Element API im Browser gearbeitet hat, dem wird vielleicht im Gedächtnis geblieben sein, dass mittels `Element.className` auf das `class`-Attribute eines Elements zugegriffen werden kann. Ganz genau so ist das auch in React, das sich an den Eigenschaften der DOM `Element` Klasse bedient.
 
-Möchte man gewisse HTML-Attribute in JSX setzen, ist dafür also die JavaScript-Entsprechung zu verwenden. `class` ist ein geschütztes Keyword in JavaScript um eine Klasse zu kennzeichnen, also verwenden wir an dieser Stelle stattdessen `className`. Gleiches gilt für `for`, was in JavaScript als Keyword benutzt wird um Schleifen einzuleiten, in HTML aber hingegen um `<label>` Elementen mitzuteilen, welches Eingabefeld sie beschreiben. Statt `for` schreiben wir in JSX also angelehnt an das DOM [HTMLLabelElement Interface](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/htmlFor) `htmlFor`:
+Möchte man gewisse HTML-Attribute in JSX setzen, ist dafür also die JavaScript-Entsprechung zu verwenden. `class` ist ein geschütztes Keyword in JavaScript um eine Klasse zu kennzeichnen, also verwenden wir an dieser Stelle stattdessen `className`. Gleiches gilt für `for`, was in JavaScript als Keyword benutzt wird, um Schleifen einzuleiten, in HTML aber hingegen, um `<label>` Elementen mitzuteilen, welches Eingabefeld sie beschreiben. Statt `for` schreiben wir in JSX also angelehnt an das DOM [HTMLLabelElement Interface](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/htmlFor) `htmlFor`:
 
 ```jsx
 <fieldset>
@@ -228,7 +228,7 @@ Auch Kommentare sind möglich in JSX, funktionieren aber nicht wie in HTML in de
 
 Derartige Kommentare können sich natürlich auch über mehrere Zeilen erstrecken. Einzeilige JavaScript Kommentare, die mit einem doppelten Slash \(`//`\) eingeleitet werden, sind hingegen nicht möglich in JSX. Hier muss also auch bei einem kurzen einzeiligen Kommentar die `/* */` Syntax für mehrzeilige Kommentare verwendet werden.
 
-Damit solltest du auch schon ausreichend Kenntnisse über JSX erlangt haben, um die nachfolgenden Beispiele und Beschreibungen im weiteren Verlauf immer besser verstehen und nachvollziehen zu können
+Damit solltest du auch schon ausreichend Kenntnisse über JSX erlangt haben, um die nachfolgenden Beispiele und Beschreibungen im weiteren Verlauf immer besser verstehen und nachvollziehen zu können.
 
 ## Fazit
 

@@ -12,7 +12,7 @@ Die Themen haben eins gemeinsam: sie sind zu wichtig um sie nicht im Grundlagent
 
 Mit Listen sind hier tatsächlich stumpfe JavaScript-Arrays gemeint, also einfache **Daten**, durch die iteriert werden kann. Sie sind bei der Arbeit \(nicht nur mit React\) alltäglich und keine Anwendung kommt ohne sie aus. **ES2015+** bietet uns mit `Array.map()`, `Array.filter()` oder `Array.find()` schöne deklarative Methoden, die wir als Ausdrücke in JSX innerhalb von geschweiften Klammern `{}` nutzen können.
 
-Welche Rolle Ausdrücke in JSX spielen und wie wir Ausdrücke in JSX nutzen können, habe ich bereits im Kapitel über JSX angesprochen. Kurz aufgefrischt: Arrays können als Ausdruck in JavaScript genutzt werden und somit auch in JSX. Das heißt sie können in geschweiften Klammern stehen und werden dann von beim Transpiling von JSX als Child-Node behandelt.
+Welche Rolle Ausdrücke in JSX spielen und wie wir Ausdrücke in JSX nutzen können, habe ich bereits im Kapitel über JSX angesprochen. Kurz aufgefrischt: Arrays können als Ausdruck in JavaScript genutzt werden und somit auch in JSX. Das heißt sie können in geschweiften Klammern stehen und werden dann beim Transpiling von JSX als Child-Node behandelt.
 
 Das ist aber noch nicht alles, denn `Array.map()` kann bspw. modifizierte Items zurückgeben, die selbst wiederum JSX beinhalten. Das ist insofern praktisch, als es uns weitere Flexibilität verschafft und es uns ermöglicht, Datensammlungen in React-Elemente zu verwandeln.
 
@@ -250,7 +250,7 @@ Hier wäre es beispielsweise nicht möglich, ein `div` oder `span` oder ein sons
 </dl>
 ```
 
-… und wäre damit ungültiges HTML, da ein `dl`-Element nur `dt` und `dd` als Kind-Element erlaubt. Das **Fragment** hilft uns hier also gültiges JSX zu erzeugen, ohne dabei gleichzeitig das HTML ungültig werden zu lassen. Dies war in React bis zur Einführung von Fragments in Version 16.3. ein Problemund führte dazu, dass Komponenten unnötig kompliziert implementiert werden mussten, um weder gegen JSX- noch gegen HTML-Regeln zu verstoßen.
+… und wäre damit ungültiges HTML, da ein `dl`-Element nur `dt` und `dd` als Kind-Element erlaubt. Das **Fragment** hilft uns hier also gültiges JSX zu erzeugen, ohne dabei gleichzeitig das HTML ungültig werden zu lassen. Dies war in React bis zur Einführung von Fragments in Version 16.3. ein Problem und führte dazu, dass Komponenten unnötig kompliziert implementiert werden mussten, um weder gegen JSX- noch gegen HTML-Regeln zu verstoßen.
 
 Die Fragment-Komponente kann auch als benannter Import direkt aus React importiert werden:
 
@@ -499,7 +499,7 @@ class Countdown extends React.Component {
 }
 ```
 
-Dies **kann** bei kluger Verwendung die Lesbarkeit einer `render()`-Methode erhöhen, führt aber unweigerlich auch dazu, dass sich die Komplexität einer Komponente \(in etwas geringerem Maß\) erhöht. Viele Leute – ich zähle mich dazu – raten daher eher dazu Teile des Codes wiederum in eigene gekapselte **Function Components** auszulagern statt `renderXY()`-Methoden zu verwenden.
+Dies **kann** bei kluger Verwendung die Lesbarkeit einer `render()`-Methode erhöhen, führt aber unweigerlich auch dazu, dass sich die Komplexität einer Komponente \(in etwas geringerem Maß\) erhöht. Viele Leute – ich zähle mich dazu – raten daher eher dazu, Teile des Codes wiederum in eigene gekapselte **Function Components** auszulagern statt `renderXY()`-Methoden zu verwenden.
 
 {% hint style="info" %}
 Sobald die Überlegung ansteht eine weitere `render()`-Methode innerhalb einer Komponente zu implementieren sollte darüber nachgedacht werden, stattdessen eine eigene, separate **Function Component** zu erstellen.
