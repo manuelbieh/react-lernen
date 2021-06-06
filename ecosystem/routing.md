@@ -41,7 +41,7 @@ Also sieht eine korrekte Verwendung beider Props z.B. so aus:
 ```jsx
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 const Example = () => <p>Example Komponente</p>;
 
@@ -128,6 +128,8 @@ Hier haben wir nun das doppelte Routing vermieden, allerdings zu Ungunsten der L
 
 ```jsx
 import React from 'react';
+import ReactDOM from 'react-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 const Layout = (props) => (
   <>
